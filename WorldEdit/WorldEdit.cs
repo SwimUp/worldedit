@@ -8,6 +8,7 @@ using Verse;
 
 namespace WorldEdit
 {
+    [StaticConstructorOnStartup]
     internal class WorldEdit : Mod
     {
         public WorldEdit(ModContentPack content) : base(content)
