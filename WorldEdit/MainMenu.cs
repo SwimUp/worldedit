@@ -13,6 +13,7 @@ namespace WorldEdit
     {
         public static bool isEdit = false;
         public static InGameEditor Editor = null;
+        public static WorldUpdater WorldUpdater = null;
 
         public MainMenu()
         {
@@ -20,7 +21,6 @@ namespace WorldEdit
 
         public MainMenu(Game game)
         {
-
         }
 
         [HarmonyPatch(typeof(Page_CreateWorldParams), "DoWindowContents", new Type[]
@@ -29,8 +29,6 @@ namespace WorldEdit
         })]
         private static class Page_CreateWorldParams_DoWindowContents_Patch
         {
-            private static Vector2 planetInfoSliderPos;
-
             private static bool Prefix(Rect rect, ref Rect __state)
             {
                 __state = rect;
@@ -44,8 +42,6 @@ namespace WorldEdit
                 Rect baseRect = new Rect(0f, y, 200f, 30f);
                 Widgets.Label(baseRect, Translator.Translate("EditorLabel"));
                 Rect EarthRect = new Rect(200f, y, 200f, 30f);
-                Rect IceGigantRect = new Rect(200f, y + 40f, 200f, 30f);
-                Rect textRect = new Rect(450f, y, __state.width / 2, 300f);
                 if (Widgets.RadioButtonLabeled(EarthRect, Translator.Translate("isEnableEditorLabel"), isEdit == true))
                 {
                     isEdit = !isEdit;

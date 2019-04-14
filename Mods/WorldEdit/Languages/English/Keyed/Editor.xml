@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <EditorLabel>World edit</EditorLabel>
+  <isEnableEditorLabel>Enable</isEnableEditorLabel>
+  
+  <DeleteSingleRoad>Delete single road</DeleteSingleRoad>
+  <DeleteRangeRoads>Delete range roads</DeleteRangeRoads>
+  <DeleteSingleRiver>Delete single river</DeleteSingleRiver>
+  <DeleteRangeRivers>Delete range rivers</DeleteRangeRivers>
+    
+  <StartTileLabel>Start tile</StartTileLabel>
+  <EndTileLabel>End tile</EndTileLabel>
+  <CreateRoadLabel>Create roads</CreateRoadLabel>
+  <CreateRiverLael>Create rivers</CreateRiverLael>
+  
+  <UpdateAllTiles>Update all tiles</UpdateAllTiles>
+  <UpdateAllTilesInfo>Updates information about all tiles</UpdateAllTilesInfo>
+  <UpdateCustomLayer>Update layer</UpdateCustomLayer>
+  <UpdateCustomLayerInfo>Update the selected layer</UpdateCustomLayerInfo>
+  <UpdateImmediatelyON>Update immediatly [ON]</UpdateImmediatelyON>
+  <UpdateImmediatelyOFF>Update immediatly [OFF]</UpdateImmediatelyOFF>
+  <UpdateImmediatelyInfo>Enable/Disable immediatly update tile info</UpdateImmediatelyInfo>
+  
+  <Biome>Biome</Biome>
+  <NoText>No</NoText>
+  <Temperature>Temperature</Temperature>
+  <Evelation>Evelation</Evelation>
+  <Rainfall>Rainfall</Rainfall>
+  <Swampiness>Swampiness</Swampiness>
+
+  
+</LanguageData>

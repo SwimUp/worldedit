@@ -58,10 +58,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditButtonStartTile.cs" />
+    <Compile Include="Editor\FactionCreator.cs" />
+    <Compile Include="Editor\FactionEditor.cs" />
+    <Compile Include="Editor\FactionManager.cs" />
+    <Compile Include="Editor\SettlementManager.cs" />
+    <Compile Include="Editor\LayersWindow.cs" />
+    <Compile Include="Editor\RoadAndRiversEditor.cs" />
     <Compile Include="InGameEditor.cs" />
+    <Compile Include="Interfaces\IFWindow.cs" />
     <Compile Include="MainMenu.cs" />
+    <Compile Include="WindowHelper.cs" />
     <Compile Include="WorldEdit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorldUpdater.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

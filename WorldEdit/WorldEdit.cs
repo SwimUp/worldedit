@@ -13,12 +13,8 @@ namespace WorldEdit
     {
         public WorldEdit(ModContentPack content) : base(content)
         {
-            HarmonyInstance harmonyInstance = HarmonyInstance.Create("net.funkyshit.rimoverhaul");
+            HarmonyInstance harmonyInstance = HarmonyInstance.Create("net.funkyshit.worldedit");
             harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
-        }
-
-        public void Save()
-        {
         }
     }
 }

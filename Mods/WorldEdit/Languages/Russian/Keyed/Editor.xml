@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <EditorLabel>Редактор карты</EditorLabel>
+  <isEnableEditorLabel>Включить</isEnableEditorLabel>
+  
+  <DeleteSingleRoad>Удалить выделенную дорогу</DeleteSingleRoad>
+  <DeleteRangeRoads>Удалить диапазон дорог</DeleteRangeRoads>
+  <DeleteSingleRiver>Удалить выделенную реку</DeleteSingleRiver>
+  <DeleteRangeRivers>Удалить диапазон рек</DeleteRangeRivers>
+    
+  <StartTileLabel>Старт</StartTileLabel>
+  <EndTileLabel>Конец</EndTileLabel>
+  <CreateRoadLabel>Создать дорогу(-и)</CreateRoadLabel>
+  <CreateRiverLael>Создать реку(-и)</CreateRiverLael>
+  
+  <UpdateAllTiles>Обновить тайлы</UpdateAllTiles>
+  <UpdateAllTilesInfo>Обновляет информацию обо всех тайлах</UpdateAllTilesInfo>
+  <UpdateCustomLayer>Обновить слой</UpdateCustomLayer>
+  <UpdateCustomLayerInfo>Обновляет выбранный слой</UpdateCustomLayerInfo>
+  <UpdateImmediatelyON>Немедленное обновление [ВКЛ]</UpdateImmediatelyON>
+  <UpdateImmediatelyOFF>Немедленное обновление [ВЫКЛ]</UpdateImmediatelyOFF>
+  <UpdateImmediatelyInfo>Включает немедленное обновление тайла</UpdateImmediatelyInfo>
+  
+  <Biome>Биом</Biome>
+  <NoText>Нет</NoText>
+  <Temperature>Температура</Temperature>
+  <Evelation>Высота</Evelation>
+  <Rainfall>Осадки</Rainfall>
+  <Swampiness>Заболоченность</Swampiness>
+	
+  <FactionEditor>Редактор фракций</FactionEditor>
+  <RoadAndRiverEditor>Редактор дорог и рек</RoadAndRiverEditor>
+  
+  <SetFraction>Установить фракцию</SetFraction>
+  <AllFactionsList>Все доступные фракции</AllFactionsList>
+  <AllSpawnedFactionsList>Все заспавненные фракции</AllSpawnedFactionsList>
+  <CustomFactionName>Имя фракции:</CustomFactionName>
+  <CustomFactionLore>Описание:</CustomFactionLore>
+  <isVisitable>Посещаемо:</isVisitable>
+  <UseCustomColor>Свой цвет</UseCustomColor>
+  <RedLabel>Красный</RedLabel>
+  <GreenLabel>Зеленый</GreenLabel>
+  <BlueLabel>Голубой</BlueLabel>
+  
+  <FactionManager>Управление фракциями</FactionManager>
+  <SettlementManager>Управление поселениями</SettlementManager>
+  
+  <FactionManagerTitle>Фракции на карте</FactionManagerTitle>
+  <RemoveSpawnedFaction>Удалить фракцию</RemoveSpawnedFaction>
+  <DeleteAllSettlements>Удалить все поселения</DeleteAllSettlements>
+  <AddNewFaction>Создать новую фракцию</AddNewFaction>
+  
+  <FactionCreatorTitle>Создание новой фракции</FactionCreatorTitle>
+  <RandomizeFaction>Сгенерировать</RandomizeFaction>
+  <ClearFaction>Очистить</ClearFaction>
+  <FactionName>Имя фракции</FactionName>
+  <FactionDefeated>Побеждена ли?</FactionDefeated>
+  <isDefeatedYES>Да</isDefeatedYES>
+  <isDefeatedNO>Нет</isDefeatedNO>
+  <FactionRelative>Настройка отношений</FactionRelative>
+  <FactionInfoName>Фракция:</FactionInfoName>
+  <FactionGoodness>Отношение</FactionGoodness>
+  <FactionMelanin>???</FactionMelanin>
+  <ColorSpectrum>Цвет</ColorSpectrum>
+  <AddNewRelative>Добавить отношение</AddNewRelative>
+  <DeleteRelative>Удалить</DeleteRelative>
+  <CreateNewFaction>Создать фракцию</CreateNewFaction>
+  
+  <SettlementManagerTitle>Поселения на карте</SettlementManagerTitle>
+  <RemoveSpawnedSettlement>Удалить поселение</RemoveSpawnedSettlement>
+  
+</LanguageData>
