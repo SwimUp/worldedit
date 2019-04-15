@@ -53,6 +53,7 @@
   
   <FactionCreatorTitle>Создание новой фракции</FactionCreatorTitle>
   <RandomizeFaction>Сгенерировать</RandomizeFaction>
+  <RandomizeName>Случайное имя</RandomizeName>
   <ClearFaction>Очистить</ClearFaction>
   <FactionName>Имя фракции</FactionName>
   <FactionDefeated>Побеждена ли?</FactionDefeated>
@@ -63,11 +64,15 @@
   <FactionGoodness>Отношение</FactionGoodness>
   <FactionMelanin>???</FactionMelanin>
   <ColorSpectrum>Цвет</ColorSpectrum>
-  <AddNewRelative>Добавить отношение</AddNewRelative>
+  <AddNewRelative>Добавить</AddNewRelative>
   <DeleteRelative>Удалить</DeleteRelative>
+  <GenerateRelative>Сгенерировать</GenerateRelative>
   <CreateNewFaction>Создать фракцию</CreateNewFaction>
   
   <SettlementManagerTitle>Поселения на карте</SettlementManagerTitle>
   <RemoveSpawnedSettlement>Удалить поселение</RemoveSpawnedSettlement>
+  
+  <AddRelativeTitle>Добавить отношение</AddRelativeTitle>
+  <Cancel>Отмена</Cancel>
   
 </LanguageData>

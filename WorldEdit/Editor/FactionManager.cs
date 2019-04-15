@@ -17,35 +17,37 @@ namespace WorldEdit.Editor
 
         private bool deleteSettlements = false;
 
-        private List<Faction> allSpawnedFactions;
+        private RimWorld.FactionManager rimFactionManager;
+        //private List<Faction> allSpawnedFactions;
 
         private Faction selectedFaction = null;
 
-        private FactionCreator factionCreator = null;
+        internal FactionCreator factionCreator = null;
 
         public FactionManager()
         {
             resizeable = false;
 
             factionCreator = new FactionCreator();
+            rimFactionManager = Find.FactionManager;
         }
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Small;
 
             Widgets.Label(new Rect(0, 0, 150, 20), Translator.Translate("FactionManagerTitle"));
-            int factionDefSize = allSpawnedFactions.Count * 25;
+            int factionDefSize = rimFactionManager.AllFactionsListForReading.Count * 25;
 
             if (Widgets.ButtonText(new Rect(0, 25, 180, 20), Translator.Translate("NoText")))
             {
                 selectedFaction = null;
             }
 
-            Rect scrollRectFact = new Rect(0, 50, 190, 160);
+            Rect scrollRectFact = new Rect(0, 50, 190, 170);
             Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, factionDefSize);
             Widgets.BeginScrollView(scrollRectFact, ref scrollPosition, scrollVertRectFact);
             int yButtonPos = 0;
-            foreach(var spawnedFaction in allSpawnedFactions)
+            foreach(var spawnedFaction in rimFactionManager.AllFactionsListForReading)
             {
                 if(Widgets.ButtonText(new Rect(0, yButtonPos, 180, 20), spawnedFaction.Name))
                 {
@@ -85,7 +87,6 @@ namespace WorldEdit.Editor
             }
 
             Find.FactionManager.Remove(selectedFaction);
-            allSpawnedFactions.Remove(selectedFaction);
         }
 
         public void Show()
@@ -97,7 +98,6 @@ namespace WorldEdit.Editor
             else
             {
                 Find.WindowStack.Add(this);
-                allSpawnedFactions = Find.FactionManager.AllFactions.ToList();
             }
         }
     }

@@ -15,36 +15,15 @@ namespace WorldEdit.Editor
     {
         public override Vector2 InitialSize => new Vector2(500, 600);
 
-        private SettlementManager settlementManager;
-        private FactionManager factionManager;
-
-        internal FactionDef selectedFaction;
-        internal Faction selectedGlobalFaction;
+        internal SettlementManager settlementManager;
+        internal FactionManager factionManager;
 
         private Vector2 scrollPositionFact = Vector2.zero;
         private Vector2 scrollGlobalPositionFact = Vector2.zero;
 
-        private List<FactionDef> avaliableFactions;
-        private List<Faction> avaliableGlobalFactions;
-
-        private string customFactionName = string.Empty;
-        private string customHistory = string.Empty;
-
-        private bool useCustomColor = false;
-        private FloatRange newColorR;
-        private FloatRange newColorG;
-        private FloatRange newColorB;
         public FactionEditor()
         {
             resizeable = false;
-
-            avaliableFactions = new List<FactionDef>(DefDatabase<FactionDef>.DefCount);
-            foreach (FactionDef faction in DefDatabase<FactionDef>.AllDefs)
-            {
-                avaliableFactions.Add(faction);
-            }
-
-            avaliableGlobalFactions = Find.FactionManager.AllFactions.ToList();
 
             settlementManager = new SettlementManager();
             factionManager = new FactionManager();
@@ -151,48 +130,6 @@ namespace WorldEdit.Editor
                 PrepareFaction();
             }
             */
-        }
-
-        private void PrepareFaction()
-        {
-            if (selectedFaction == null && selectedGlobalFaction == null)
-                return;
-
-            SetFaction();
-        }
-
-        private void SetFaction()
-        {
-            if (Find.WorldSelector.selectedTile < 0)
-                return;
-
-            bool generateNew = selectedFaction == null ? false : true;
-
-            Faction faction = generateNew == false ? selectedGlobalFaction : FactionGenerator.NewGeneratedFaction(selectedFaction);
-            if(generateNew == true)
-                Find.World.factionManager.Add(faction);
-
-            Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-            settlement.SetFaction(faction);
-            settlement.Tile = Find.WorldSelector.selectedTile;
-            if (customFactionName.NullOrEmpty())
-                settlement.Name = SettlementNameGenerator.GenerateSettlementName(settlement);
-            else
-                settlement.Name = customFactionName;
-
-            Find.WorldObjects.Add(settlement);
-
-            if (useCustomColor)
-            {
-                Log.Message($"R: {newColorR.max} : G: {newColorG.max} : B: {newColorB.max}");
-
-                FieldInfo material = typeof(Settlement).GetField("cachedMat", BindingFlags.NonPublic | BindingFlags.Instance);
-                if (material != null)
-                {
-                    Material mat = MaterialPool.MatFrom(faction.def.homeIconPath, ShaderDatabase.WorldOverlayTransparentLit, new Color(newColorR.max, newColorG.max, newColorB.max), WorldMaterials.WorldObjectRenderQueue);
-                    material.SetValue(settlement, mat);
-                }
-            }
         }
     }
 }

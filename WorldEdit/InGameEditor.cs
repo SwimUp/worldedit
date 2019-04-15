@@ -57,7 +57,7 @@ namespace WorldEdit
         internal WorldUpdater WorldUpdater;
         private RoadAndRiversEditor roadEditor;
         private LayersWindow layersWindow;
-        private FactionEditor factionEditor;
+        internal FactionEditor factionEditor;
 
         private bool useTemperature = false;
         private bool useEvelation = false;
@@ -101,7 +101,6 @@ namespace WorldEdit
         public void Reset()
         {
             selectedBiome = null;
-            factionEditor.selectedFaction = null;
 
             Find.WorldSelector.ClearSelection();
         }
