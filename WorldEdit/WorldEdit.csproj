@@ -61,7 +61,9 @@
     <Compile Include="EditButtonStartTile.cs" />
     <Compile Include="Editor\FactionCreator.cs" />
     <Compile Include="Editor\FactionEditor.cs" />
+    <Compile Include="Editor\FactionMenu.cs" />
     <Compile Include="Editor\FactionManager.cs" />
+    <Compile Include="Editor\SettlementCreator.cs" />
     <Compile Include="Editor\SettlementManager.cs" />
     <Compile Include="Editor\LayersWindow.cs" />
     <Compile Include="Editor\RoadAndRiversEditor.cs" />

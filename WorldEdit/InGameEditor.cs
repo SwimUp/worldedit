@@ -57,7 +57,7 @@ namespace WorldEdit
         internal WorldUpdater WorldUpdater;
         private RoadAndRiversEditor roadEditor;
         private LayersWindow layersWindow;
-        internal FactionEditor factionEditor;
+        internal FactionMenu factionEditor;
 
         private bool useTemperature = false;
         private bool useEvelation = false;
@@ -95,7 +95,7 @@ namespace WorldEdit
             roadEditor = new RoadAndRiversEditor();
             WorldUpdater = MainMenu.WorldUpdater;
             layersWindow = new LayersWindow();
-            factionEditor = new FactionEditor();
+            factionEditor = new FactionMenu();
         }
 
         public void Reset()

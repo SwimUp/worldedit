@@ -85,12 +85,10 @@ namespace WorldEdit
                 if (layerSubMesh.material == material && layerSubMesh.verts.Count < 40000)
                 {
                     subMeshIndex = i;
-                    Log.Message("returned");
                     return layerSubMesh;
                 }
             }
 
-            Log.Message("create new");
             Mesh mesh = new Mesh();
             LayerSubMesh layerSubMesh2 = new LayerSubMesh(mesh, material);
             subMeshIndex = subMeshes.Count;

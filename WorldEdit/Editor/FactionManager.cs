@@ -12,7 +12,7 @@ namespace WorldEdit.Editor
 {
     internal class FactionManager : EditWindow, IFWindow
     {
-        public override Vector2 InitialSize => new Vector2(205, 320);
+        public override Vector2 InitialSize => new Vector2(205, 355);
         private Vector2 scrollPosition = Vector2.zero;
 
         private bool deleteSettlements = false;
@@ -23,6 +23,7 @@ namespace WorldEdit.Editor
         private Faction selectedFaction = null;
 
         internal FactionCreator factionCreator = null;
+        internal FactionEditor factionEditor = null;
 
         public FactionManager()
         {
@@ -30,6 +31,7 @@ namespace WorldEdit.Editor
 
             factionCreator = new FactionCreator();
             rimFactionManager = Find.FactionManager;
+            factionEditor = new FactionEditor();
         }
         public override void DoWindowContents(Rect inRect)
         {
@@ -57,18 +59,21 @@ namespace WorldEdit.Editor
             }
             Widgets.EndScrollView();
 
-            if (Widgets.RadioButtonLabeled(new Rect(0, 230, 180, 30), Translator.Translate("DeleteAllSettlements"), deleteSettlements == true))
+            if (Widgets.ButtonText(new Rect(0, 230, 190, 20), Translator.Translate("AddNewFaction")))
             {
-                deleteSettlements = !deleteSettlements;
+                factionCreator.Show();
             }
-            if (Widgets.ButtonText(new Rect(0, 265, 190, 20), Translator.Translate("RemoveSpawnedFaction")))
+            if (Widgets.ButtonText(new Rect(0, 265, 190, 20), Translator.Translate("EditSelectedFaction")))
+            {
+                factionEditor.Show(selectedFaction);
+            }
+            if (Widgets.ButtonText(new Rect(0, 285, 190, 20), Translator.Translate("RemoveSpawnedFaction")))
             {
                 RemoveFaction();
             }
-
-            if (Widgets.ButtonText(new Rect(0, 285, 190, 20), Translator.Translate("AddNewFaction")))
+            if (Widgets.RadioButtonLabeled(new Rect(0, 315, 180, 30), Translator.Translate("DeleteAllSettlements"), deleteSettlements == true))
             {
-                factionCreator.Show();
+                deleteSettlements = !deleteSettlements;
             }
         }
 
