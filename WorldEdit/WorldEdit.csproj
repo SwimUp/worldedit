@@ -62,11 +62,11 @@
     <Compile Include="Editor\FactionCreator.cs" />
     <Compile Include="Editor\FactionEditor.cs" />
     <Compile Include="Editor\FactionMenu.cs" />
-    <Compile Include="Editor\FactionManager.cs" />
+    <Compile Include="Editor\SettlementEditor.cs" />
     <Compile Include="Editor\SettlementCreator.cs" />
-    <Compile Include="Editor\SettlementManager.cs" />
     <Compile Include="Editor\LayersWindow.cs" />
     <Compile Include="Editor\RoadAndRiversEditor.cs" />
+    <Compile Include="Editor\SettlementMarket.cs" />
     <Compile Include="InGameEditor.cs" />
     <Compile Include="Interfaces\IFWindow.cs" />
     <Compile Include="MainMenu.cs" />

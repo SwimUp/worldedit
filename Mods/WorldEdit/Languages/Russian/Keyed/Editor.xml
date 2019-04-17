@@ -50,11 +50,13 @@
   <RemoveSpawnedFaction>Удалить фракцию</RemoveSpawnedFaction>
   <DeleteAllSettlements>Удалить все поселения</DeleteAllSettlements>
   <AddNewFaction>Создать новую фракцию</AddNewFaction>
+  <EditSelectedFaction>Редактировать</EditSelectedFaction>
   
   <FactionCreatorTitle>Создание новой фракции</FactionCreatorTitle>
   <RandomizeFaction>Сгенерировать</RandomizeFaction>
   <RandomizeName>Случайное имя</RandomizeName>
   <ClearFaction>Очистить</ClearFaction>
+  <FactionDefName>Родитель:</FactionDefName>
   <FactionName>Имя фракции</FactionName>
   <FactionDefeated>Побеждена ли?</FactionDefeated>
   <isDefeatedYES>Да</isDefeatedYES>
@@ -67,12 +69,28 @@
   <AddNewRelative>Добавить</AddNewRelative>
   <DeleteRelative>Удалить</DeleteRelative>
   <GenerateRelative>Сгенерировать</GenerateRelative>
+  <FactionLeaderName>Имя лидера</FactionLeaderName>
   <CreateNewFaction>Создать фракцию</CreateNewFaction>
   
+  <FactionEditTitle>Редактирование</FactionEditTitle>
+  <SaveFaction>Сохранить</SaveFaction>
+  
+  <AddNewSettlement>Создать поселение</AddNewSettlement>
   <SettlementManagerTitle>Поселения на карте</SettlementManagerTitle>
   <RemoveSpawnedSettlement>Удалить поселение</RemoveSpawnedSettlement>
+  <EditSelectedSettlement>Редактировать</EditSelectedSettlement>
+  
+  <SettlementCreatorTitle>Создание поселения</SettlementCreatorTitle>
+  <SettlementNameField>Имя</SettlementNameField>
+  <CreateNewSettlement>Создать</CreateNewSettlement>
+  
+  <SettlementEditTitle>Изменение поселения</SettlementEditTitle>
+  <SettlementNameField>Имя</SettlementNameField>
+  <SaveNewSettlement>Сохранить</SaveNewSettlement>
   
   <AddRelativeTitle>Добавить отношение</AddRelativeTitle>
   <Cancel>Отмена</Cancel>
+  
+  <FixRelatives>Исправить отношения у фракции</FixRelatives>
   
 </LanguageData>

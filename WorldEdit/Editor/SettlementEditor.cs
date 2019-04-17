@@ -10,19 +10,16 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    internal class SettlementCreator : EditWindow, IFWindow
+    internal class SettlementEditor : EditWindow, IFWindow
     {
         public override Vector2 InitialSize => new Vector2(510, 450);
         private Vector2 scrollPosition = Vector2.zero;
 
-        private string settlementName = string.Empty;
-        private Faction selectedFaction;
+        private Settlement selectedSettlement = null;
 
         private SettlementMarket settlementMarket = null;
 
-        private Settlement newSettlement = null;
-
-        public SettlementCreator()
+        public SettlementEditor()
         {
             resizeable = false;
 
@@ -33,10 +30,10 @@ namespace WorldEdit.Editor
         {
             Text.Font = GameFont.Small;
 
-            Widgets.Label(new Rect(0, 0, 350, 30), Translator.Translate("SettlementCreatorTitle"));
+            Widgets.Label(new Rect(0, 0, 350, 30), Translator.Translate("SettlementEditTitle"));
 
             Widgets.Label(new Rect(0, 40, 100, 30), Translator.Translate("SettlementNameField"));
-            settlementName = Widgets.TextField(new Rect(105, 40, 385, 30), settlementName);
+            selectedSettlement.Name = Widgets.TextField(new Rect(105, 40, 385, 30), selectedSettlement.Name);
 
             int factionDefSize = Find.FactionManager.AllFactionsListForReading.Count * 25;
             Rect scrollRectFact = new Rect(0, 80, 490, 200);
@@ -47,7 +44,7 @@ namespace WorldEdit.Editor
             {
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 480, 20), spawnedFaction.Name))
                 {
-                    selectedFaction = spawnedFaction;
+                    selectedSettlement.SetFaction(spawnedFaction);
                 }
                 yButtonPos += 22;
             }
@@ -55,47 +52,43 @@ namespace WorldEdit.Editor
 
             if (Widgets.ButtonText(new Rect(0, 300, 490, 20), Translator.Translate("EditMarketList")))
             {
-                settlementMarket.Show(newSettlement);
+                settlementMarket.Show(selectedSettlement);
             }
 
-            if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("CreateNewSettlement")))
+            if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("SaveNewSettlement")))
             {
-                CreateSettlement();
+                SaveSettlement();
             }
         }
 
         public void Show()
         {
-            if (Find.WindowStack.IsOpen(typeof(SettlementCreator)))
+            if (Find.WindowStack.IsOpen(typeof(SettlementEditor)))
             {
                 Log.Message("Currntly open...");
             }
             else
             {
-                newSettlement = new Settlement();
                 Find.WindowStack.Add(this);
             }
         }
 
-        private void CreateSettlement()
+        public void Show(Settlement settlement)
         {
-            if (selectedFaction == null)
-                return;
+            if (Find.WindowStack.IsOpen(typeof(SettlementEditor)))
+            {
+                Log.Message("Currntly open...");
+            }
+            else
+            {
+                selectedSettlement = settlement;
+                Find.WindowStack.Add(this);
+            }
+        }
 
-            if (settlementName == null)
-                return;
-
-            if (Find.WorldSelector.selectedTile < 0)
-                return;
-
-            if (Find.WorldObjects.AnySettlementAt(Find.WorldSelector.selectedTile))
-                return;
-
-            newSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-            newSettlement.SetFaction(selectedFaction);
-            newSettlement.Tile = Find.WorldSelector.selectedTile;
-            newSettlement.Name = settlementName;
-            Find.WorldObjects.Add(newSettlement);
+        private void SaveSettlement()
+        {
+            Close();
         }
     }
 }

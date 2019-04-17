@@ -23,14 +23,16 @@ namespace WorldEdit.Editor
         private List<FactionRelation> newFactionRelation;
         private string[] newFactionGoodwillBuff;
 
-        private FloatRange color;
-        private string leaderName;
+        private FloatRange color = new FloatRange();
+        private string leaderName = string.Empty;
 
         public FactionCreator()
         {
             resizeable = false;
 
-            avaliableFactions = DefDatabase<FactionDef>.AllDefs.ToList();
+            avaliableFactions = DefDatabase<FactionDef>.AllDefs.Where(f => !f.isPlayer &&
+            Find.FactionManager.OfMechanoids.def != f && Find.FactionManager.OfInsects.def != f &&
+            Find.FactionManager.OfAncientsHostile.def != f && Find.FactionManager.OfAncients.def != f).ToList();
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -82,22 +84,22 @@ namespace WorldEdit.Editor
             Widgets.BeginScrollView(scrollRectGlobalFact, ref scrollFieldsPos, scrollVertRectGlobalFact);
             if (newFaction != null)
             {
-                Widgets.Label(new Rect(0, 5, 330, 30), $"{Translator.Translate("FactionDefName")} {newFaction.def.label}");
+                Widgets.Label(new Rect(0, 5, 330, 30), $"{Translator.Translate("FactionDefName")} {selectedFaction.label}");
 
                 Widgets.Label(new Rect(0, 35, 150, 30), Translator.Translate("FactionName"));
-                newFaction.Name = Widgets.TextField(new Rect(160, 5, 180, 30), newFaction.Name);
+                newFaction.Name = Widgets.TextField(new Rect(160, 35, 180, 30), newFaction.Name);
 
-                Widgets.Label(new Rect(0, 65, 150, 30), Translator.Translate("FactionDefeated"));
+                Widgets.Label(new Rect(0, 73, 150, 30), Translator.Translate("FactionDefeated"));
                 if (newFaction.defeated)
                 {
-                    if (Widgets.ButtonText(new Rect(160, 65, 180, 30), Translator.Translate("isDefeatedYES")))
+                    if (Widgets.ButtonText(new Rect(160, 73, 180, 30), Translator.Translate("isDefeatedYES")))
                     {
                         newFaction.defeated = false;
                     }
                 }
                 else
                 {
-                    if (Widgets.ButtonText(new Rect(160, 65, 180, 30), Translator.Translate("isDefeatedNO")))
+                    if (Widgets.ButtonText(new Rect(160, 73, 180, 30), Translator.Translate("isDefeatedNO")))
                     {
                         newFaction.defeated = true;
                     }
@@ -111,7 +113,6 @@ namespace WorldEdit.Editor
                 Widgets.DrawBox(new Rect(0, 130, 350, 160));
                 Widgets.BeginScrollView(scrollRectRel, ref scrollRel, scrollVertRectRel);
                 for(int i = 0; i < newFactionRelation.Count; i++)
-                //foreach (var rel in newFactionRelation)
                 {
                     FactionRelation rel = newFactionRelation[i];
 
@@ -121,17 +122,7 @@ namespace WorldEdit.Editor
 
                     y += 35;
                     Widgets.Label(new Rect(5, y, 140, 30), Translator.Translate("FactionGoodness"));
-                    Widgets.TextFieldNumeric(new Rect(150, y, 130, 30), ref rel.goodwill, ref newFactionGoodwillBuff[i]);
-                    /*
-                    string tempGoodwill = rel.goodwill.ToString();
-                    tempGoodwill = Widgets.TextField(new Rect(150, y, 130, 30), tempGoodwill);
-                    int.TryParse(tempGoodwill, out rel.goodwill);
-                    
-                    if(!int.TryParse(Widgets.TextField(new Rect(150, y, 130, 30), rel.goodwill.ToString()), out rel.goodwill))
-                    {
-                        rel.goodwill = -1;
-                    }
-                    */
+                    Widgets.TextFieldNumeric(new Rect(150, y, 130, 30), ref rel.goodwill, ref newFactionGoodwillBuff[i], -10000000000f);
 
                     y += 35;
                     switch(rel.kind)
@@ -170,13 +161,13 @@ namespace WorldEdit.Editor
                 Widgets.Label(new Rect(0, 315, 180, 30), Translator.Translate("FactionMelanin"));
                 float.TryParse(Widgets.TextField(new Rect(195, 315, 160, 30), newFaction.centralMelanin.ToString()), out newFaction.centralMelanin);
 
-                Widgets.Label(new Rect(0, 385, 160, 30), Translator.Translate("ColorSpectrum"));
-                Widgets.FloatRange(new Rect(195, 385, 130, 30), 42, ref color, 0, 1);
+                Widgets.Label(new Rect(0, 360, 160, 30), Translator.Translate("ColorSpectrum"));
+                Widgets.FloatRange(new Rect(195, 360, 130, 30), 42, ref color, 0, 1);
                 if(newFaction.def.colorSpectrum != null)
-                    Widgets.DrawBoxSolid(new Rect(165, 385, 20, 20), ColorsFromSpectrum.Get(newFaction.def.colorSpectrum, color.max));
+                    Widgets.DrawBoxSolid(new Rect(165, 360, 20, 20), ColorsFromSpectrum.Get(newFaction.def.colorSpectrum, color.max));
 
-                Widgets.Label(new Rect(0, 415, 180, 30), Translator.Translate("FactionLeaderName"));
-                leaderName = Widgets.TextField(new Rect(195, 415, 160, 30), leaderName);
+                Widgets.Label(new Rect(0, 400, 120, 30), Translator.Translate("FactionLeaderName"));
+                leaderName = Widgets.TextField(new Rect(135, 400, 220, 30), leaderName);
 
             }
             Widgets.EndScrollView();
@@ -193,51 +184,64 @@ namespace WorldEdit.Editor
                 return;
 
             newFaction.colorFromSpectrum = color.max;
-            newFaction.leader.Name = new NameSingle(leaderName, true);
+
+            if(leaderName != null)
+                newFaction.leader.Name = new NameSingle(leaderName, true);
+
+            foreach (Faction item in Find.FactionManager.AllFactions)
+            {
+                newFaction.TryMakeInitialRelationsWith(item);
+            }
 
             Find.FactionManager.Add(newFaction);
 
-            newFaction = GenerateFaction(false);
+            newFaction = null;
         }
 
-        private Faction GenerateFaction(bool regenerate = true)
+        private Faction GenerateFaction()
         {
-            Faction faction = new Faction();
-            FactionDef facDef = selectedFaction == null ? DefDatabase<FactionDef>.GetRandom() : selectedFaction;
-            faction.def = facDef;
+            if(newFaction != null)
+            {
+                Find.WorldPawns.RemoveAndDiscardPawnViaGC(newFaction.leader);
+            }
 
-            foreach (Faction item in Find.FactionManager.AllFactionsListForReading)
+            Faction faction = new Faction();
+            FactionDef facDef = null;
+            if(selectedFaction == null)
+            {
+                selectedFaction = avaliableFactions.RandomElement();
+            }
+            facDef = selectedFaction;
+            faction.def = facDef;
+            faction.loadID = Find.UniqueIDsManager.GetNextFactionID();
+            faction.colorFromSpectrum = FactionGenerator.NewRandomColorFromSpectrum(faction);
+            if (!facDef.isPlayer)
+            {
+                if (facDef.fixedName != null)
+                {
+                    faction.Name = facDef.fixedName;
+                }
+                else
+                {
+                    faction.Name = NameGenerator.GenerateName(facDef.factionNameMaker, from fac in Find.FactionManager.AllFactionsVisible
+                                                                                       select fac.Name);
+                }
+            }
+            faction.centralMelanin = Rand.Value;
+            foreach (Faction item in Find.FactionManager.AllFactions)
             {
                 faction.TryMakeInitialRelationsWith(item);
             }
+            faction.GenerateNewLeader();
 
-            if (regenerate)
-            {
-                faction.colorFromSpectrum = FactionGenerator.NewRandomColorFromSpectrum(faction);
-                color.max = faction.colorFromSpectrum;
-                faction.centralMelanin = Rand.Value;
-                faction.GenerateNewLeader();
-
-                if (!facDef.isPlayer)
-                {
-                    if (facDef.fixedName != null)
-                    {
-                        faction.Name = facDef.fixedName;
-                    }
-                    else
-                    {
-                        GenerateName(faction);
-                    }
-                }
-            }
+            leaderName = faction.leader.Name.ToStringFull;
 
             FieldInfo relations = typeof(Faction).GetField("relations", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             newFactionRelation = relations.GetValue(faction) as List<FactionRelation>;
+            newFactionGoodwillBuff = new string[newFactionRelation.Count];
+
             for (int i = 0; i < newFactionRelation.Count; i++)
                 newFactionGoodwillBuff[i] = newFactionRelation[i].goodwill.ToString();
-
-            faction.loadID = Find.UniqueIDsManager.GetNextFactionID();
-            faction.randomKey = Rand.Range(0, int.MaxValue);
 
             return faction;
         }
@@ -250,6 +254,7 @@ namespace WorldEdit.Editor
             if (faction.def.factionNameMaker == null)
             {
                 Faction f = (from fac in Find.FactionManager.AllFactionsVisible where fac.def.factionNameMaker != null select fac).RandomElement();
+                faction = f;
             }
 
             faction.Name = NameGenerator.GenerateName(faction.def.factionNameMaker, from fac in Find.FactionManager.AllFactionsVisible

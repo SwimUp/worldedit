@@ -13,20 +13,31 @@ namespace WorldEdit.Editor
 {
     internal class FactionMenu : EditWindow, IFWindow
     {
-        public override Vector2 InitialSize => new Vector2(500, 600);
+        public override Vector2 InitialSize => new Vector2(930, 600);
+        private Vector2 scrollPosition = Vector2.zero;
+        private Vector2 scrollPosition2 = Vector2.zero;
 
-        internal SettlementManager settlementManager;
-        internal FactionManager factionManager;
+        private Settlement selectedSettlement = null;
+        private SettlementCreator settlementCreator = null;
+        private SettlementEditor settlementEditor = null;
 
-        private Vector2 scrollPositionFact = Vector2.zero;
-        private Vector2 scrollGlobalPositionFact = Vector2.zero;
+        private bool deleteSettlements = false;
+
+        private RimWorld.FactionManager rimFactionManager;
+        private Faction selectedFaction = null;
+
+        internal FactionCreator factionCreator = null;
+        internal FactionEditor factionEditor = null;
 
         public FactionMenu()
         {
             resizeable = false;
 
-            settlementManager = new SettlementManager();
-            factionManager = new FactionManager();
+            factionCreator = new FactionCreator();
+            rimFactionManager = Find.FactionManager;
+            factionEditor = new FactionEditor();
+            settlementCreator = new SettlementCreator();
+            settlementEditor = new SettlementEditor();
         }
 
         public void Show()
@@ -46,90 +57,135 @@ namespace WorldEdit.Editor
             Text.Font = GameFont.Small;
 
             WidgetRow mainRow = new WidgetRow(0, 0);
-            if(mainRow.ButtonText(Translator.Translate("FactionManager")))
-            {
-                factionManager.Show();
-            }
-            if (mainRow.ButtonText(Translator.Translate("SettlementManager")))
-            {
-                settlementManager.Show();
-            }
+            PrintFactionManager();
+            PrintSettlementManager();
+        }
 
-            /*
-            float factionPosition = inRect.height - 300;
-            int yButtonPos = 0;
-            int factionDefSize = avaliableFactions.Count * 25;
-            Rect scrollRectFact = new Rect(0, 20, 190, factionPosition);
-            Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, factionDefSize);
-            Widgets.Label(new Rect(0, 0, 200, 20), Translator.Translate("AllFactionsList"));
-            Widgets.BeginScrollView(scrollRectFact, ref scrollPositionFact, scrollVertRectFact);
+        private void PrintFactionManager()
+        {
+            Text.Font = GameFont.Small;
 
-            yButtonPos = 5;
-            if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), Translator.Translate("NoText")))
+            Widgets.Label(new Rect(0, 0, 350, 20), Translator.Translate("FactionManagerTitle"));
+            int factionDefSize = rimFactionManager.AllFactionsListForReading.Count * 25;
+
+            if (Widgets.ButtonText(new Rect(0, 25, 450, 20), Translator.Translate("NoText")))
             {
                 selectedFaction = null;
             }
-            yButtonPos += 25;
-            foreach (FactionDef def in avaliableFactions)
+
+            Rect scrollRectFact = new Rect(0, 50, 460, 200);
+            Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, factionDefSize);
+            Widgets.BeginScrollView(scrollRectFact, ref scrollPosition, scrollVertRectFact);
+            int yButtonPos = 0;
+            foreach (var spawnedFaction in rimFactionManager.AllFactionsListForReading)
             {
-                if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), def.label))
+                if (Widgets.ButtonText(new Rect(0, yButtonPos, 450, 20), spawnedFaction.Name))
                 {
-                    selectedFaction = def;
-                    selectedGlobalFaction = null;
+                    selectedFaction = spawnedFaction;
                 }
                 yButtonPos += 22;
             }
-
             Widgets.EndScrollView();
 
-            Widgets.Label(new Rect(210, 0, 200, 20), Translator.Translate("AllSpawnedFactionsList"));
-            int factionGlobalDefSize = avaliableGlobalFactions.Count * 25;
-            Rect scrollRectGlobalFact = new Rect(210, 20, 210, factionPosition);
-            Rect scrollVertRectGlobalFact = new Rect(0, 0, scrollRectGlobalFact.x, factionGlobalDefSize);
-            Widgets.BeginScrollView(scrollRectGlobalFact, ref scrollGlobalPositionFact, scrollVertRectGlobalFact);
-
-            yButtonPos = 5;
-            if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), Translator.Translate("NoText")))
+            if (Widgets.ButtonText(new Rect(0, 265, 450, 20), Translator.Translate("AddNewFaction")))
             {
-                selectedGlobalFaction = null;
+                factionCreator.Show();
             }
-            yButtonPos += 25;
-            foreach (Faction fact in avaliableGlobalFactions)
+            if (Widgets.ButtonText(new Rect(0, 295, 450, 20), Translator.Translate("EditSelectedFaction")))
             {
-                if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), fact.Name))
+                if(selectedFaction != null)
+                    factionEditor.Show(selectedFaction);
+            }
+            if (Widgets.ButtonText(new Rect(0, 325, 450, 20), Translator.Translate("RemoveSpawnedFaction")))
+            {
+                RemoveFaction();
+            }
+            if (Widgets.RadioButtonLabeled(new Rect(0, 345, 450, 30), Translator.Translate("DeleteAllSettlements"), deleteSettlements == true))
+            {
+                deleteSettlements = !deleteSettlements;
+            }
+            if (Widgets.ButtonText(new Rect(0, 385, 450, 20), Translator.Translate("FixRelatives")))
+            {
+                foreach (Faction item in Find.FactionManager.AllFactionsInViewOrder)
                 {
-                    selectedGlobalFaction = fact;
-                    selectedFaction = null;
+                    if(item != selectedFaction)
+                        selectedFaction.TryMakeInitialRelationsWith(item);
+                }
+            }
+        }
+
+        private void RemoveFaction()
+        {
+            if (selectedFaction == null)
+                return;
+
+            if (deleteSettlements)
+            {
+                List<Settlement> toDelete = (Find.WorldObjects.Settlements.Where(sett => sett.Faction == selectedFaction)).ToList();
+                foreach (var del in toDelete)
+                {
+                    Find.WorldObjects.Remove(del);
+                }
+            }
+
+            if(Find.WorldPawns.Contains(selectedFaction.leader))
+                Find.WorldPawns.RemoveAndDiscardPawnViaGC(selectedFaction.leader);
+
+            Find.FactionManager.Remove(selectedFaction);
+        }
+
+        private void PrintSettlementManager()
+        {
+            Widgets.Label(new Rect(460, 0, 450, 20), Translator.Translate("SettlementManagerTitle"));
+            int factionDefSize = Find.WorldObjects.Settlements.Count * 25;
+
+            if (Widgets.ButtonText(new Rect(460, 25, 450, 20), Translator.Translate("NoText")))
+            {
+                selectedSettlement = null;
+            }
+
+            Rect scrollRectFact = new Rect(460, 50, 460, 200);
+            Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, factionDefSize);
+            Widgets.BeginScrollView(scrollRectFact, ref scrollPosition2, scrollVertRectFact);
+            int yButtonPos = 0;
+            foreach (var spawnedSettl in Find.WorldObjects.Settlements)
+            {
+                if (Widgets.ButtonText(new Rect(0, yButtonPos, 450, 20), spawnedSettl.Name))
+                {
+                    selectedSettlement = spawnedSettl;
+
+                    foreach (var item in selectedSettlement.trader.StockListForReading)
+                    {
+                        Log.Message($"{item.Label}");
+                        Log.Message($"{item.stackCount}");
+                        Log.Message($"{item.MarketValue}");
+                    }
                 }
                 yButtonPos += 22;
             }
-
             Widgets.EndScrollView();
 
-            float startPos = factionPosition + 30;
-            float nameFieldSize = (500 - 150);
-            Widgets.Label(new Rect(0, startPos, 100, 30), Translator.Translate("CustomFactionName"));
-            customFactionName = Widgets.TextField(new Rect(110, startPos, nameFieldSize, 22), customFactionName);
-
-            /*
-            startPos += 40;
-            Widgets.Label(new Rect(0, startPos, 100, 30), Translator.Translate("CustomFactionLore"));
-            customHistory = Widgets.TextField(new Rect(110, startPos, nameFieldSize, 22), customHistory);
-            
-            startPos += 40;
-            if (Widgets.RadioButtonLabeled(new Rect(0, startPos, 140, 30), Translator.Translate("UseCustomColor"), useCustomColor == true))
+            if (Widgets.ButtonText(new Rect(460, 265, 450, 20), Translator.Translate("AddNewSettlement")))
             {
-                useCustomColor = !useCustomColor;
+                settlementCreator.Show();
             }
-            Widgets.FloatRange(new Rect(150, startPos, 100, 30), 1222, ref newColorR, 0, 1, Translator.Translate("RedLabel"));
-            Widgets.FloatRange(new Rect(250, startPos, 100, 30), 1221, ref newColorG, 0, 1, Translator.Translate("GreenLabel"));
-            Widgets.FloatRange(new Rect(350, startPos, 100, 30), 1234, ref newColorB, 0, 1, Translator.Translate("BlueLabel"));
-
-            if (Widgets.ButtonText(new Rect(100, 550, 190, 20), Translator.Translate("SetFraction")))
+            if (Widgets.ButtonText(new Rect(460, 295, 450, 20), Translator.Translate("EditSelectedFaction")))
             {
-                PrepareFaction();
+                if (selectedSettlement != null)
+                    settlementEditor.Show(selectedSettlement);
             }
-            */
+            if (Widgets.ButtonText(new Rect(460, 325, 450, 20), Translator.Translate("RemoveSpawnedSettlement")))
+            {
+                RemoveSettlement();
+            }
+        }
+
+        private void RemoveSettlement()
+        {
+            if (selectedSettlement == null)
+                return;
+
+            Find.WorldObjects.Remove(selectedSettlement);
         }
     }
 }
