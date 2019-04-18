@@ -58,6 +58,7 @@ namespace WorldEdit
         private RoadAndRiversEditor roadEditor;
         private LayersWindow layersWindow;
         internal FactionMenu factionEditor;
+        internal WorldObjectsEditor worldObjectsEditor;
 
         private bool useTemperature = false;
         private bool useEvelation = false;
@@ -82,8 +83,6 @@ namespace WorldEdit
             LayersSubMeshes = new Dictionary<string, List<LayerSubMesh>>(tempLayers.Count);
             foreach (var layer in tempLayers)
             {
-                Log.Message($"FIELD: {(fieldMeshes.GetValue(layer) as List<LayerSubMesh>).Count}");
-
                 Layers.Add(layer.GetType().Name, layer);
                 List<LayerSubMesh> meshes = fieldMeshes.GetValue(layer) as List<LayerSubMesh>;
                 LayersSubMeshes.Add(layer.GetType().Name, meshes);
@@ -96,6 +95,7 @@ namespace WorldEdit
             WorldUpdater = MainMenu.WorldUpdater;
             layersWindow = new LayersWindow();
             factionEditor = new FactionMenu();
+            worldObjectsEditor = new WorldObjectsEditor();
         }
 
         public void Reset()
@@ -223,13 +223,17 @@ namespace WorldEdit
             }
             Widgets.EndScrollView();
 
-            /*
-            yButtonPos = 270;
-            if (Widgets.ButtonText(new Rect(0, yButtonPos, 150, 20), "Edit material"))
+            yButtonPos = 265;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 250, 20), Translator.Translate("ClearAllHillnses")))
             {
-                materialEditor.Show();
+                ClearAllHillnes();
             }
-            */
+
+            yButtonPos = 290;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 250, 20), Translator.Translate("SetTileToAllMap")))
+            {
+                SetBiomeToAllTiles();
+            }
 
             yButtonPos = 320;
             foreach (Hilliness hillnes in Enum.GetValues(typeof(Hilliness)))
@@ -295,7 +299,7 @@ namespace WorldEdit
             float group2Width = 270;
             Rect group2 = new Rect(group2Width, 20, inRect.width / 2, inRect.height);
             GUI.BeginGroup(group2);
-            yButtonPos  = 25;
+            yButtonPos = 25;
             if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), Translator.Translate("FactionEditor")))
             {
                 factionEditor.Show();
@@ -307,9 +311,48 @@ namespace WorldEdit
                 roadEditor.Show();
             }
 
+            yButtonPos += 35;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), Translator.Translate("WorldFeaturesEditor")))
+            {
+                worldObjectsEditor.Show();
+            }
+
             GUI.EndGroup();
 
+            if(Widgets.ButtonText())
+
             Widgets.EndScrollView();
+        }
+
+        private void ClearAllHillnes()
+        {
+            WorldGrid grid = Find.WorldGrid;
+            for(int i = 0; i < grid.TilesCount; i++)
+            {
+                Tile tile = grid[i];
+                tile.hilliness = Hilliness.Flat;
+            }
+
+            WorldUpdater.UpdateLayer(Layers["WorldLayer_Hills"]);
+
+           // WorldUpdater.UpdateMap();
+        }
+
+        private void SetBiomeToAllTiles()
+        {
+            if (selectedBiome == null)
+                return;
+
+            WorldGrid grid = Find.WorldGrid;
+            List<Tile> tiles = grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ToList();
+            foreach (var tile in tiles)
+            {
+                tile.biome = selectedBiome;
+            }
+
+            LayersSubMeshes["WorldLayer_Terrain"].Clear();
+
+            WorldUpdater.UpdateLayer(Layers["WorldLayer_Terrain"]);
         }
 
         internal static object GetInstanceField(Type type, object instance, string fieldName)

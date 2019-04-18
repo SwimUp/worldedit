@@ -26,14 +26,69 @@ namespace WorldEdit
 
         public void UpdateLayer(WorldLayer layer)
         {
-            Log.Message($"LAYER: {layer.GetType().Name}");
             layer.RegenerateNow();
         }
+        public void UpdateLayer(WorldLayer layer, Material material, List<LayerSubMesh> subMeshes, BiomeDef b)
+        {
+            int subMeshIndex;
+            LayerSubMesh subMesh = GetSubMesh(material, subMeshes, out subMeshIndex);
+
+            List<int> tileIds = new List<int>();
+            List<Tile> tiles = Find.WorldGrid.tiles.Where(tile => tile.biome == b).ToList();
+            for (int i3 = 0; i3 < Find.WorldGrid.TilesCount; i3++)
+            {
+                Tile temp = Find.WorldGrid[i3];
+                if (tiles.Contains(temp))
+                    tileIds.Add(i3);
+            }
+
+            World world = Find.World;
+            WorldGrid grid = world.grid;
+            List<int> tileIDToVerts_offsets = grid.tileIDToVerts_offsets;
+            List<Vector3> verts = grid.verts;
+
+            List<List<int>> triangleIndexToTileID = new List<List<int>>();
+
+            List<Vector3> elevationValues = new List<Vector3>();
+
+            triangleIndexToTileID.Clear();
+
+            subMesh.Clear(MeshParts.All);
+            foreach (int tileID in tileIds)
+            {
+                int colorsAndUVsIndex = 0;
+                Tile tile = tiles[tileID];
+                BiomeDef biome = tile.biome;
+                while (subMeshIndex >= triangleIndexToTileID.Count)
+                {
+                    triangleIndexToTileID.Add(new List<int>());
+                }
+                int count = subMesh.verts.Count;
+                int num = 0;
+                int num2 = (tileID + 1 >= tileIDToVerts_offsets.Count) ? verts.Count : tileIDToVerts_offsets[tileID + 1];
+                for (int j = tileIDToVerts_offsets[tileID]; j < num2; j++)
+                {
+                    subMesh.verts.Add(verts[j]);
+                    subMesh.uvs.Add(elevationValues[colorsAndUVsIndex]);
+                    colorsAndUVsIndex++;
+                    if (j < num2 - 2)
+                    {
+                        subMesh.tris.Add(count + num + 2);
+                        subMesh.tris.Add(count + num + 1);
+                        subMesh.tris.Add(count);
+                        triangleIndexToTileID[subMeshIndex].Add(tileID);
+                    }
+                    num++;
+                }
+            }
+            FinalizeMesh(MeshParts.All, subMesh);
+        }
+
 
         public void RenderSingleTile(int tileID, Material drawMaterial, List<LayerSubMesh> subMeshes, WorldLayer layer)
         {
             LayerSubMesh subMesh = GetSubMesh(drawMaterial, subMeshes);
-            
+
             List<Vector3> verts = new List<Vector3>();
             Find.WorldGrid.GetTileVertices(tileID, verts);
 
@@ -51,8 +106,8 @@ namespace WorldEdit
                 }
             }
             FinalizeMesh(MeshParts.All, subMesh);
-            
         }
+
         internal void FinalizeMesh(MeshParts tags, List<LayerSubMesh> subMeshes)
         {
             for (int i = 0; i < subMeshes.Count; i++)

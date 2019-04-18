@@ -13,7 +13,7 @@ namespace WorldEdit.Editor
 {
     internal class FactionMenu : EditWindow, IFWindow
     {
-        public override Vector2 InitialSize => new Vector2(930, 600);
+        public override Vector2 InitialSize => new Vector2(935, 600);
         private Vector2 scrollPosition = Vector2.zero;
         private Vector2 scrollPosition2 = Vector2.zero;
 
@@ -128,7 +128,7 @@ namespace WorldEdit.Editor
                 }
             }
 
-            if(Find.WorldPawns.Contains(selectedFaction.leader))
+            if (Find.WorldPawns.Contains(selectedFaction.leader))
                 Find.WorldPawns.RemoveAndDiscardPawnViaGC(selectedFaction.leader);
 
             Find.FactionManager.Remove(selectedFaction);
@@ -153,13 +153,6 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 450, 20), spawnedSettl.Name))
                 {
                     selectedSettlement = spawnedSettl;
-
-                    foreach (var item in selectedSettlement.trader.StockListForReading)
-                    {
-                        Log.Message($"{item.Label}");
-                        Log.Message($"{item.stackCount}");
-                        Log.Message($"{item.MarketValue}");
-                    }
                 }
                 yButtonPos += 22;
             }

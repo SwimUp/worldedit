@@ -67,6 +67,7 @@
     <Compile Include="Editor\LayersWindow.cs" />
     <Compile Include="Editor\RoadAndRiversEditor.cs" />
     <Compile Include="Editor\SettlementMarket.cs" />
+    <Compile Include="Editor\WorldObjectsEditor.cs" />
     <Compile Include="InGameEditor.cs" />
     <Compile Include="Interfaces\IFWindow.cs" />
     <Compile Include="MainMenu.cs" />

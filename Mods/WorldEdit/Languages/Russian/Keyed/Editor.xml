@@ -14,6 +14,9 @@
   <CreateRoadLabel>Создать дорогу(-и)</CreateRoadLabel>
   <CreateRiverLael>Создать реку(-и)</CreateRiverLael>
   
+  <ClearAllHillnses>Удалить все горы</ClearAllHillnses>
+  <SetTileToAllMap>Установить биом на всю карту</SetTileToAllMap>
+  
   <UpdateAllTiles>Обновить тайлы</UpdateAllTiles>
   <UpdateAllTilesInfo>Обновляет информацию обо всех тайлах</UpdateAllTilesInfo>
   <UpdateCustomLayer>Обновить слой</UpdateCustomLayer>
@@ -92,5 +95,24 @@
   <Cancel>Отмена</Cancel>
   
   <FixRelatives>Исправить отношения у фракции</FixRelatives>
+  
+  <SettlementMarketTitle>Товары на продажу</SettlementMarketTitle>
+  <EditMarketList>Товары на продажу</EditMarketList>
+  <CountMarket>Количество:</CountMarket>
+  <MarketValue>Цена:</MarketValue>
+  <DeleteGood>Удалить</DeleteGood>
+  <RegenerateStock>Сгенерировать новые товары</RegenerateStock>
+  <AddNewItemIntoStock>Добавить новый предмет</AddNewItemIntoStock>
+  
+  <ItemListTitle>Выберите предмет</ItemListTitle>
+  
+  <WorldFeaturesEditor>Глобальные объекты</WorldFeaturesEditor>
+  <WorldPrintsTitle>Глобальные надписи</WorldPrintsTitle>
+  <DeleteFeature>Удалить</DeleteFeature>
+  <WorldFeatureName>Имя</WorldFeatureName>
+  <CreateNewFeature>Создать</CreateNewFeature>
+  <RotateFeature>Угол</RotateFeature>
+  <FeatureLengthMax>Размер</FeatureLengthMax>
+  <CreateNewWorldPrint>Создать новую надпись</CreateNewWorldPrint>
   
 </LanguageData>

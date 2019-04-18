@@ -188,10 +188,7 @@ namespace WorldEdit.Editor
             if(leaderName != null)
                 newFaction.leader.Name = new NameSingle(leaderName, true);
 
-            foreach (Faction item in Find.FactionManager.AllFactions)
-            {
-                newFaction.TryMakeInitialRelationsWith(item);
-            }
+            newFaction.loadID = Find.UniqueIDsManager.GetNextFactionID();
 
             Find.FactionManager.Add(newFaction);
 
@@ -213,7 +210,6 @@ namespace WorldEdit.Editor
             }
             facDef = selectedFaction;
             faction.def = facDef;
-            faction.loadID = Find.UniqueIDsManager.GetNextFactionID();
             faction.colorFromSpectrum = FactionGenerator.NewRandomColorFromSpectrum(faction);
             if (!facDef.isPlayer)
             {
@@ -278,7 +274,6 @@ namespace WorldEdit.Editor
             base.Close(doCloseSound);
 
             newFaction = null;
-            newFactionRelation.Clear();
             newFactionGoodwillBuff = null;
         }
     }
