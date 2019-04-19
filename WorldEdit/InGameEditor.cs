@@ -349,9 +349,12 @@ namespace WorldEdit
                 worldObjectsEditor.Show();
             }
 
-            GUI.EndGroup();
+            if (Widgets.ButtonText(new Rect(0, inRect.height - 70, 270, 20), Translator.Translate("SaveWorldTemplate")))
+            {
+                Find.WindowStack.Add(new WorldTemplateManager());
+            }
 
-            if(Widgets.ButtonText())
+            GUI.EndGroup();
 
             Widgets.EndScrollView();
         }

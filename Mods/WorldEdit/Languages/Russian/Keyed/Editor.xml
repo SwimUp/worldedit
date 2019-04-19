@@ -8,6 +8,9 @@
   <DeleteRangeRoads>Удалить диапазон дорог</DeleteRangeRoads>
   <DeleteSingleRiver>Удалить выделенную реку</DeleteSingleRiver>
   <DeleteRangeRivers>Удалить диапазон рек</DeleteRangeRivers>
+  
+  <SaveWorldTemplate>Сохранить шаблон мира</SaveWorldTemplate>
+  <SelectedStorytellerTitle>Рассказчик</SelectedStorytellerTitle>
     
   <StartTileLabel>Старт</StartTileLabel>
   <EndTileLabel>Конец</EndTileLabel>
