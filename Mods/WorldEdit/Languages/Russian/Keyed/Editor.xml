@@ -2,6 +2,7 @@
 <LanguageData>
 
   <EditorLabel>Редактор карты</EditorLabel>
+  <WorldTemplates>Загруженные шаблоны</WorldTemplates>
   <isEnableEditorLabel>Включить</isEnableEditorLabel>
   
   <DeleteSingleRoad>Удалить выделенную дорогу</DeleteSingleRoad>
@@ -117,5 +118,9 @@
   <RotateFeature>Угол</RotateFeature>
   <FeatureLengthMax>Размер</FeatureLengthMax>
   <CreateNewWorldPrint>Создать новую надпись</CreateNewWorldPrint>
+  
+  <SelectScenario>Выбрать сценарий</SelectScenario>
+  <SelectStorytellerTitle>Рассказчик</SelectStorytellerTitle>
+  <CreateTemplate>Создать шаблон</CreateTemplate>
   
 </LanguageData>

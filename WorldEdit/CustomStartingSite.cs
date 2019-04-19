@@ -24,24 +24,10 @@ namespace WorldEdit
             preventCameraMotion = false;
 
             var init = new GameInitData();
+            Find.FactionManager.OfPlayer.Name = "Поселение";
             init.playerFaction = Find.FactionManager.OfPlayer;
 
-            foreach (var scenPart in Find.Scenario.AllParts)
-            {
-                ScenPart_ConfigPage_ConfigureStartingPawns part = scenPart as ScenPart_ConfigPage_ConfigureStartingPawns;
-                if(part != null)
-                {
-                    init.startingAndOptionalPawns = new List<Pawn>(part.pawnChoiceCount);
-                    init.startingPawnCount = part.pawnCount;
-                    for (int i = 0; i < init.startingPawnCount; i++)
-                        init.startingAndOptionalPawns.Add(PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Find.FactionManager.OfPlayer));
-
-                    break;
-                }
-            }
-
             Current.Game.InitData = init;
-
             Current.Game.Scenario.PreConfigure();
         }
 
@@ -84,10 +70,6 @@ namespace WorldEdit
             Vector2 bottomButSize3 = Page.BottomButSize;
             float x2 = bottomButSize3.x;
             Vector2 bottomButSize4 = Page.BottomButSize;
-            if (Widgets.ButtonText(new Rect(x, y, x2, bottomButSize4.y), "Back".Translate()) && CanDoBack())
-            {
-                DoBack();
-            }
             float num9 = num7;
             Vector2 bottomButSize5 = Page.BottomButSize;
             num7 = num9 + (bottomButSize5.x + 10f);
@@ -159,25 +141,38 @@ namespace WorldEdit
 
         private void StartGame(int tile)
         {
+            foreach (var scenPart in Find.Scenario.AllParts)
+            {
+                ScenPart_ConfigPage_ConfigureStartingPawns part = scenPart as ScenPart_ConfigPage_ConfigureStartingPawns;
+                if (part != null)
+                {
+                    Current.Game.InitData.startingAndOptionalPawns = new List<Pawn>(part.pawnChoiceCount);
+                    Current.Game.InitData.startingPawnCount = part.pawnCount;
+                    for (int i = 0; i < Current.Game.InitData.startingPawnCount; i++)
+                    {
+                        Pawn p = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Current.Game.InitData.playerFaction);
+                        Current.Game.InitData.startingAndOptionalPawns.Add(p);
+                    }
+
+                    break;
+                }
+            }
+
             Current.Game.InitData.startingTile = tile;
             Find.World.renderer.wantedMode = WorldRenderMode.None;
 
-            var p = new Page_ConfigureStartingPawns();
-            p.nextAct = nextAct = delegate
+            var page = new Page_ConfigureStartingPawns();
+            page.nextAct = nextAct = delegate
             {
                 Action preLoadLevelAction = delegate
                 {
-                    Log.Message("START");
                     Find.GameInitData.PrepForMapGen();
-                    Log.Message("GEN OK");
                     Find.GameInitData.startedFromEntry = true;
-                    Log.Message("BOOL OK");
                     Find.Scenario.PreMapGenerate();
-                    Log.Message("NOT OK");
                 };
                 LongEventHandler.QueueLongEvent(preLoadLevelAction, "Play", "GeneratingMap", doAsynchronously: true, null);
             };
-            Find.WindowStack.Add(p);
+            Find.WindowStack.Add(page);
         }
     }
 }

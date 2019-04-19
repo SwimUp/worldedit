@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
@@ -41,11 +42,12 @@ namespace WorldEdit
         })]
         private static class Page_CreateWorldParams_DoWindowContents_Patch
         {
-            private static Vector2 scrollPosition = Vector2.zero;
+            private static Vector2 scrollPositionWorlds = Vector2.zero;
 
             private static bool Prefix(Rect rect, ref Rect __state)
             {
                 __state = rect;
+                isWorldTemplate = false;
                 return true;
             }
 
@@ -61,29 +63,29 @@ namespace WorldEdit
                     isEdit = !isEdit;
                 }
 
+                GUI.EndGroup();
+
                 string worldsPath = Path.Combine(GenFilePaths.SaveDataFolderPath, "Saves");
                 string[] worlds = Directory.GetFiles(worldsPath, "wtemplate_*");
 
-                int biomeDefSize = worlds.Length * 25;
-                Rect scrollRect = new Rect(200, 310, 200, 200);
-                Rect scrollVertRect = new Rect(0, 0, scrollRect.x, biomeDefSize);
-                Widgets.BeginScrollView(scrollRect, ref scrollPosition, scrollVertRect);
+                Widgets.Label(new Rect(510, 40, 300, 20), Translator.Translate("WorldTemplates"));
+                int worldsSize = worlds.Length * 25;
+                Rect scrollRect = new Rect(510, 65, 300, 600);
+                Rect scrollVertRect = new Rect(0, 0, scrollRect.x, worldsSize);
+                Widgets.BeginScrollView(scrollRect, ref scrollPositionWorlds, scrollVertRect);
                 int x = 0;
-                foreach(string world in worlds)
+                foreach (string world in worlds)
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(world);
-                    if (Widgets.ButtonText(new Rect(0, x, 200, 20), fileName))
+                    string fileName = Path.GetFileNameWithoutExtension(world).Substring(10);
+                    if (Widgets.ButtonText(new Rect(0, x, 290, 20), fileName))
                     {
                         isWorldTemplate = true;
-                        GameDataSaveLoader.LoadGame(fileName);
+                        GameDataSaveLoader.LoadGame(Path.GetFileNameWithoutExtension(world));
                     }
                     x += 22;
                 }
 
-
                 Widgets.EndScrollView();
-
-                GUI.EndGroup();
             }
         }
     }
@@ -97,6 +99,47 @@ namespace WorldEdit
             if (MainMenu.isWorldTemplate)
             {
                 Find.WindowStack.Add(new CustomStartingSite());
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Dialog_FileList))]
+    [HarmonyPatch("PostOpen")]
+    class GetSavesGamesConstructorHook
+    {
+        static void Postfix()
+        {
+            MainMenu.isWorldTemplate = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(Dialog_SaveFileList))]
+    [HarmonyPatch("ReloadFiles")]
+    class GetSavesListHook
+    {
+        static void Postfix(Dialog_SaveFileList __instance)
+        {
+            ChangeFileList(__instance);
+        }
+
+        static void ChangeFileList(Dialog_SaveFileList instance)
+        {
+            object value = Utils.GetInstanceField(typeof(Dialog_SaveFileList), instance, "files");
+
+            if (value != null)
+            {
+                List<SaveFileInfo> infos = value as List<SaveFileInfo>;
+
+                if (infos != null)
+                {
+                    for (int i = 0; i < infos.Count; i++)
+                    {
+                        SaveFileInfo info = infos[i];
+
+                        if (info.FileInfo.Name.Contains("wtemplate_"))
+                            infos.Remove(info);
+                    }
+                }
             }
         }
     }

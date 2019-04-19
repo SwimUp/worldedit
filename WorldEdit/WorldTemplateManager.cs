@@ -22,7 +22,7 @@ namespace WorldEdit
         {
             Text.Font = GameFont.Small;
 
-            saveName = Widgets.TextField(new Rect(0, 0, 780, 20), saveName);
+            saveName = Widgets.TextField(new Rect(0, 0, 770, 20), saveName);
             Widgets.Label(new Rect(0, 30, 300, 20), Translator.Translate("SelectStorytellerTitle"));
             int tellersSize = DefDatabase<StorytellerDef>.DefCount * 25;
             Rect scrollRectFact = new Rect(0, 60, 300, 200);
@@ -45,7 +45,7 @@ namespace WorldEdit
             Rect scrollRectScen = new Rect(0, 300, 300, 200);
             Rect scrollVertRectScen = new Rect(0, 0, scrollRectScen.x, scenarioSize);
             Widgets.BeginScrollView(scrollRectScen, ref scrollPositionScenario, scrollVertRectScen);
-            x = 300;
+            x = 0;
             foreach (var scenario in ScenarioLister.AllScenarios())
             {
                 if (Widgets.ButtonText(new Rect(0, x, 290, 20), scenario.name))
