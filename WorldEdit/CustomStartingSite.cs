@@ -24,7 +24,6 @@ namespace WorldEdit
             preventCameraMotion = false;
 
             var init = new GameInitData();
-            Find.FactionManager.OfPlayer.Name = "Поселение";
             init.playerFaction = Find.FactionManager.OfPlayer;
 
             Current.Game.InitData = init;
@@ -141,24 +140,26 @@ namespace WorldEdit
 
         private void StartGame(int tile)
         {
+            var init = Current.Game.InitData;
+
             foreach (var scenPart in Find.Scenario.AllParts)
             {
                 ScenPart_ConfigPage_ConfigureStartingPawns part = scenPart as ScenPart_ConfigPage_ConfigureStartingPawns;
                 if (part != null)
                 {
-                    Current.Game.InitData.startingAndOptionalPawns = new List<Pawn>(part.pawnChoiceCount);
-                    Current.Game.InitData.startingPawnCount = part.pawnCount;
-                    for (int i = 0; i < Current.Game.InitData.startingPawnCount; i++)
+                    init.startingAndOptionalPawns = new List<Pawn>(part.pawnChoiceCount);
+                    init.startingPawnCount = part.pawnCount;
+                    for (int i = 0; i < init.startingPawnCount; i++)
                     {
-                        Pawn p = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Current.Game.InitData.playerFaction);
-                        Current.Game.InitData.startingAndOptionalPawns.Add(p);
+                        Pawn p = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, init.playerFaction);
+                        init.startingAndOptionalPawns.Add(p);
                     }
 
                     break;
                 }
             }
 
-            Current.Game.InitData.startingTile = tile;
+            init.startingTile = tile;
             Find.World.renderer.wantedMode = WorldRenderMode.None;
 
             var page = new Page_ConfigureStartingPawns();
