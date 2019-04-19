@@ -13,15 +13,28 @@ namespace WorldEdit.Editor
     internal class FactionEditor : EditWindow, IFWindow
     {
         public override Vector2 InitialSize => new Vector2(410, 530);
-
-        private Faction selectedFaction = null;
         private Vector2 scrollFieldsPos = Vector2.zero;
         private Vector2 scrollRel = Vector2.zero;
 
+        /// <summary>
+        /// Выбранная фракция
+        /// </summary>
+        private Faction selectedFaction = null;
+
+        /// <summary>
+        /// Отношений с фракциями
+        /// </summary>
         private List<FactionRelation> factionRelation;
         private string[] factionGoodwillBuff = null;
 
+        /// <summary>
+        /// Цвет фракции
+        /// </summary>
         private FloatRange color;
+
+        /// <summary>
+        /// Имя лидера
+        /// </summary>
         private string leaderName;
 
         public FactionEditor()
@@ -68,7 +81,7 @@ namespace WorldEdit.Editor
                 int y = 15;
                 int boxY = 5;
                 Rect scrollRectRel = new Rect(0, 130, 370, 160);
-                Rect scrollVertRectRel = new Rect(0, 0, scrollRectRel.x, factionRelation.Count * 145);
+                Rect scrollVertRectRel = new Rect(0, 0, scrollRectRel.x, factionRelation.Count * 140);
                 Widgets.DrawBox(new Rect(0, 130, 350, 160));
                 Widgets.BeginScrollView(scrollRectRel, ref scrollRel, scrollVertRectRel);
                 for (int i = 0; i < factionRelation.Count; i++)
@@ -146,8 +159,6 @@ namespace WorldEdit.Editor
 
             FieldInfo relations = typeof(Faction).GetField("relations", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             factionRelation = relations.GetValue(selectedFaction) as List<FactionRelation>;
-
-            Log.Message(factionRelation.Count.ToString());
 
             factionGoodwillBuff = new string[factionRelation.Count];
 

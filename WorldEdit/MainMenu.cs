@@ -11,8 +11,15 @@ namespace WorldEdit
 {
     internal class MainMenu : GameComponent
     {
+        /// <summary>
+        /// Включен ли редактор
+        /// </summary>
         public static bool isEdit = false;
+        /// <summary>
+        /// Редактор
+        /// </summary>
         public static InGameEditor Editor = null;
+
         public static WorldUpdater WorldUpdater = null;
 
         public MainMenu()

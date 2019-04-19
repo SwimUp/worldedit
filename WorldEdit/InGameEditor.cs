@@ -13,6 +13,9 @@ using WorldEdit.Editor;
 
 namespace WorldEdit
 {
+    /// <summary>
+    /// Базовая инициализация редактора
+    /// </summary>
     [HarmonyPatch("PostOpen"), HarmonyPatch(typeof(Page_SelectStartingSite))]
     internal class WorldGridHook
     {
@@ -30,50 +33,90 @@ namespace WorldEdit
 
     public class InGameEditor : EditWindow
     {
+        public override Vector2 InitialSize => new Vector2(600, 600);
+
         private Vector2 mainScrollPosition = Vector2.zero;
         private Vector2 scrollPosition = Vector2.zero;
         private Vector2 scrollPositionFact = Vector2.zero;
-        private List<BiomeDef> avaliableBiomes { get; set; }
-        public override Vector2 InitialSize => new Vector2(600, 600);
 
+        /// <summary>
+        /// Список биомов
+        /// </summary>
+        private List<BiomeDef> avaliableBiomes { get; set; }
+        /// <summary>
+        /// Выбранный биом
+        /// </summary>
         private BiomeDef selectedBiome = null;
+        /// <summary>
+        /// Выбарнные горы
+        /// </summary>
         private Hilliness selectedHillness = Hilliness.Flat;
+
+        /* Настройка температуры, осадков, высоты */
         private int temperature = 20;
         private float elevation = 300f;
         private float rainfall = 400f;
         private float swampiness = 0f;
+        /* ======================= */
+
+        /// <summary>
+        /// Немедленное обновление тайлов
+        /// </summary>
         private bool updateImmediately = false;
 
+        /// <summary>
+        /// Список слоёв (Ключ - имя класса)
+        /// </summary>
+        public Dictionary<string, WorldLayer> Layers;
+        /// <summary>
+        /// Список подслоев у слоя (Ключ - имя класс слоя)
+        /// </summary>
+        public Dictionary<string, List<LayerSubMesh>> LayersSubMeshes;
+
+        /* Переменные для хранения температуры, осадков, высоты */
         public string fieldValue = string.Empty;
         public string fieldRainfallValue = string.Empty;
         public string fieldElevationValue = string.Empty;
         public string fieldSwampinessValue = string.Empty;
+        /* ==================================================== */
 
-        public Dictionary<string, WorldLayer> Layers;
-        public Dictionary<string, List<LayerSubMesh>> LayersSubMeshes;
-        private WorldLayer layerSingleTile = null;
-        private WorldLayer layerHills = null;
-
+        /// <summary>
+        /// WorldUpdater
+        /// </summary>
         internal WorldUpdater WorldUpdater;
+
+        /// <summary>
+        /// Редактор дорог и рек
+        /// </summary>
         private RoadAndRiversEditor roadEditor;
+
+        /// <summary>
+        /// Окно со списком всех слоёв для обновления конкретного
+        /// </summary>
         private LayersWindow layersWindow;
+
+        /// <summary>
+        /// Редактор фракций и поселений
+        /// </summary>
         internal FactionMenu factionEditor;
+
+        /// <summary>
+        /// Редактор глобальных объектов
+        /// </summary>
         internal WorldObjectsEditor worldObjectsEditor;
 
+        /* Переменные, указывающие, требуется ли обновить указанный параметр тайла */
         private bool useTemperature = false;
         private bool useEvelation = false;
         private bool useRainfall = false;
         private bool useSwampiness = false;
+        /* ======================================================================= */
 
         public InGameEditor()
         {
-            avaliableBiomes = new List<BiomeDef>(DefDatabase<BiomeDef>.DefCount);
-            foreach (BiomeDef biome in DefDatabase<BiomeDef>.AllDefs)
-            {
-                avaliableBiomes.Add(biome);
-            }
-
             resizeable = false;
+
+            avaliableBiomes = DefDatabase<BiomeDef>.AllDefs.ToList();
 
             FieldInfo fieldlayers = typeof(WorldRenderer).GetField("layers", BindingFlags.NonPublic | BindingFlags.Instance);
             FieldInfo fieldMeshes = typeof(WorldLayer).GetField("subMeshes", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
@@ -87,9 +130,6 @@ namespace WorldEdit
                 List<LayerSubMesh> meshes = fieldMeshes.GetValue(layer) as List<LayerSubMesh>;
                 LayersSubMeshes.Add(layer.GetType().Name, meshes);
             }
-
-            layerHills = Layers["WorldLayer_Hills"];
-            layerSingleTile = Layers["WorldLayer_CurrentMapTile"];
 
             roadEditor = new RoadAndRiversEditor();
             WorldUpdater = MainMenu.WorldUpdater;
@@ -126,7 +166,7 @@ namespace WorldEdit
 
                             if (updateImmediately)
                             {
-                                WorldUpdater.RenderSingleTile(tileID, tile.biome.DrawMaterial, LayersSubMeshes["WorldLayer_Terrain"], Layers["WorldLayer_Terrain"]);
+                                WorldUpdater.RenderSingleTile(tileID, tile.biome.DrawMaterial, LayersSubMeshes["WorldLayer_Terrain"]);
                             }
                         }
                     }
@@ -154,14 +194,6 @@ namespace WorldEdit
 
                     if(useSwampiness)
                         tile.swampiness = swampiness;
-
-                    /*
-                    if (updateImmediately)
-                    {
-                        WorldUpdater.RenderSingleTile(tileID, tile.biome.DrawMaterial, LayersSubMeshes["WorldLayer_Hills"], Layers["WorldLayer_Hills"]);
-                        WorldUpdater.RenderSingleTile(tileID, tile.biome.DrawMaterial, LayersSubMeshes["WorldLayer_CurrentMapTile"], Layers["WorldLayer_CurrentMapTile"]);
-                    }
-                    */
                 }
             }
         }
@@ -334,8 +366,6 @@ namespace WorldEdit
             }
 
             WorldUpdater.UpdateLayer(Layers["WorldLayer_Hills"]);
-
-           // WorldUpdater.UpdateMap();
         }
 
         private void SetBiomeToAllTiles()
@@ -344,31 +374,10 @@ namespace WorldEdit
                 return;
 
             WorldGrid grid = Find.WorldGrid;
-            List<Tile> tiles = grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ToList();
-            foreach (var tile in tiles)
-            {
-                tile.biome = selectedBiome;
-            }
+            grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => tile.biome = selectedBiome);
 
             LayersSubMeshes["WorldLayer_Terrain"].Clear();
-
             WorldUpdater.UpdateLayer(Layers["WorldLayer_Terrain"]);
-        }
-
-        internal static object GetInstanceField(Type type, object instance, string fieldName)
-        {
-            BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
-                | BindingFlags.Static;
-            FieldInfo field = type.GetField(fieldName, bindFlags);
-            return field.GetValue(instance);
-        }
-
-        internal static object GetInstanceProperty(Type type, object instance, string propertyName)
-        {
-            BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
-                | BindingFlags.Static;
-            PropertyInfo property = type.GetProperty(propertyName, bindFlags);
-            return property.GetValue(instance, null);
         }
     }
 }

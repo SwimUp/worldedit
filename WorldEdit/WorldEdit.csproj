@@ -68,9 +68,11 @@
     <Compile Include="Editor\RoadAndRiversEditor.cs" />
     <Compile Include="Editor\SettlementMarket.cs" />
     <Compile Include="Editor\WorldObjectsEditor.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="InGameEditor.cs" />
     <Compile Include="Interfaces\IFWindow.cs" />
     <Compile Include="MainMenu.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="WindowHelper.cs" />
     <Compile Include="WorldEdit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

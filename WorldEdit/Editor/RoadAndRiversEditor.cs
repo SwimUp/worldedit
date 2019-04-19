@@ -13,18 +13,32 @@ namespace WorldEdit.Editor
     internal class RoadAndRiversEditor : EditWindow, IFWindow
     {
         public override Vector2 InitialSize => new Vector2(450, 400);
-
         private Vector2 scrollPosition = Vector2.zero;
         private Vector2 riverScrollPosition = Vector2.zero;
         private Vector2 mainScrollPosition = Vector2.zero;
 
+        /// <summary>
+        /// Список доступных типов дорог
+        /// </summary>
         private List<RoadDef> avaliableRoads;
+
+        /// <summary>
+        /// Выбранный тип дорог
+        /// </summary>
         private RoadDef selectedRoad = null;
+
+        /// <summary>
+        /// Список доступных типов рек
+        /// </summary>
         private List<RiverDef> avaliableRivers;
+
+        /// <summary>
+        /// Выбраннаый тип рек
+        /// </summary>
         private RiverDef selectedRiver = null;
+
         private string roadId1 = string.Empty;
         private string roadId2 = string.Empty;
-
         private string riverId1 = string.Empty;
         private string riverId2 = string.Empty;
 
@@ -35,17 +49,8 @@ namespace WorldEdit.Editor
             resizeable = false;
             worldUpdater = MainMenu.WorldUpdater;
 
-            avaliableRoads = new List<RoadDef>(DefDatabase<RoadDef>.DefCount);
-            foreach(var road in DefDatabase<RoadDef>.AllDefs)
-            {
-                avaliableRoads.Add(road);
-            }
-
-            avaliableRivers = new List<RiverDef>(DefDatabase<RiverDef>.DefCount);
-            foreach (var river in DefDatabase<RiverDef>.AllDefs)
-            {
-                avaliableRivers.Add(river);
-            }
+            avaliableRoads = DefDatabase<RoadDef>.AllDefs.ToList();
+            avaliableRivers = DefDatabase<RiverDef>.AllDefs.ToList();
         }
         public void Show()
         {

@@ -10,24 +10,43 @@ using Verse;
 
 namespace WorldEdit
 {
+    /// <summary>
+    /// Небольшой инструментарий для обновления и рендеринга мира
+    /// </summary>
     internal class WorldUpdater
     {
         private readonly FloatRange BaseSizeRange = new FloatRange(0.9f, 1.1f);
         private readonly IntVec2 TexturesInAtlas = new IntVec2(2, 2);
+
         private readonly FloatRange BasePosOffsetRange_SmallHills = new FloatRange(0f, 0.37f);
         private readonly FloatRange BasePosOffsetRange_LargeHills = new FloatRange(0f, 0.2f);
         private readonly FloatRange BasePosOffsetRange_Mountains = new FloatRange(0f, 0.08f);
         private readonly FloatRange BasePosOffsetRange_ImpassableMountains = new FloatRange(0f, 0.08f);
 
+        /// <summary>
+        /// Обновить все слои в мире (очень большая нагрузка)
+        /// </summary>
         public void UpdateMap()
         {
             Find.World.renderer.RegenerateAllLayersNow();
         }
 
+        /// <summary>
+        /// Обновить указанный слой (небольшая нагрузка)
+        /// </summary>
+        /// <param name="layer">Слой</param>
         public void UpdateLayer(WorldLayer layer)
         {
             layer.RegenerateNow();
         }
+
+        /// <summary>
+        /// Обновить указанный слой посредством дополнения (небольшая нагрузка)
+        /// </summary>
+        /// <param name="layer">Слой</param>
+        /// <param name="material">Материал для поиска подслоя</param>
+        /// <param name="subMeshes">Список подслоев</param>
+        /// <param name="b">Биом</param>
         public void UpdateLayer(WorldLayer layer, Material material, List<LayerSubMesh> subMeshes, BiomeDef b)
         {
             int subMeshIndex;
@@ -84,8 +103,13 @@ namespace WorldEdit
             FinalizeMesh(MeshParts.All, subMesh);
         }
 
-
-        public void RenderSingleTile(int tileID, Material drawMaterial, List<LayerSubMesh> subMeshes, WorldLayer layer)
+        /// <summary>
+        /// Отрисовывает указанный материал на тайле (минимальная нагрузка)
+        /// </summary>
+        /// <param name="tileID">ID тайла</param>
+        /// <param name="drawMaterial">Материал для отрисовки/поиска подслоя</param>
+        /// <param name="subMeshes">Список подслоев</param>
+        public void RenderSingleTile(int tileID, Material drawMaterial, List<LayerSubMesh> subMeshes)
         {
             LayerSubMesh subMesh = GetSubMesh(drawMaterial, subMeshes);
 
@@ -127,11 +151,25 @@ namespace WorldEdit
             }
         }
 
+        /// <summary>
+        /// Находит подслой с указанным материалом
+        /// </summary>
+        /// <param name="material">Материал</param>
+        /// <param name="subMeshes">Список подслоев</param>
+        /// <returns></returns>
         protected LayerSubMesh GetSubMesh(Material material, List<LayerSubMesh> subMeshes)
         {
             int subMeshIndex;
             return GetSubMesh(material, subMeshes, out subMeshIndex);
         }
+
+        /// <summary>
+        /// Находит подслой с указанным материалом, если его нет, то создает новый
+        /// </summary>
+        /// <param name="material">Материал</param>
+        /// <param name="subMeshes">Список подслоев</param>
+        /// <param name="subMeshIndex"></param>
+        /// <returns></returns>
         protected LayerSubMesh GetSubMesh(Material material, List<LayerSubMesh> subMeshes, out int subMeshIndex)
         {
             for (int i = 0; i < subMeshes.Count; i++)
@@ -151,6 +189,11 @@ namespace WorldEdit
             return layerSubMesh2;
         }
 
+        /// <summary>
+        /// Отрисовывает горы на определенном тайле
+        /// </summary>
+        /// <param name="tileID">ID тайла</param>
+        /// <param name="subMeshes">Список подслоев</param>
         public void RenderSingleHill(int tileID, List<LayerSubMesh> subMeshes)
         {
             WorldGrid grid = Find.WorldGrid;
@@ -177,6 +220,7 @@ namespace WorldEdit
                     floatRange = BasePosOffsetRange_ImpassableMountains;
                     break;
             }
+
             LayerSubMesh subMesh = GetSubMesh(material, subMeshes);
             Vector3 tileCenter = grid.GetTileCenter(tileID);
             Vector3 posForTangents = tileCenter;

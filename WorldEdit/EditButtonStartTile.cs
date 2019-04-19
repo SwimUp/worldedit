@@ -10,11 +10,13 @@ using Verse;
 
 namespace WorldEdit
 {
+    /// <summary>
+    /// Отлов события отрисовки кнопок для того, чтобы открывать меню на F5
+    /// </summary>
     [HarmonyPatch(typeof(Page_SelectStartingSite))]
     [HarmonyPatch("DoCustomBottomButtons")]
     class EditButtonStartTile
     {
-        protected static readonly Vector2 BottomButSize = new Vector2(150f, 38f);
         static void Postfix()
         {
             if(Input.GetKeyDown(KeyCode.F5))

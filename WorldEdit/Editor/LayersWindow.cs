@@ -12,7 +12,6 @@ namespace WorldEdit.Editor
     internal class LayersWindow : EditWindow, IFWindow
     {
         private Vector2 scrollPosition = Vector2.zero;
-
         public override Vector2 InitialSize => new Vector2(250, 300);
 
         public LayersWindow()

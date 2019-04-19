@@ -12,27 +12,54 @@ namespace WorldEdit.Editor
     {
         public override Vector2 InitialSize => new Vector2(740, 450);
 
+        /// <summary>
+        /// Выбранная фракция
+        /// </summary>
         private FactionDef selectedFaction = null;
+
+        /// <summary>
+        /// Новая фракция
+        /// </summary>
         public Faction newFaction = null;
 
         private Vector2 scrollPositionFact = Vector2.zero;
         private Vector2 scrollFieldsPos = Vector2.zero;
         private Vector2 scrollRel = Vector2.zero;
 
+        /// <summary>
+        /// Список доступных фракций
+        /// </summary>
         private List<FactionDef> avaliableFactions;
+
+        /// <summary>
+        /// Отношений с фракциями
+        /// </summary>
         private List<FactionRelation> newFactionRelation;
+
+        /// <summary>
+        /// Буфер для отношений(значений)
+        /// </summary>
         private string[] newFactionGoodwillBuff;
 
+        /// <summary>
+        /// Цвет фракции
+        /// </summary>
         private FloatRange color = new FloatRange();
+
+        /// <summary>
+        /// Имя лидера
+        /// </summary>
         private string leaderName = string.Empty;
 
         public FactionCreator()
         {
             resizeable = false;
 
+            var rimfactionManager = Find.FactionManager;
+
             avaliableFactions = DefDatabase<FactionDef>.AllDefs.Where(f => !f.isPlayer &&
-            Find.FactionManager.OfMechanoids.def != f && Find.FactionManager.OfInsects.def != f &&
-            Find.FactionManager.OfAncientsHostile.def != f && Find.FactionManager.OfAncients.def != f).ToList();
+            rimfactionManager.OfMechanoids.def != f && rimfactionManager.OfInsects.def != f &&
+            rimfactionManager.OfAncientsHostile.def != f && rimfactionManager.OfAncients.def != f).ToList();
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -109,7 +136,7 @@ namespace WorldEdit.Editor
                 int y = 15;
                 int boxY = 5;
                 Rect scrollRectRel = new Rect(0, 130, 370, 160);
-                Rect scrollVertRectRel = new Rect(0, 0, scrollRectRel.x, newFactionRelation.Count * 145);
+                Rect scrollVertRectRel = new Rect(0, 0, scrollRectRel.x, newFactionRelation.Count * 140);
                 Widgets.DrawBox(new Rect(0, 130, 350, 160));
                 Widgets.BeginScrollView(scrollRectRel, ref scrollRel, scrollVertRectRel);
                 for(int i = 0; i < newFactionRelation.Count; i++)

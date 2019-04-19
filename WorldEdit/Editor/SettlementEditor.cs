@@ -15,8 +15,14 @@ namespace WorldEdit.Editor
         public override Vector2 InitialSize => new Vector2(510, 450);
         private Vector2 scrollPosition = Vector2.zero;
 
+        /// <summary>
+        /// Выбранное поселение
+        /// </summary>
         private Settlement selectedSettlement = null;
 
+        /// <summary>
+        /// Редактор товаров поселения
+        /// </summary>
         private SettlementMarket settlementMarket = null;
 
         public SettlementEditor()

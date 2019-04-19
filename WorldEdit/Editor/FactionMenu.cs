@@ -17,16 +17,44 @@ namespace WorldEdit.Editor
         private Vector2 scrollPosition = Vector2.zero;
         private Vector2 scrollPosition2 = Vector2.zero;
 
+        /// <summary>
+        /// Выбранное поселение
+        /// </summary>
         private Settlement selectedSettlement = null;
+
+        /// <summary>
+        /// Редактор поселений (создание)
+        /// </summary>
         private SettlementCreator settlementCreator = null;
+
+        /// <summary>
+        /// Редактор поселений (редактирование)
+        /// </summary>
         private SettlementEditor settlementEditor = null;
 
+        /// <summary>
+        /// Удалить все поселения вместе с удалением фракции?
+        /// </summary>
         private bool deleteSettlements = false;
 
+        /// <summary>
+        /// FactionManager римки
+        /// </summary>
         private RimWorld.FactionManager rimFactionManager;
+
+        /// <summary>
+        /// Выбранная фракция
+        /// </summary>
         private Faction selectedFaction = null;
 
+        /// <summary>
+        /// Редактор фракций (создание)
+        /// </summary>
         internal FactionCreator factionCreator = null;
+
+        /// <summary>
+        /// Редактор фракций (редактирование)
+        /// </summary>
         internal FactionEditor factionEditor = null;
 
         public FactionMenu()

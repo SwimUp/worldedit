@@ -17,18 +17,22 @@ namespace WorldEdit.Editor
         {
             public override Vector2 InitialSize => new Vector2(350, 150);
 
+            /// <summary>
+            /// Имя надписи
+            /// </summary>
             private string featureName = string.Empty;
 
+            /// <summary>
+            /// Поворот
+            /// </summary>
             private float rotate = 0f;
             private string rotateBuff = string.Empty;
 
+            /// <summary>
+            /// Размер
+            /// </summary>
             private float maxLength = 10f;
             private string maxLengthBuff = "1";
-
-            private int leftRange = 0;
-            private int rigthRange = 0;
-            private string leftRangeBuff = string.Empty;
-            private string rigthRangeBuff = string.Empty;
 
             public CreateWorldFeature()
             {
@@ -49,14 +53,6 @@ namespace WorldEdit.Editor
 
                 Widgets.Label(new Rect(0, 75, 120, 20), Translator.Translate("FeatureLengthMax"));
                 Widgets.TextFieldNumeric(new Rect(110, 75, 215, 20), ref maxLength, ref maxLengthBuff, 1f, 10000f);
-
-                /*
-                Widgets.Label(new Rect(120, 110, 230, 20), Translator.Translate("TileRange"));
-                Widgets.Label(new Rect(90, 135, 60, 20), Translator.Translate("LeftRange"));
-                Widgets.TextFieldNumeric(new Rect(0, 135, 165, 20), ref leftRange, ref leftRangeBuff, 0, 10000);
-                Widgets.Label(new Rect(240, 135, 60, 20), Translator.Translate("RigthRange"));
-                Widgets.TextFieldNumeric(new Rect(170, 135, 165, 20), ref rigthRange, ref rigthRangeBuff, 0, 10000);
-                */
 
                 if (Widgets.ButtonText(new Rect(0, 110, 345, 20), Translator.Translate("CreateNewWorldPrint")))
                 {
@@ -115,10 +111,15 @@ namespace WorldEdit.Editor
         }
 
         public override Vector2 InitialSize => new Vector2(800, 700);
-
         private Vector2 scrollPosition = Vector2.zero;
 
+        /// <summary>
+        /// Выбарнная надпись
+        /// </summary>
         private WorldFeature selectedFeature = null;
+        /// <summary>
+        /// Редактор надписей
+        /// </summary>
         private CreateWorldFeature featureCreator;
 
         public WorldObjectsEditor()

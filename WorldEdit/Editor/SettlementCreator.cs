@@ -15,11 +15,24 @@ namespace WorldEdit.Editor
         public override Vector2 InitialSize => new Vector2(510, 450);
         private Vector2 scrollPosition = Vector2.zero;
 
+        /// <summary>
+        /// Имя поселения
+        /// </summary>
         private string settlementName = string.Empty;
+
+        /// <summary>
+        /// Фракция поселения
+        /// </summary>
         private Faction selectedFaction;
 
+        /// <summary>
+        /// Редактор товаров поселения
+        /// </summary>
         private SettlementMarket settlementMarket = null;
 
+        /// <summary>
+        /// Новое поселение
+        /// </summary>
         private Settlement newSettlement = null;
 
         public SettlementCreator()
@@ -52,6 +65,11 @@ namespace WorldEdit.Editor
                 yButtonPos += 22;
             }
             Widgets.EndScrollView();
+
+            if (Widgets.ButtonText(new Rect(0, 300, 490, 20), Translator.Translate("EditMarketList")))
+            {
+                settlementMarket.Show(newSettlement);
+            }
 
             if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("CreateNewSettlement")))
             {
