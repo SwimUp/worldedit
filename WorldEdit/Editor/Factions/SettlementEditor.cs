@@ -10,32 +10,22 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    internal class SettlementCreator : EditWindow, IFWindow
+    internal sealed class SettlementEditor : FWindow
     {
         public override Vector2 InitialSize => new Vector2(510, 450);
         private Vector2 scrollPosition = Vector2.zero;
 
         /// <summary>
-        /// Имя поселения
+        /// Выбранное поселение
         /// </summary>
-        private string settlementName = string.Empty;
-
-        /// <summary>
-        /// Фракция поселения
-        /// </summary>
-        private Faction selectedFaction;
+        private Settlement selectedSettlement = null;
 
         /// <summary>
         /// Редактор товаров поселения
         /// </summary>
         private SettlementMarket settlementMarket = null;
 
-        /// <summary>
-        /// Новое поселение
-        /// </summary>
-        private Settlement newSettlement = null;
-
-        public SettlementCreator()
+        public SettlementEditor()
         {
             resizeable = false;
 
@@ -46,10 +36,10 @@ namespace WorldEdit.Editor
         {
             Text.Font = GameFont.Small;
 
-            Widgets.Label(new Rect(0, 0, 350, 30), Translator.Translate("SettlementCreatorTitle"));
+            Widgets.Label(new Rect(0, 0, 350, 30), Translator.Translate("SettlementEditTitle"));
 
             Widgets.Label(new Rect(0, 40, 100, 30), Translator.Translate("SettlementNameField"));
-            settlementName = Widgets.TextField(new Rect(105, 40, 385, 30), settlementName);
+            selectedSettlement.Name = Widgets.TextField(new Rect(105, 40, 385, 30), selectedSettlement.Name);
 
             int factionDefSize = Find.FactionManager.AllFactionsListForReading.Count * 25;
             Rect scrollRectFact = new Rect(0, 80, 490, 200);
@@ -60,7 +50,7 @@ namespace WorldEdit.Editor
             {
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 480, 20), spawnedFaction.Name))
                 {
-                    selectedFaction = spawnedFaction;
+                    selectedSettlement.SetFaction(spawnedFaction);
                 }
                 yButtonPos += 22;
             }
@@ -68,47 +58,31 @@ namespace WorldEdit.Editor
 
             if (Widgets.ButtonText(new Rect(0, 300, 490, 20), Translator.Translate("EditMarketList")))
             {
-                settlementMarket.Show(newSettlement);
+                settlementMarket.Show(selectedSettlement);
             }
 
-            if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("CreateNewSettlement")))
+            if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("SaveNewSettlement")))
             {
-                CreateSettlement();
+                SaveSettlement();
             }
         }
 
-        public void Show()
+        public void Show(Settlement settlement)
         {
-            if (Find.WindowStack.IsOpen(typeof(SettlementCreator)))
+            if (Find.WindowStack.IsOpen(typeof(SettlementEditor)))
             {
                 Log.Message("Currntly open...");
             }
             else
             {
-                newSettlement = new Settlement();
+                selectedSettlement = settlement;
                 Find.WindowStack.Add(this);
             }
         }
 
-        private void CreateSettlement()
+        private void SaveSettlement()
         {
-            if (selectedFaction == null)
-                return;
-
-            if (settlementName == null)
-                return;
-
-            if (Find.WorldSelector.selectedTile < 0)
-                return;
-
-            if (Find.WorldObjects.AnySettlementAt(Find.WorldSelector.selectedTile))
-                return;
-
-            newSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-            newSettlement.SetFaction(selectedFaction);
-            newSettlement.Tile = Find.WorldSelector.selectedTile;
-            newSettlement.Name = settlementName;
-            Find.WorldObjects.Add(newSettlement);
+            Close();
         }
     }
 }

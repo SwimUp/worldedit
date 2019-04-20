@@ -8,7 +8,7 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    internal class FactionCreator : EditWindow, IFWindow
+    internal sealed class FactionCreator : FWindow
     {
         public override Vector2 InitialSize => new Vector2(740, 450);
 
@@ -282,18 +282,6 @@ namespace WorldEdit.Editor
 
             faction.Name = NameGenerator.GenerateName(faction.def.factionNameMaker, from fac in Find.FactionManager.AllFactionsVisible
                                                                                select fac.Name);
-        }
-
-        public void Show()
-        {
-            if (Find.WindowStack.IsOpen(typeof(FactionCreator)))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                Find.WindowStack.Add(this);
-            }
         }
 
         public override void Close(bool doCloseSound = true)

@@ -10,22 +10,32 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    internal class SettlementEditor : EditWindow, IFWindow
+    internal sealed class SettlementCreator : FWindow
     {
         public override Vector2 InitialSize => new Vector2(510, 450);
         private Vector2 scrollPosition = Vector2.zero;
 
         /// <summary>
-        /// Выбранное поселение
+        /// Имя поселения
         /// </summary>
-        private Settlement selectedSettlement = null;
+        private string settlementName = string.Empty;
+
+        /// <summary>
+        /// Фракция поселения
+        /// </summary>
+        private Faction selectedFaction;
 
         /// <summary>
         /// Редактор товаров поселения
         /// </summary>
         private SettlementMarket settlementMarket = null;
 
-        public SettlementEditor()
+        /// <summary>
+        /// Новое поселение
+        /// </summary>
+        private Settlement newSettlement = null;
+
+        public SettlementCreator()
         {
             resizeable = false;
 
@@ -36,10 +46,10 @@ namespace WorldEdit.Editor
         {
             Text.Font = GameFont.Small;
 
-            Widgets.Label(new Rect(0, 0, 350, 30), Translator.Translate("SettlementEditTitle"));
+            Widgets.Label(new Rect(0, 0, 350, 30), Translator.Translate("SettlementCreatorTitle"));
 
             Widgets.Label(new Rect(0, 40, 100, 30), Translator.Translate("SettlementNameField"));
-            selectedSettlement.Name = Widgets.TextField(new Rect(105, 40, 385, 30), selectedSettlement.Name);
+            settlementName = Widgets.TextField(new Rect(105, 40, 385, 30), settlementName);
 
             int factionDefSize = Find.FactionManager.AllFactionsListForReading.Count * 25;
             Rect scrollRectFact = new Rect(0, 80, 490, 200);
@@ -50,7 +60,7 @@ namespace WorldEdit.Editor
             {
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 480, 20), spawnedFaction.Name))
                 {
-                    selectedSettlement.SetFaction(spawnedFaction);
+                    selectedFaction = spawnedFaction;
                 }
                 yButtonPos += 22;
             }
@@ -58,43 +68,34 @@ namespace WorldEdit.Editor
 
             if (Widgets.ButtonText(new Rect(0, 300, 490, 20), Translator.Translate("EditMarketList")))
             {
-                settlementMarket.Show(selectedSettlement);
+                settlementMarket.Show(newSettlement);
             }
 
-            if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("SaveNewSettlement")))
+            if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("CreateNewSettlement")))
             {
-                SaveSettlement();
+                CreateSettlement();
             }
         }
 
-        public void Show()
+        private void CreateSettlement()
         {
-            if (Find.WindowStack.IsOpen(typeof(SettlementEditor)))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                Find.WindowStack.Add(this);
-            }
-        }
+            if (selectedFaction == null)
+                return;
 
-        public void Show(Settlement settlement)
-        {
-            if (Find.WindowStack.IsOpen(typeof(SettlementEditor)))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                selectedSettlement = settlement;
-                Find.WindowStack.Add(this);
-            }
-        }
+            if (settlementName == null)
+                return;
 
-        private void SaveSettlement()
-        {
-            Close();
+            if (Find.WorldSelector.selectedTile < 0)
+                return;
+
+            if (Find.WorldObjects.AnySettlementAt(Find.WorldSelector.selectedTile))
+                return;
+
+            newSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+            newSettlement.SetFaction(selectedFaction);
+            newSettlement.Tile = Find.WorldSelector.selectedTile;
+            newSettlement.Name = settlementName;
+            Find.WorldObjects.Add(newSettlement);
         }
     }
 }

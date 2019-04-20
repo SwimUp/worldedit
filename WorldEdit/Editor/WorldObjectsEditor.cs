@@ -11,9 +11,9 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    public class WorldObjectsEditor : EditWindow, IFWindow
+    public sealed class WorldObjectsEditor : FWindow
     {
-        private class CreateWorldFeature : EditWindow, IFWindow
+        private class CreateWorldFeature : FWindow
         {
             public override Vector2 InitialSize => new Vector2(350, 150);
 
@@ -96,21 +96,9 @@ namespace WorldEdit.Editor
                 Find.WorldFeatures.textsCreated = false;
                 Find.WorldFeatures.UpdateFeatures();
             }
-
-            public void Show()
-            {
-                if (Find.WindowStack.IsOpen(typeof(CreateWorldFeature)))
-                {
-                    Log.Message("Currntly open...");
-                }
-                else
-                {
-                    Find.WindowStack.Add(this);
-                }
-            }
         }
 
-        public override Vector2 InitialSize => new Vector2(800, 700);
+        public override Vector2 InitialSize => new Vector2(330, 450);
         private Vector2 scrollPosition = Vector2.zero;
 
         /// <summary>
@@ -135,13 +123,13 @@ namespace WorldEdit.Editor
             Widgets.Label(new Rect(0, 0, 300, 20), Translator.Translate("WorldPrintsTitle"));
 
             int size1 = Find.WorldFeatures.features.Count * 30;
-            Rect scrollRectFact = new Rect(0, 50, 300, 290);
+            Rect scrollRectFact = new Rect(0, 50, 300, 280);
             Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, size1);
             Widgets.BeginScrollView(scrollRectFact, ref scrollPosition, scrollVertRectFact);
             int x = 0;
             foreach (var feat in Find.WorldFeatures.features)
             {
-                if(Widgets.ButtonText(new Rect(0, x, 295, 20), feat.name))
+                if(Widgets.ButtonText(new Rect(0, x, 290, 20), feat.name))
                 {
                     selectedFeature = feat;
                 }
@@ -149,15 +137,39 @@ namespace WorldEdit.Editor
             }
             Widgets.EndScrollView();
 
-            if (Widgets.ButtonText(new Rect(0, 340, 300, 20), Translator.Translate("DeleteFeature")))
+            if (Widgets.ButtonText(new Rect(0, 340, 300, 20), Translator.Translate("CreateNewFeature")))
+            {
+                featureCreator.Show();
+            }
+
+            if (Widgets.ButtonText(new Rect(0, 365, 300, 20), Translator.Translate("DeleteFeature")))
             {
                 DeleteFeature();
             }
 
-            if (Widgets.ButtonText(new Rect(0, 365, 300, 20), Translator.Translate("CreateNewFeature")))
+            if (Widgets.ButtonText(new Rect(0, 390, 300, 20), Translator.Translate("RemoveAllFeatures")))
             {
-                featureCreator.Show();
+                RemoveAllFeatures();
             }
+        }
+
+        private void RemoveAllFeatures()
+        {
+            WorldGrid grid = Find.WorldGrid;
+
+            foreach(var feature in Find.WorldFeatures.features)
+            {
+                foreach(var tileID in feature.Tiles)
+                {
+                    grid[tileID].feature = null;
+                }
+            }
+
+            Find.WorldFeatures.features.Clear();
+
+            Find.WorldFeatures.textsCreated = false;
+
+            Find.WorldFeatures.UpdateFeatures();
         }
 
         private void DeleteFeature()
@@ -178,19 +190,6 @@ namespace WorldEdit.Editor
             Find.WorldFeatures.UpdateFeatures();
 
             selectedFeature = null;
-        }
-
-        public void Show()
-        {
-            if (Find.WindowStack.IsOpen(typeof(WorldObjectsEditor)))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-           
-                Find.WindowStack.Add(this);
-            }
         }
     }
 }

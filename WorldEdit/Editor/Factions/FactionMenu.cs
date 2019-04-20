@@ -11,7 +11,7 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    internal class FactionMenu : EditWindow, IFWindow
+    internal sealed class FactionMenu : FWindow
     {
         public override Vector2 InitialSize => new Vector2(935, 600);
         private Vector2 scrollPosition = Vector2.zero;
@@ -66,18 +66,6 @@ namespace WorldEdit.Editor
             factionEditor = new FactionEditor();
             settlementCreator = new SettlementCreator();
             settlementEditor = new SettlementEditor();
-        }
-
-        public void Show()
-        {
-            if (Find.WindowStack.IsOpen(typeof(FactionMenu)))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                Find.WindowStack.Add(this);
-            }
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -199,6 +187,10 @@ namespace WorldEdit.Editor
             {
                 RemoveSettlement();
             }
+            if (Widgets.ButtonText(new Rect(460, 355, 450, 20), Translator.Translate("RemoveAllSpawnedSettlement")))
+            {
+                RemoveAllSettlements();
+            }
         }
 
         private void RemoveSettlement()
@@ -207,6 +199,22 @@ namespace WorldEdit.Editor
                 return;
 
             Find.WorldObjects.Remove(selectedSettlement);
+        }
+
+        private void RemoveAllSettlements()
+        {
+            WorldObjectsHolder objects = Find.WorldObjects;
+
+            Log.Message($"{objects.Settlements.Count}");
+
+            List<Settlement> settlements = new List<Settlement>(objects.Settlements);
+
+            foreach(var settlement in settlements)
+            {
+                objects.Remove(settlement);
+            }
+
+            settlements.Clear();
         }
     }
 }

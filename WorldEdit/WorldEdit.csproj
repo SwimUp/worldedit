@@ -59,26 +59,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomStartingSite.cs" />
-    <Compile Include="EditButtonStartTile.cs" />
-    <Compile Include="Editor\FactionCreator.cs" />
-    <Compile Include="Editor\FactionEditor.cs" />
-    <Compile Include="Editor\FactionMenu.cs" />
-    <Compile Include="Editor\SettlementEditor.cs" />
-    <Compile Include="Editor\SettlementCreator.cs" />
+    <Compile Include="Editor\Factions\FactionCreator.cs" />
+    <Compile Include="Editor\Factions\FactionEditor.cs" />
+    <Compile Include="Editor\Factions\FactionMenu.cs" />
+    <Compile Include="Editor\Factions\ItemEditor.cs" />
+    <Compile Include="Editor\Factions\SettlementEditor.cs" />
+    <Compile Include="Editor\Factions\SettlementCreator.cs" />
     <Compile Include="Editor\LayersWindow.cs" />
     <Compile Include="Editor\RoadAndRiversEditor.cs" />
-    <Compile Include="Editor\SettlementMarket.cs" />
+    <Compile Include="Editor\Factions\SettlementMarket.cs" />
     <Compile Include="Editor\WorldObjectsEditor.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Utils\Extensions.cs" />
+    <Compile Include="HarmonyHooks\Dialog_FileList_Patch.cs" />
+    <Compile Include="HarmonyHooks\Page_SelectStartingSite_Patch.cs" />
+    <Compile Include="HarmonyHooks\World_Patch.cs" />
     <Compile Include="InGameEditor.cs" />
-    <Compile Include="Interfaces\IFWindow.cs" />
-    <Compile Include="MainMenu.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="WindowHelper.cs" />
+    <Compile Include="Interfaces\FWindow.cs" />
+    <Compile Include="WorldEditor.cs" />
+    <Compile Include="Utils\Utils.cs" />
+    <Compile Include="HarmonyHooks\WindowHelper.cs" />
     <Compile Include="WorldEdit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorldTemplate.cs" />
     <Compile Include="WorldTemplateManager.cs" />
-    <Compile Include="WorldUpdater.cs" />
+    <Compile Include="Utils\WorldUpdater.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

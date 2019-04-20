@@ -9,23 +9,38 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit
 {
-    public sealed class WorldTemplateManager : Window, IFWindow
+    public sealed class WorldTemplateManager : FWindow
     {
-        public override Vector2 InitialSize => new Vector2(800, 600);
+        public override Vector2 InitialSize => new Vector2(320, 600);
         private Vector2 scrollPositionStoryteller = Vector2.zero;
         private Vector2 scrollPositionScenario = Vector2.zero;
 
         private string saveName = string.Empty;
 
-        //Current.Game.storyteller
+        public WorldTemplateManager()
+        {
+            resizeable = false;
+        }
+
+        public override void PreOpen()
+        {
+            if (WorldEditor.LoadedTemplate != null)
+            {
+                SaveWorldTemplate();
+                return;
+            }
+
+            base.PreOpen();
+        }
+
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Small;
 
-            saveName = Widgets.TextField(new Rect(0, 0, 770, 20), saveName);
-            Widgets.Label(new Rect(0, 30, 300, 20), Translator.Translate("SelectStorytellerTitle"));
+            saveName = Widgets.TextField(new Rect(0, 15, 300, 20), saveName);
+            Widgets.Label(new Rect(0, 45, 300, 20), Translator.Translate("SelectStorytellerTitle"));
             int tellersSize = DefDatabase<StorytellerDef>.DefCount * 25;
-            Rect scrollRectFact = new Rect(0, 60, 300, 200);
+            Rect scrollRectFact = new Rect(0, 75, 300, 200);
             Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, tellersSize);
             Widgets.BeginScrollView(scrollRectFact, ref scrollPositionStoryteller, scrollVertRectFact);
             int x = 0;
@@ -40,9 +55,9 @@ namespace WorldEdit
             Widgets.EndScrollView();
 
 
-            Widgets.Label(new Rect(0, 270, 300, 20), Translator.Translate("SelectScenario"));
+            Widgets.Label(new Rect(0, 285, 300, 20), Translator.Translate("SelectScenario"));
             int scenarioSize = ScenarioLister.AllScenarios().ToList().Count * 25;
-            Rect scrollRectScen = new Rect(0, 300, 300, 200);
+            Rect scrollRectScen = new Rect(0, 315, 300, 200);
             Rect scrollVertRectScen = new Rect(0, 0, scrollRectScen.x, scenarioSize);
             Widgets.BeginScrollView(scrollRectScen, ref scrollPositionScenario, scrollVertRectScen);
             x = 0;
@@ -56,7 +71,7 @@ namespace WorldEdit
             }
             Widgets.EndScrollView();
 
-            if (Widgets.ButtonText(new Rect(0, 540, 780, 20), Translator.Translate("CreateTemplate")))
+            if (Widgets.ButtonText(new Rect(0, 555, 290, 20), Translator.Translate("CreateTemplate")))
             {
                 CreateWorldTemplate();
             }
@@ -64,23 +79,22 @@ namespace WorldEdit
 
         private void CreateWorldTemplate()
         {
+            if (string.IsNullOrEmpty(saveName))
+                return;
+
             string fileName = $"wtemplate_{saveName}";
 
             GameDataSaveLoader.SaveGame(fileName);
         }
 
-        public void Show()
+        private void SaveWorldTemplate()
         {
-            {
-                if (Find.WindowStack.IsOpen(this))
-                {
-                    Log.Message("Currntly open...");
-                }
-                else
-                {
-                    Find.WindowStack.Add(this);
-                }
-            }
+            if (WorldEditor.LoadedTemplate == null)
+                return;
+
+            string fileName = $"wtemplate_{WorldEditor.LoadedTemplate.WorldName}";
+
+            GameDataSaveLoader.SaveGame(fileName);
         }
     }
 }

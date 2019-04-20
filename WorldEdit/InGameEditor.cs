@@ -13,25 +13,7 @@ using WorldEdit.Editor;
 
 namespace WorldEdit
 {
-    /// <summary>
-    /// Базовая инициализация редактора
-    /// </summary>
-    [HarmonyPatch("PostOpen"), HarmonyPatch(typeof(Page_SelectStartingSite))]
-    internal class WorldGridHook
-    {
-        public static void Postfix()
-        {
-            if(MainMenu.isEdit)
-            {
-                MainMenu.WorldUpdater = new WorldUpdater();
-
-                MainMenu.Editor = new InGameEditor();
-                Find.WindowStack.Add(MainMenu.Editor);
-            }
-        }
-    }
-
-    public class InGameEditor : EditWindow
+    public sealed class InGameEditor : EditWindow
     {
         public override Vector2 InitialSize => new Vector2(600, 600);
 
@@ -132,7 +114,7 @@ namespace WorldEdit
             }
 
             roadEditor = new RoadAndRiversEditor();
-            WorldUpdater = MainMenu.WorldUpdater;
+            WorldUpdater = WorldEditor.WorldUpdater;
             layersWindow = new LayersWindow();
             factionEditor = new FactionMenu();
             worldObjectsEditor = new WorldObjectsEditor();

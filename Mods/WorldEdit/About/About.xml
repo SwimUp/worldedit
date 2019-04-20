@@ -3,4 +3,5 @@
   <name>WorldEdit</name>
   <author>FunkyShit</author>
   <description>Create your own world!</description>
+  <supportedVersions><li>1.0</li></supportedVersions>
 </ModMetaData>

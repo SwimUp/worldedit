@@ -19,6 +19,8 @@ namespace WorldEdit
 
         public CustomStartingSite()
         {
+            WorldEditor.InitEditor();
+
             absorbInputAroundWindow = false;
             shadowAlpha = 0f;
             preventCameraMotion = false;

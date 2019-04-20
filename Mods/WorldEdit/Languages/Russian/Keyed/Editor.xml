@@ -86,6 +86,8 @@
   <SettlementManagerTitle>Поселения на карте</SettlementManagerTitle>
   <RemoveSpawnedSettlement>Удалить поселение</RemoveSpawnedSettlement>
   <EditSelectedSettlement>Редактировать</EditSelectedSettlement>
+  <RemoveAllSpawnedSettlement>Удалить все поселения</RemoveAllSpawnedSettlement>
+  <RemoveAllFeatures>Удалить все</RemoveAllFeatures>
   
   <SettlementCreatorTitle>Создание поселения</SettlementCreatorTitle>
   <SettlementNameField>Имя</SettlementNameField>

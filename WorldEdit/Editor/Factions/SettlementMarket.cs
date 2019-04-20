@@ -6,51 +6,13 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
+using WorldEdit.Editor.Factions;
 using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    internal class SettlementMarket : EditWindow, IFWindow
+    internal sealed class SettlementMarket : FWindow
     {
-        class AllItemsMenu : EditWindow, IFWindow
-        {
-            public override Vector2 InitialSize => new Vector2(400, 500);
-            private Vector2 scrollPosition = Vector2.zero;
-
-            public override void DoWindowContents(Rect inRect)
-            {
-                Text.Font = GameFont.Small;
-
-                Widgets.Label(new Rect(0, 0, 450, 20), Translator.Translate("ItemListTitle"));
-
-                int defSize = DefDatabase<ThingDef>.DefCount * 30;
-                Rect scrollRectFact = new Rect(0, 50, 385, 400);
-                Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, defSize);
-                Widgets.BeginScrollView(scrollRectFact, ref scrollPosition, scrollVertRectFact);
-                int x = 0;
-                foreach (var item in DefDatabase<ThingDef>.AllDefs)
-                {
-                    if(Widgets.ButtonText(new Rect(0, x, 375, 20), item.label))
-                    {
-
-                    }
-                    x += 22;
-                }
-            }
-
-            public void Show()
-            {
-                if (Find.WindowStack.IsOpen(typeof(AllItemsMenu)))
-                {
-                    Log.Message("Currntly open...");
-                }
-                else
-                {
-                    Find.WindowStack.Add(this);
-                }
-            }
-        }
-
         public override Vector2 InitialSize => new Vector2(620, 700);
         private Vector2 scrollPosition = Vector2.zero;
 
@@ -60,12 +22,12 @@ namespace WorldEdit.Editor
         private Settlement selectedSettlement = null;
         private string[] stackCount;
 
-        private AllItemsMenu itemsMenu = null;
+        private ItemEditor itemsMenu = null;
 
         public SettlementMarket()
         {
             resizeable = false;
-            itemsMenu = new AllItemsMenu();
+            itemsMenu = new ItemEditor();
         }
         public override void DoWindowContents(Rect inRect)
         {
@@ -113,14 +75,15 @@ namespace WorldEdit.Editor
             }
         }
 
-        public void Show()
+        public void Show(Settlement settlement)
         {
-            if (Find.WindowStack.IsOpen(typeof(SettlementMarket)))
+            if (Find.WindowStack.IsOpen(this))
             {
                 Log.Message("Currntly open...");
             }
             else
             {
+                Init(settlement);
                 Find.WindowStack.Add(this);
             }
         }
@@ -138,20 +101,6 @@ namespace WorldEdit.Editor
             for (int i = 0; i < selectedSettlement.trader.StockListForReading.Count; i++)
             {
                 stackCount[i] = selectedSettlement.trader.StockListForReading[i].stackCount.ToString();
-            }
-        }
-
-        public void Show(Settlement settlement)
-        {
-            if (Find.WindowStack.IsOpen(typeof(SettlementMarket)))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                Init(settlement);
-
-                Find.WindowStack.Add(this);
             }
         }
     }

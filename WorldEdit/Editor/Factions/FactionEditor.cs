@@ -10,7 +10,7 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    internal class FactionEditor : EditWindow, IFWindow
+    internal sealed class FactionEditor : FWindow
     {
         public override Vector2 InitialSize => new Vector2(410, 530);
         private Vector2 scrollFieldsPos = Vector2.zero;
@@ -173,18 +173,6 @@ namespace WorldEdit.Editor
         private void SaveFaction()
         {
             Close();
-        }
-
-        public void Show()
-        {
-            if (Find.WindowStack.IsOpen(typeof(FactionEditor)))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                Find.WindowStack.Add(this);
-            }
         }
 
         public void Show(Faction faction)

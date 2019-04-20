@@ -13,7 +13,7 @@ namespace WorldEdit
     /// <summary>
     /// Небольшой инструментарий для обновления и рендеринга мира
     /// </summary>
-    internal class WorldUpdater
+    internal sealed class WorldUpdater
     {
         private readonly FloatRange BaseSizeRange = new FloatRange(0.9f, 1.1f);
         private readonly IntVec2 TexturesInAtlas = new IntVec2(2, 2);
@@ -157,7 +157,7 @@ namespace WorldEdit
         /// <param name="material">Материал</param>
         /// <param name="subMeshes">Список подслоев</param>
         /// <returns></returns>
-        protected LayerSubMesh GetSubMesh(Material material, List<LayerSubMesh> subMeshes)
+        private LayerSubMesh GetSubMesh(Material material, List<LayerSubMesh> subMeshes)
         {
             int subMeshIndex;
             return GetSubMesh(material, subMeshes, out subMeshIndex);
@@ -170,7 +170,7 @@ namespace WorldEdit
         /// <param name="subMeshes">Список подслоев</param>
         /// <param name="subMeshIndex"></param>
         /// <returns></returns>
-        protected LayerSubMesh GetSubMesh(Material material, List<LayerSubMesh> subMeshes, out int subMeshIndex)
+        private LayerSubMesh GetSubMesh(Material material, List<LayerSubMesh> subMeshes, out int subMeshIndex)
         {
             for (int i = 0; i < subMeshes.Count; i++)
             {

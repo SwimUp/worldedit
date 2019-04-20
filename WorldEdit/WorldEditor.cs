@@ -13,26 +13,40 @@ using Verse.Profile;
 
 namespace WorldEdit
 {
-    internal class MainMenu : GameComponent
+    internal sealed class WorldEditor : GameComponent
     {
         /// <summary>
         /// Включен ли редактор
         /// </summary>
         public static bool isEdit = false;
+
+        /// <summary>
+        /// Инициализирован ли редактор
+        /// </summary>
+        public static bool isInit = false;
+
         /// <summary>
         /// Редактор
         /// </summary>
         public static InGameEditor Editor = null;
 
+        /// <summary>
+        /// Updater мира
+        /// </summary>
         public static WorldUpdater WorldUpdater = null;
 
+        /// <summary>
+        /// Была ли загрузка из шаблона
+        /// </summary>
         public static bool isWorldTemplate = false;
 
-        public MainMenu()
+        public static WorldTemplate LoadedTemplate = null;
+
+        public WorldEditor()
         {
         }
 
-        public MainMenu(Game game)
+        public WorldEditor(Game game)
         {
         }
 
@@ -47,7 +61,6 @@ namespace WorldEdit
             private static bool Prefix(Rect rect, ref Rect __state)
             {
                 __state = rect;
-                isWorldTemplate = false;
                 return true;
             }
 
@@ -80,6 +93,11 @@ namespace WorldEdit
                     if (Widgets.ButtonText(new Rect(0, x, 290, 20), fileName))
                     {
                         isWorldTemplate = true;
+                        LoadedTemplate = new WorldTemplate()
+                        {
+                            FilePath = world,
+                            WorldName = fileName
+                        };
                         GameDataSaveLoader.LoadGame(Path.GetFileNameWithoutExtension(world));
                     }
                     x += 22;
@@ -88,59 +106,36 @@ namespace WorldEdit
                 Widgets.EndScrollView();
             }
         }
-    }
 
-    [HarmonyPatch(typeof(World))]
-    [HarmonyPatch("ExposeComponents")]
-    class WorldTemplateLoadHook
-    {
-        static void Postfix()
+        public static void InitEditor()
         {
-            if (MainMenu.isWorldTemplate)
+            if (isEdit)
             {
-                Find.WindowStack.Add(new CustomStartingSite());
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(Dialog_FileList))]
-    [HarmonyPatch("PostOpen")]
-    class GetSavesGamesConstructorHook
-    {
-        static void Postfix()
-        {
-            MainMenu.isWorldTemplate = false;
-        }
-    }
-
-    [HarmonyPatch(typeof(Dialog_SaveFileList))]
-    [HarmonyPatch("ReloadFiles")]
-    class GetSavesListHook
-    {
-        static void Postfix(Dialog_SaveFileList __instance)
-        {
-            ChangeFileList(__instance);
-        }
-
-        static void ChangeFileList(Dialog_SaveFileList instance)
-        {
-            object value = Utils.GetInstanceField(typeof(Dialog_SaveFileList), instance, "files");
-
-            if (value != null)
-            {
-                List<SaveFileInfo> infos = value as List<SaveFileInfo>;
-
-                if (infos != null)
+                if (!isInit)
                 {
-                    for (int i = 0; i < infos.Count; i++)
-                    {
-                        SaveFileInfo info = infos[i];
-
-                        if (info.FileInfo.Name.Contains("wtemplate_"))
-                            infos.Remove(info);
-                    }
+                    WorldUpdater = new WorldUpdater();
+                    Editor = new InGameEditor();
+                    isInit = true;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Базовая инициализация редактора
+    /// </summary>
+    [HarmonyPatch("PostOpen"), HarmonyPatch(typeof(Page_CreateWorldParams))]
+    class Page_CreateWorldParams_PostOpen_Patch
+    {
+        public static void Postfix()
+        {
+            WorldEditor.isEdit = false;
+            WorldEditor.isInit = false;
+
+            WorldEditor.WorldUpdater = null;
+            WorldEditor.Editor = null;
+
+            WorldEditor.LoadedTemplate = null;
         }
     }
 }

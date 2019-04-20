@@ -10,7 +10,7 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
-    internal class RoadAndRiversEditor : EditWindow, IFWindow
+    internal sealed class RoadAndRiversEditor : FWindow
     {
         public override Vector2 InitialSize => new Vector2(450, 400);
         private Vector2 scrollPosition = Vector2.zero;
@@ -47,21 +47,12 @@ namespace WorldEdit.Editor
         public RoadAndRiversEditor()
         {
             resizeable = false;
-            worldUpdater = MainMenu.WorldUpdater;
+            worldUpdater = WorldEditor.WorldUpdater;
 
             avaliableRoads = DefDatabase<RoadDef>.AllDefs.ToList();
             avaliableRivers = DefDatabase<RiverDef>.AllDefs.ToList();
         }
-        public void Show()
-        {
-            if (Find.WindowStack.IsOpen(typeof(RoadAndRiversEditor)))
-            {
-                return;
-            }
-
-            Find.WindowStack.Add(this);
-        }
-
+  
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Small;
@@ -159,7 +150,7 @@ namespace WorldEdit.Editor
                 worldGrid.OverlayRoad(path.Peek(i), path.Peek(i + 1), selectedRoad);
             }
 
-            worldUpdater.UpdateLayer(MainMenu.Editor.Layers["WorldLayer_Roads"]);
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
         }
         private void CreateRiver()
         {
@@ -176,7 +167,7 @@ namespace WorldEdit.Editor
                 worldGrid.OverlayRiver(path.Peek(i), path.Peek(i + 1), selectedRiver);
             }
 
-            worldUpdater.UpdateLayer(MainMenu.Editor.Layers["WorldLayer_Rivers"]);
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
         }
         private void DeleteRoad()
         {
@@ -190,7 +181,7 @@ namespace WorldEdit.Editor
 
             tile.potentialRoads = null;
 
-            worldUpdater.UpdateLayer(MainMenu.Editor.Layers["WorldLayer_Roads"]);
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
         }
 
         private void DeleteRangeRoad()
@@ -206,7 +197,7 @@ namespace WorldEdit.Editor
                 tile.potentialRoads = null;
             }
 
-            worldUpdater.UpdateLayer(MainMenu.Editor.Layers["WorldLayer_Roads"]);
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
         }
 
         private void DeleteRiver()
@@ -221,7 +212,7 @@ namespace WorldEdit.Editor
 
             tile.potentialRivers = null;
 
-            worldUpdater.UpdateLayer(MainMenu.Editor.Layers["WorldLayer_Rivers"]);
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
         }
 
         private void DeleteRangeRivers()
@@ -237,7 +228,7 @@ namespace WorldEdit.Editor
                 tile.potentialRivers = null;
             }
 
-            worldUpdater.UpdateLayer(MainMenu.Editor.Layers["WorldLayer_Rivers"]);
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
         }
     }
 }
