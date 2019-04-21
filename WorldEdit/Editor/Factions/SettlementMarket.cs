@@ -20,9 +20,10 @@ namespace WorldEdit.Editor
         /// Выбранное поселение
         /// </summary>
         private Settlement selectedSettlement = null;
-        private string[] stackCount;
 
         private ItemEditor itemsMenu = null;
+
+        internal List<Thing> stockList = new List<Thing>();
 
         public SettlementMarket()
         {
@@ -35,44 +36,46 @@ namespace WorldEdit.Editor
 
             Widgets.Label(new Rect(0, 0, 450, 20), Translator.Translate("SettlementMarketTitle"));
 
-            if (selectedSettlement.trader != null)
+            int defSize = stockList.Count * 45;
+            Rect scrollRectFact = new Rect(0, 50, 590, 495);
+            Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, defSize);
+            Widgets.DrawBox(new Rect(0, 49, 595, 500));
+            Widgets.BeginScrollView(scrollRectFact, ref scrollPosition, scrollVertRectFact);
+            int x = 0;
+            for (int i = 0; i < stockList.Count; i++)
             {
-                int defSize = selectedSettlement.trader.StockListForReading.Count * 120;
-                Rect scrollRectFact = new Rect(0, 50, 590, 495);
-                Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, defSize);
-                Widgets.DrawBox(new Rect(0, 49, 595, 500));
-                Widgets.BeginScrollView(scrollRectFact, ref scrollPosition, scrollVertRectFact);
-                int yButtonPos = 0;
-                for (int i = 0; i < selectedSettlement.trader.StockListForReading.Count; i++)
+                if (i >= stockList.Count)
+                    break;
+
+                Thing good = stockList[i];
+
+                Widgets.DrawBoxSolid(new Rect(5, x, 575, 40), new Color(0, 0, 0, 0.75f));
+                Widgets.Label(new Rect(5, x, 240, 40), good.Label);
+                int.TryParse(Widgets.TextField(new Rect(245, x, 215, 40), good.stackCount.ToString()), out good.stackCount);
+                if (Widgets.ButtonText(new Rect(460, x, 110, 40), Translator.Translate("DeleteGood")))
                 {
-                    Thing good = selectedSettlement.trader.StockListForReading[i];
-
-                    Widgets.DrawBoxSolid(new Rect(5, yButtonPos, 575, 110), new Color(0, 0, 0, 0.75f));
-                    Widgets.Label(new Rect(5, yButtonPos, 570, 20), good.Label);
-                    yButtonPos += 22;
-                    Widgets.Label(new Rect(5, yButtonPos, 100, 20), Translator.Translate("CountMarket"));
-                    Widgets.TextFieldNumeric(new Rect(110, yButtonPos, 460, 20), ref good.stackCount, ref stackCount[i], 0, int.MaxValue);
-                    yButtonPos += 22;
-                    Widgets.Label(new Rect(5, yButtonPos, 460, 20), $"{Translator.Translate("MarketValue")} {good.MarketValue}");
-                    yButtonPos += 22;
-                    if (Widgets.ButtonText(new Rect(5, yButtonPos, 600, 20), Translator.Translate("DeleteGood")))
-                    {
-                        selectedSettlement.trader.StockListForReading.Remove(good);
-                    }
-                    yButtonPos += 40;
+                    DeleteGood(good);
                 }
-                Widgets.EndScrollView();
+                x += 44;
             }
+            Widgets.EndScrollView();
 
-            if(Widgets.ButtonText(new Rect(0, 560, 610, 20), Translator.Translate("RegenerateStock")))
+            if (Widgets.ButtonText(new Rect(0, 560, 610, 20), Translator.Translate("RegenerateStock")))
             {
                 RegenerateStock();
             }
 
-            if(Widgets.ButtonText(new Rect(0, 590, 610, 20),Translator.Translate("AddNewItemIntoStock")))
+            if (Widgets.ButtonText(new Rect(0, 590, 610, 20), Translator.Translate("AddNewItemIntoStock")))
             {
-                itemsMenu.Show();
+                itemsMenu.Show(stockList);
             }
+        }
+
+        private void DeleteGood(Thing good)
+        {
+            selectedSettlement.trader.StockListForReading.Remove(good);
+
+            UpdateStock();
         }
 
         public void Show(Settlement settlement)
@@ -91,17 +94,20 @@ namespace WorldEdit.Editor
         private void RegenerateStock()
         {
             selectedSettlement.trader.TryDestroyStock();
+
+            UpdateStock();
+        }
+
+        private void UpdateStock()
+        {
+            stockList = selectedSettlement.trader.StockListForReading;
         }
 
         private void Init(Settlement settlement)
         {
             selectedSettlement = settlement;
 
-            stackCount = new string[selectedSettlement.trader.StockListForReading.Count];
-            for (int i = 0; i < selectedSettlement.trader.StockListForReading.Count; i++)
-            {
-                stackCount[i] = selectedSettlement.trader.StockListForReading[i].stackCount.ToString();
-            }
+            stockList = selectedSettlement.trader.StockListForReading;
         }
     }
 }

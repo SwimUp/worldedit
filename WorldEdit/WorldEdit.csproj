@@ -69,6 +69,7 @@
     <Compile Include="Editor\RoadAndRiversEditor.cs" />
     <Compile Include="Editor\Factions\SettlementMarket.cs" />
     <Compile Include="Editor\WorldObjectsEditor.cs" />
+    <Compile Include="HarmonyHooks\Dialog_SaveFileList_Load_Patch.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="HarmonyHooks\Dialog_FileList_Patch.cs" />
     <Compile Include="HarmonyHooks\Page_SelectStartingSite_Patch.cs" />

@@ -66,11 +66,6 @@ namespace WorldEdit.Editor
             }
             Widgets.EndScrollView();
 
-            if (Widgets.ButtonText(new Rect(0, 300, 490, 20), Translator.Translate("EditMarketList")))
-            {
-                settlementMarket.Show(newSettlement);
-            }
-
             if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("CreateNewSettlement")))
             {
                 CreateSettlement();

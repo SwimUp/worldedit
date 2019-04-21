@@ -110,7 +110,11 @@
   <RegenerateStock>Сгенерировать новые товары</RegenerateStock>
   <AddNewItemIntoStock>Добавить новый предмет</AddNewItemIntoStock>
   
-  <ItemListTitle>Выберите предмет</ItemListTitle>
+  <ItemListTitle>Добавление предмета</ItemListTitle>
+  <Category>Категория</Category>
+  <GenerateItem>Сгенерировать и добавить</GenerateItem>
+  <Quality>Качество</Quality>
+  <StackCount>Количество</StackCount>
   
   <WorldFeaturesEditor>Глобальные объекты</WorldFeaturesEditor>
   <WorldPrintsTitle>Глобальные надписи</WorldPrintsTitle>
