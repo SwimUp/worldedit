@@ -11,7 +11,7 @@ namespace WorldEdit
 {
     public sealed class WorldTemplateManager : FWindow
     {
-        public override Vector2 InitialSize => new Vector2(320, 600);
+        public override Vector2 InitialSize => new Vector2(320, 630);
         private Vector2 scrollPositionStoryteller = Vector2.zero;
         private Vector2 scrollPositionScenario = Vector2.zero;
 

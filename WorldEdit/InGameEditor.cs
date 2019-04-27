@@ -331,6 +331,12 @@ namespace WorldEdit
                 worldObjectsEditor.Show();
             }
 
+            yButtonPos += 35;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), Translator.Translate("SettlementMapEditor")))
+            {
+                GetOrGenerateMapUtility.GetOrGenerateMap(Find.WorldSelector.selectedTile, new IntVec3(120, 1, 120), null);
+            }
+
             if (Widgets.ButtonText(new Rect(0, inRect.height - 70, 270, 20), Translator.Translate("SaveWorldTemplate")))
             {
                 Find.WindowStack.Add(new WorldTemplateManager());
