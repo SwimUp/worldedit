@@ -1,26 +1,33 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
 
-  <EditorLabel>World edit</EditorLabel>
+  <EditorLabel>World editor</EditorLabel>
+  <WorldTemplates>Loaded templates</WorldTemplates>
   <isEnableEditorLabel>Enable</isEnableEditorLabel>
   
-  <DeleteSingleRoad>Delete single road</DeleteSingleRoad>
-  <DeleteRangeRoads>Delete range roads</DeleteRangeRoads>
-  <DeleteSingleRiver>Delete single river</DeleteSingleRiver>
-  <DeleteRangeRivers>Delete range rivers</DeleteRangeRivers>
+  <DeleteSingleRoad>Delete the selected road</DeleteSingleRoad>
+  <DeleteRangeRoads>Delete range of roads</DeleteRangeRoads>
+  <DeleteSingleRiver>Delete the selected river</DeleteSingleRiver>
+  <DeleteRangeRivers>Delete range of rivers</DeleteRangeRivers>
+  
+  <SaveWorldTemplate>Save world template</SaveWorldTemplate>
+  <SelectedStorytellerTitle>Storyteller</SelectedStorytellerTitle>
     
-  <StartTileLabel>Start tile</StartTileLabel>
-  <EndTileLabel>End tile</EndTileLabel>
-  <CreateRoadLabel>Create roads</CreateRoadLabel>
-  <CreateRiverLael>Create rivers</CreateRiverLael>
+  <StartTileLabel>Start</StartTileLabel>
+  <EndTileLabel>End</EndTileLabel>
+  <CreateRoadLabel>Create road(s)</CreateRoadLabel>
+  <CreateRiverLael>Create river(s)</CreateRiverLael>
+  
+  <ClearAllHillnses>Delete All Mountains</ClearAllHillnses>
+  <SetTileToAllMap>Set biome to all tiles</SetTileToAllMap>
   
   <UpdateAllTiles>Update all tiles</UpdateAllTiles>
   <UpdateAllTilesInfo>Updates information about all tiles</UpdateAllTilesInfo>
   <UpdateCustomLayer>Update layer</UpdateCustomLayer>
-  <UpdateCustomLayerInfo>Update the selected layer</UpdateCustomLayerInfo>
-  <UpdateImmediatelyON>Update immediatly [ON]</UpdateImmediatelyON>
-  <UpdateImmediatelyOFF>Update immediatly [OFF]</UpdateImmediatelyOFF>
-  <UpdateImmediatelyInfo>Enable/Disable immediatly update tile info</UpdateImmediatelyInfo>
+  <UpdateCustomLayerInfo>Updates the selected layer</UpdateCustomLayerInfo>
+  <UpdateImmediatelyON>Immediate update [ON]</UpdateImmediatelyON>
+  <UpdateImmediatelyOFF>Immediate update [OFF]</UpdateImmediatelyOFF>
+  <UpdateImmediatelyInfo>Enables immediate tile update</UpdateImmediatelyInfo>
   
   <Biome>Biome</Biome>
   <NoText>No</NoText>
@@ -28,6 +35,98 @@
   <Evelation>Evelation</Evelation>
   <Rainfall>Rainfall</Rainfall>
   <Swampiness>Swampiness</Swampiness>
-
+	
+  <FactionEditor>Faction editor</FactionEditor>
+  <RoadAndRiverEditor>Roads and rivers editor</RoadAndRiverEditor>
+  
+  <SetFraction>Set faction</SetFraction>
+  <AllFactionsList>All avaliable factions</AllFactionsList>
+  <AllSpawnedFactionsList>All spawn faction</AllSpawnedFactionsList>
+  <CustomFactionName>Faction name:</CustomFactionName>
+  <CustomFactionLore>Description:</CustomFactionLore>
+  <isVisitable>Visitable:</isVisitable>
+  <UseCustomColor>Color</UseCustomColor>
+  <RedLabel>Red</RedLabel>
+  <GreenLabel>Green</GreenLabel>
+  <BlueLabel>Blue</BlueLabel>
+  
+  <FactionManager>Faction management</FactionManager>
+  <SettlementManager>Settlement management</SettlementManager>
+  
+  <FactionManagerTitle>Factions on the map</FactionManagerTitle>
+  <RemoveSpawnedFaction>Delete faction</RemoveSpawnedFaction>
+  <DeleteAllSettlements>Delete all settlements</DeleteAllSettlements>
+  <AddNewFaction>Create new faction</AddNewFaction>
+  <EditSelectedFaction>Edit faction</EditSelectedFaction>
+  
+  <FactionCreatorTitle>Create new faction</FactionCreatorTitle>
+  <RandomizeFaction>Generate</RandomizeFaction>
+  <RandomizeName>Random name</RandomizeName>
+  <ClearFaction>Clear</ClearFaction>
+  <FactionDefName>Parent:</FactionDefName>
+  <FactionName>Name</FactionName>
+  <FactionDefeated>Defeated?</FactionDefeated>
+  <isDefeatedYES>Yes</isDefeatedYES>
+  <isDefeatedNO>No</isDefeatedNO>
+  <FactionRelative>Relations</FactionRelative>
+  <FactionInfoName>Faction:</FactionInfoName>
+  <FactionGoodness>Relation</FactionGoodness>
+  <FactionMelanin>???</FactionMelanin>
+  <ColorSpectrum>Color</ColorSpectrum>
+  <AddNewRelative>Add</AddNewRelative>
+  <DeleteRelative>Delete</DeleteRelative>
+  <GenerateRelative>Generate</GenerateRelative>
+  <FactionLeaderName>Leader</FactionLeaderName>
+  <CreateNewFaction>Create faction</CreateNewFaction>
+  
+  <FactionEditTitle>Edit faction</FactionEditTitle>
+  <SaveFaction>Save</SaveFaction>
+  
+  <AddNewSettlement>Create new settlement</AddNewSettlement>
+  <SettlementManagerTitle>Settlement on the map</SettlementManagerTitle>
+  <RemoveSpawnedSettlement>Delete settlement</RemoveSpawnedSettlement>
+  <EditSelectedSettlement>Editor settlement</EditSelectedSettlement>
+  <RemoveAllSpawnedSettlement>Delete all settlement</RemoveAllSpawnedSettlement>
+  <RemoveAllFeatures>Delete all features</RemoveAllFeatures>
+  
+  <SettlementCreatorTitle>Create new settlement</SettlementCreatorTitle>
+  <SettlementNameField>Name</SettlementNameField>
+  <CreateNewSettlement>Create new settlement</CreateNewSettlement>
+  
+  <SettlementEditTitle>Edit settlement</SettlementEditTitle>
+  <SettlementNameField>Name</SettlementNameField>
+  <SaveNewSettlement>Save</SaveNewSettlement>
+  
+  <AddRelativeTitle>Add relative</AddRelativeTitle>
+  <Cancel>Cancel</Cancel>
+  
+  <FixRelatives>Fix relation of the selected faction</FixRelatives>
+  
+  <SettlementMarketTitle>Goods</SettlementMarketTitle>
+  <EditMarketList>Goods</EditMarketList>
+  <CountMarket>Count:</CountMarket>
+  <MarketValue>Market value:</MarketValue>
+  <DeleteGood>Delete</DeleteGood>
+  <RegenerateStock>Generate new goods</RegenerateStock>
+  <AddNewItemIntoStock>Add custom item</AddNewItemIntoStock>
+  
+  <ItemListTitle>Custom items</ItemListTitle>
+  <Category>Category</Category>
+  <GenerateItem>Generate and add</GenerateItem>
+  <Quality>Quality</Quality>
+  <StackCount>Stack count</StackCount>
+  
+  <WorldFeaturesEditor>World Features</WorldFeaturesEditor>
+  <WorldPrintsTitle>World Features</WorldPrintsTitle>
+  <DeleteFeature>Delete feature</DeleteFeature>
+  <WorldFeatureName>Name</WorldFeatureName>
+  <CreateNewFeature>Create</CreateNewFeature>
+  <RotateFeature>Angle</RotateFeature>
+  <FeatureLengthMax>Size</FeatureLengthMax>
+  <CreateNewWorldPrint>Create new feature</CreateNewWorldPrint>
+  
+  <SelectScenario>Scenario</SelectScenario>
+  <SelectStorytellerTitle>Storyteller</SelectStorytellerTitle>
+  <CreateTemplate>Create template</CreateTemplate>
   
 </LanguageData>
