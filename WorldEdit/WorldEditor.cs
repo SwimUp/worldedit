@@ -54,20 +54,18 @@ namespace WorldEdit
         {
             typeof(Rect)
         })]
-        class Page_CreateWorldParams_DoWindowContents_Patch
+        private static class Page_CreateWorldParams_DoWindowContents_Patch
         {
             private static Vector2 scrollPositionWorlds = Vector2.zero;
-            
+
             private static bool Prefix(Rect rect, ref Rect __state)
             {
-                Log.Message("HOOK");
                 __state = rect;
                 return true;
             }
 
-            private static void Postfix(ref Rect __state)
+            private static void Postfix(ref Rect __state, ref Page_CreateWorldParams __instance)
             {
-                Log.Message("HOOK2");
                 GUI.BeginGroup(__state);
                 float y = 280f;
                 Rect baseRect = new Rect(0f, y, 200f, 30f);
