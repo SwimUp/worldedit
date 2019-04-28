@@ -13,93 +13,9 @@ namespace WorldEdit.Editor
 {
     public sealed class WorldObjectsEditor : FWindow
     {
-        private class CreateWorldFeature : FWindow
-        {
-            public override Vector2 InitialSize => new Vector2(350, 150);
-
-            /// <summary>
-            /// Имя надписи
-            /// </summary>
-            private string featureName = string.Empty;
-
-            /// <summary>
-            /// Поворот
-            /// </summary>
-            private float rotate = 0f;
-            private string rotateBuff = string.Empty;
-
-            /// <summary>
-            /// Размер
-            /// </summary>
-            private float maxLength = 10f;
-            private string maxLengthBuff = "1";
-
-            public CreateWorldFeature()
-            {
-                resizeable = false;
-            }
-
-            public override void DoWindowContents(Rect inRect)
-            {
-                Text.Font = GameFont.Small;
-
-                Widgets.Label(new Rect(0, 0, 330, 20), Translator.Translate("CreateNewFeature"));
-
-                Widgets.Label(new Rect(0, 25, 120, 20), Translator.Translate("WorldFeatureName"));
-                featureName = Widgets.TextField(new Rect(110, 25, 215, 20), featureName);
-
-                Widgets.Label(new Rect(0, 50, 120, 20), Translator.Translate("RotateFeature"));
-                Widgets.TextFieldNumeric(new Rect(110, 50, 215, 20), ref rotate, ref rotateBuff, 0, 360);
-
-                Widgets.Label(new Rect(0, 75, 120, 20), Translator.Translate("FeatureLengthMax"));
-                Widgets.TextFieldNumeric(new Rect(110, 75, 215, 20), ref maxLength, ref maxLengthBuff, 1f, 10000f);
-
-                if (Widgets.ButtonText(new Rect(0, 110, 345, 20), Translator.Translate("CreateNewWorldPrint")))
-                {
-                    CreateNew();
-                }
-            }
-
-            private void CreateNew()
-            {
-                if (featureName == null)
-                    return;
-
-                if (maxLength <= 0)
-                    return;
-
-                int tile = Find.WorldSelector.selectedTile;
-
-                if (tile < 0)
-                    return;
-
-                List<int> members = new List<int>();
-                members.Add(tile);
-
-                WorldFeature worldFeature = new WorldFeature
-                {
-                    uniqueID = Find.UniqueIDsManager.GetNextWorldFeatureID(),
-                    def = DefDatabase<FeatureDef>.GetRandom(),
-                    name = featureName
-                };
-                WorldGrid worldGrid = Find.WorldGrid;
-                for (int i = 0; i < members.Count; i++)
-                {
-                    worldGrid[members[i]].feature = worldFeature;
-                }
-                worldFeature.drawCenter = worldGrid.GetTileCenter(tile);
-                worldFeature.maxDrawSizeInTiles = maxLength;
-                worldFeature.drawAngle = rotate;
-
-                Find.WorldFeatures.features.Add(worldFeature);
-
-                Find.WorldFeatures.textsCreated = false;
-                Find.WorldFeatures.UpdateFeatures();
-            }
-        }
-
-        public override Vector2 InitialSize => new Vector2(330, 450);
+        public override Vector2 InitialSize => new Vector2(630, 450);
         private Vector2 scrollPosition = Vector2.zero;
+        private Vector2 scrollPositionWb = Vector2.zero;
 
         /// <summary>
         /// Выбарнная надпись
@@ -108,18 +24,30 @@ namespace WorldEdit.Editor
         /// <summary>
         /// Редактор надписей
         /// </summary>
-        private CreateWorldFeature featureCreator;
+        private WorldFeatureCreator featureCreator;
+
+
+        private WorldObjectsCreator objectsCreator = null;
+        private WorldObject selectedObject = null;
+        private List<WorldObject> allObjects => Find.WorldObjects.AllWorldObjects.Where(o => o.def != WorldObjectDefOf.Settlement).ToList();
 
         public WorldObjectsEditor()
         {
             resizeable = false;
-            featureCreator = new CreateWorldFeature();
+            featureCreator = new WorldFeatureCreator();
+            objectsCreator = new WorldObjectsCreator();
         }
 
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Small;
 
+            WorldPrintsMenu();
+            WorldObjectsMenu();
+        }
+
+        private void WorldPrintsMenu()
+        {
             Widgets.Label(new Rect(0, 0, 300, 20), Translator.Translate("WorldPrintsTitle"));
 
             int size1 = Find.WorldFeatures.features.Count * 30;
@@ -129,7 +57,7 @@ namespace WorldEdit.Editor
             int x = 0;
             foreach (var feat in Find.WorldFeatures.features)
             {
-                if(Widgets.ButtonText(new Rect(0, x, 290, 20), feat.name))
+                if (Widgets.ButtonText(new Rect(0, x, 290, 20), feat.name))
                 {
                     selectedFeature = feat;
                 }
@@ -150,6 +78,57 @@ namespace WorldEdit.Editor
             if (Widgets.ButtonText(new Rect(0, 390, 300, 20), Translator.Translate("RemoveAllFeatures")))
             {
                 RemoveAllFeatures();
+            }
+        }
+
+        private void WorldObjectsMenu()
+        {
+            Widgets.Label(new Rect(310, 0, 300, 20), Translator.Translate("WorldObjectsTitle"));
+
+            int size = allObjects.Count * 30;
+            Rect scrollRectFact = new Rect(310, 50, 300, 280);
+            Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, size);
+            Widgets.BeginScrollView(scrollRectFact, ref scrollPositionWb, scrollVertRectFact);
+            int x = 0;
+            foreach (var obj in allObjects)
+            {
+                if (Widgets.ButtonText(new Rect(0, x, 290, 20), $"[{obj.Tile}] {obj.def.defName}"))
+                {
+                    selectedObject = obj;
+                }
+                x += 22;
+            }
+            Widgets.EndScrollView();
+
+            if (Widgets.ButtonText(new Rect(310, 340, 300, 20), Translator.Translate("CreateNewObject")))
+            {
+                objectsCreator.Show();
+            }
+
+            if (Widgets.ButtonText(new Rect(310, 365, 300, 20), Translator.Translate("DeleteObject")))
+            {
+                DeleteWorldObject();
+            }
+
+            if (Widgets.ButtonText(new Rect(310, 390, 300, 20), Translator.Translate("RemoveAllObjects")))
+            {
+                RemoveAllObjects();
+            }
+        }
+
+        private void DeleteWorldObject()
+        {
+            if (selectedObject == null)
+                return;
+
+            Find.WorldObjects.Remove(selectedObject);
+        }
+
+        private void RemoveAllObjects()
+        {
+            for(int i = 0; i < allObjects.Count; i++)
+            {
+                Find.WorldObjects.Remove(allObjects[i]);
             }
         }
 

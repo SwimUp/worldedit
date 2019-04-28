@@ -33,16 +33,17 @@ namespace WorldEdit.HarmonyHooks
 
             if (value != null)
             {
-                List<SaveFileInfo> infos = value as List<SaveFileInfo>;
+                List<SaveFileInfo> origin = value as List<SaveFileInfo>;
+                List<SaveFileInfo> copy = new List<SaveFileInfo>(origin);
 
-                if (infos != null)
+                if (copy != null)
                 {
-                    for (int i = 0; i < infos.Count; i++)
+                    foreach(var info in copy)
                     {
-                        SaveFileInfo info = infos[i];
-
-                        if (info.FileInfo.Name.Contains("wtemplate_"))
-                            infos.Remove(info);
+                        if (info.FileInfo.Name.Contains("wtemplate"))
+                        {
+                            origin.Remove(info);
+                        }
                     }
                 }
             }

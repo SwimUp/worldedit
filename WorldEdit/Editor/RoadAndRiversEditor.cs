@@ -78,9 +78,17 @@ namespace WorldEdit.Editor
             {
                 DeleteRangeRivers();
             }
+            if (Widgets.ButtonText(new Rect(0, 50, 200, 20), Translator.Translate("DeleteAllRoads")))
+            {
+                DeleteAllRoads();
+            }
+            if (Widgets.ButtonText(new Rect(210, 50, 200, 20), Translator.Translate("DeleteAllRivers")))
+            {
+                DeleteAllRivers();
+            }
 
             int roadListLength = avaliableRoads.Count * 25;
-            Rect roadScrollRect = new Rect(0, 50, 200, 200);
+            Rect roadScrollRect = new Rect(0, 80, 200, 200);
             Rect roadScrollVertRect = new Rect(0, 0, roadScrollRect.x, roadListLength);
             int yButtonPos = 0;
             Widgets.BeginScrollView(roadScrollRect, ref scrollPosition, roadScrollVertRect);
@@ -93,7 +101,7 @@ namespace WorldEdit.Editor
                 yButtonPos += 22;
             }
             Widgets.EndScrollView();
-            yButtonPos = 220;
+            yButtonPos = 295;
             Widgets.Label(new Rect(0, yButtonPos, 50, 20), Translator.Translate("StartTileLabel"));
             roadId1 = Widgets.TextField(new Rect(65, yButtonPos, 50, 20), roadId1);
             yButtonPos += 30;
@@ -105,9 +113,9 @@ namespace WorldEdit.Editor
                 CreateRoad();
             }
 
-            yButtonPos = 50;
+            yButtonPos = 80;
             int riverListLength = avaliableRivers.Count * 25;
-            Rect riverScrollRect = new Rect(210, 50, 200, 200);
+            Rect riverScrollRect = new Rect(210, 80, 200, 200);
             Rect riverScrollVertRect = new Rect(0, 0, riverScrollRect.x, riverListLength);
             Widgets.BeginScrollView(riverScrollRect, ref riverScrollPosition, riverScrollRect);
             foreach (var river in avaliableRivers)
@@ -119,7 +127,7 @@ namespace WorldEdit.Editor
                 yButtonPos += 22;
             }
             Widgets.EndScrollView();
-            yButtonPos = 220;
+            yButtonPos = 295;
             Widgets.Label(new Rect(210, yButtonPos, 50, 20), Translator.Translate("StartTileLabel"));
             riverId1 = Widgets.TextField(new Rect(265, yButtonPos, 50, 20), riverId1);
             yButtonPos += 30;
@@ -130,9 +138,35 @@ namespace WorldEdit.Editor
             {
                 CreateRiver();
             }
+            yButtonPos += 30;
+            Widgets.Label(new Rect(0, yButtonPos, 430, 20), $"Selected tile ID: {Find.WorldSelector.selectedTile}");
 
             Widgets.EndScrollView();
 
+        }
+
+        private void DeleteAllRoads()
+        {
+            for(int i = 0; i < Find.WorldGrid.TilesCount; i++)
+            {
+                Tile tile = Find.WorldGrid[i];
+
+                 tile.potentialRoads = null;
+            }
+
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
+        }
+
+        private void DeleteAllRivers()
+        {
+            for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
+            {
+                Tile tile = Find.WorldGrid[i];
+
+                tile.potentialRivers = null;
+            }
+
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
         }
 
         private void CreateRoad()

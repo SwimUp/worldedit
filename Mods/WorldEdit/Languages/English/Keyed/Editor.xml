@@ -9,6 +9,8 @@
   <DeleteRangeRoads>Delete range of roads</DeleteRangeRoads>
   <DeleteSingleRiver>Delete the selected river</DeleteSingleRiver>
   <DeleteRangeRivers>Delete range of rivers</DeleteRangeRivers>
+  <DeleteAllRoads>Удалить все дороги</DeleteAllRoads>
+  <DeleteAllRivers>Удалить все реки</DeleteAllRivers>
   
   <SaveWorldTemplate>Save world template</SaveWorldTemplate>
   <SelectedStorytellerTitle>Storyteller</SelectedStorytellerTitle>
@@ -20,6 +22,11 @@
   
   <ClearAllHillnses>Delete All Mountains</ClearAllHillnses>
   <SetTileToAllMap>Set biome to all tiles</SetTileToAllMap>
+  
+  <SetHillnesToAllMap>Установить горы на всю карту</SetHillnesToAllMap>
+  <SetHillnesToAllBiome>Установить горы на тайлы выбранного биома</SetHillnesToAllBiome>
+  <SetToAllMap>Установить на всю карту</SetToAllMap>
+  <SetToAllBiome>Установить на выбранный биом</SetToAllBiome>
   
   <UpdateAllTiles>Update all tiles</UpdateAllTiles>
   <UpdateAllTilesInfo>Updates information about all tiles</UpdateAllTilesInfo>
@@ -116,7 +123,7 @@
   <Quality>Quality</Quality>
   <StackCount>Stack count</StackCount>
   
-  <WorldFeaturesEditor>World Features</WorldFeaturesEditor>
+  <WorldFeaturesEditor>World Objects</WorldFeaturesEditor>
   <WorldPrintsTitle>World Features</WorldPrintsTitle>
   <DeleteFeature>Delete feature</DeleteFeature>
   <WorldFeatureName>Name</WorldFeatureName>
@@ -128,5 +135,11 @@
   <SelectScenario>Scenario</SelectScenario>
   <SelectStorytellerTitle>Storyteller</SelectStorytellerTitle>
   <CreateTemplate>Create template</CreateTemplate>
+  
+  <CreateNewObject>Add world object</CreateNewObject>
+  <DeleteObject>Delete selected object</DeleteObject>
+  <RemoveAllObjects>Delete all objects</RemoveAllObjects>
+  
+   <ThreatPoint>Threat points (empty for auto)</ThreatPoint>
   
 </LanguageData>

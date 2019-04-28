@@ -10,14 +10,7 @@ namespace WorldEdit.Interfaces
     {
         public virtual void Show()
         {
-            if (Find.WindowStack.IsOpen(this))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                Find.WindowStack.Add(this);
-            }
+            Find.WindowStack.Add(this);
         }
     }
 }

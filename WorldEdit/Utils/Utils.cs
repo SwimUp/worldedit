@@ -1,8 +1,12 @@
-﻿using System;
+﻿using RimWorld;
+using RimWorld.Planet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using UnityEngine;
+using Verse;
 
 namespace WorldEdit
 {
@@ -39,6 +43,14 @@ namespace WorldEdit
                 | BindingFlags.Static;
             PropertyInfo property = type.GetProperty(propertyName, bindFlags);
             return property.GetValue(instance, null);
+        }
+
+        public static void CreateWorldObject(WorldObjectDef def, int tile, Faction faction = null)
+        {
+            WorldObject worldObject = WorldObjectMaker.MakeWorldObject(def);
+            worldObject.Tile = tile;
+            worldObject.SetFaction(faction);
+            Find.WorldObjects.Add(worldObject);
         }
     }
 }

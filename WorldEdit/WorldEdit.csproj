@@ -38,6 +38,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>Libs\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Rainbeau%27s Realistic Planets">
+      <HintPath>..\..\..\..\Games\RimWorld v1.0.2231\Mods\1571623829 [RF] Realistic Planets [1.0]\Assemblies\Rainbeau's Realistic Planets.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -68,8 +72,16 @@
     <Compile Include="Editor\LayersWindow.cs" />
     <Compile Include="Editor\RoadAndRiversEditor.cs" />
     <Compile Include="Editor\Factions\SettlementMarket.cs" />
+    <Compile Include="Editor\WorldObjectsCreator.cs" />
+    <Compile Include="Editor\WorldFeatureCreator.cs" />
     <Compile Include="Editor\WorldObjectsEditor.cs" />
-    <Compile Include="HarmonyHooks\Dialog_SaveFileList_Load_Patch.cs" />
+    <Compile Include="Editor\WorldObjectsMenu\AbandonedSettlementMenu.cs" />
+    <Compile Include="Editor\WorldObjectsMenu\EscapeShipMenu.cs" />
+    <Compile Include="Editor\WorldObjectsMenu\SingleObjectEditor.cs" />
+    <Compile Include="Editor\WorldObjectsMenu\StashMenu.cs" />
+    <Compile Include="Editor\WorldObjectsMenu\PreciousLumpMenu.cs" />
+    <Compile Include="HarmonyHooks\MainMenuHooks.cs" />
+    <Compile Include="HarmonyHooks\RP_Patch.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="HarmonyHooks\Dialog_FileList_Patch.cs" />
     <Compile Include="HarmonyHooks\Page_SelectStartingSite_Patch.cs" />
