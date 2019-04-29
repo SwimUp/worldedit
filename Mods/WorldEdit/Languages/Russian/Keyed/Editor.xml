@@ -171,5 +171,10 @@
   <ThreatTypes>Угрозы</ThreatTypes>
   <OpenPawnMenu>Настроить пешек</OpenPawnMenu>
   <SaveRefugeeList>Сохранить</SaveRefugeeList>
+  <AddNewRefugee>Добавить</AddNewRefugee>
+  <TraitLabel>Трейт</TraitLabel>
+  <DegreeLabel>Степень (в случае ошибки, уменьшите или увеличьте число)</DegreeLabel>
+  <AddNewTrait>Добавить</AddNewTrait>
+  <ModifyHealth>Изменить</ModifyHealth>
   
 </LanguageData>

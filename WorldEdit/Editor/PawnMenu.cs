@@ -3,16 +3,269 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
     internal class PawnMenu : Page
     {
+        private class AddTraitMenu : FWindow
+        {
+            public override Vector2 InitialSize => new Vector2(250, 150);
+            private TraitDef trait = DefDatabase<TraitDef>.GetRandom();
+            private Pawn pawn;
+
+            IntRange range = new IntRange();
+
+            public AddTraitMenu(Pawn pawn)
+            {
+                resizeable = false;
+
+                this.pawn = pawn;
+            }
+
+            public override void DoWindowContents(Rect inRect)
+            {
+                Widgets.Label(new Rect(0, 15, 70, 20), Translator.Translate("TraitLabel"));
+                if(Widgets.ButtonText(new Rect(80, 15, 160, 20), trait.defName))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    foreach (var trait in DefDatabase<TraitDef>.AllDefsListForReading)
+                    {
+                        list.Add(new FloatMenuOption(trait.defName, delegate
+                        {
+                            this.trait = trait;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+
+                Widgets.IntRange(new Rect(5, 50, 230, 40), 454325, ref range, 0, 2, Translator.Translate("DegreeLabel"));
+
+                if (Widgets.ButtonText(new Rect(0, 110, 240, 20), Translator.Translate("AddNewTrait")))
+                {
+                    AddTrait();
+                }
+
+            }
+
+            private void AddTrait()
+            {
+                pawn.story.traits.GainTrait(new Trait(trait, range.max));
+                Close();
+            }
+        }
+
+        private class HealthMenu : FWindow
+        {
+            private Vector2 scrollPosition = Vector2.zero;
+
+            private bool highlight = true;
+
+            private bool showAllHediffs = false;
+
+            public const float TopPadding = 20f;
+
+            private readonly Color HighlightColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+
+            private readonly Color StaticHighlightColor = new Color(0.75f, 0.75f, 0.85f, 1f);
+
+            private readonly Texture2D BleedingIcon = ContentFinder<Texture2D>.Get("UI/Icons/Medical/Bleeding");
+
+            public override Vector2 InitialSize => new Vector2(400, 600);
+
+            private Pawn pawn;
+            public HealthMenu(Pawn p)
+            {
+                pawn = p;
+                resizeable = false;
+            }
+
+            public override void DoWindowContents(Rect inRect)
+            {
+                Widgets.Label(new Rect(0, 5, 390, 20), Translator.Translate("HeddifsCurrent"));
+                int defSize = 500;
+                Rect scrollRectFact = new Rect(0, 30, 390, 200);
+                Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, defSize);
+                Widgets.BeginScrollView(scrollRectFact, ref scrollPosition, scrollVertRectFact);
+                float curY = 0f;
+                foreach (IGrouping<BodyPartRecord, Hediff> item in VisibleHediffGroupsInOrder(pawn, true))
+                {
+                    DrawHediffRow(inRect, pawn, item, ref curY);
+                }
+                Widgets.EndScrollView();
+            }
+
+            private void DrawHediffRow(Rect rect, Pawn pawn, IEnumerable<Hediff> diffs, ref float curY)
+            {
+                float num = rect.width * 0.375f;
+                float width = rect.width - num - 20f;
+                BodyPartRecord part = diffs.First().Part;
+                float a = (part != null) ? Text.CalcHeight(part.LabelCap, num) : Text.CalcHeight("WholeBody".Translate(), num);
+                float num2 = 0f;
+                float num3 = curY;
+                float num4 = 0f;
+                foreach (IGrouping<int, Hediff> item in from x in diffs
+                                                        group x by x.UIGroupKey)
+                {
+                    int num5 = item.Count();
+                    string text = item.First().LabelCap;
+                    if (num5 != 1)
+                    {
+                        text = text + " x" + num5.ToString();
+                    }
+                    num4 += Text.CalcHeight(text, width);
+                }
+                num2 = num4;
+                Rect rect2 = new Rect(0f, curY, rect.width, Mathf.Max(a, num2));
+                DoRightRowHighlight(rect2);
+                if (part != null)
+                {
+                    GUI.color = HealthUtility.GetPartConditionLabel(pawn, part).Second;
+                    Widgets.Label(new Rect(0f, curY, num, 100f), part.LabelCap);
+                }
+                else
+                {
+                    GUI.color = HealthUtility.DarkRedColor;
+                    Widgets.Label(new Rect(0f, curY, num, 100f), "WholeBody".Translate());
+                }
+                GUI.color = Color.white;
+                foreach (IGrouping<int, Hediff> item2 in from x in diffs
+                                                         group x by x.UIGroupKey)
+                {
+                    int num6 = 0;
+                    Hediff hediff = null;
+                    Texture2D texture2D = null;
+                    TextureAndColor textureAndColor = null;
+                    float num7 = 0f;
+                    foreach (Hediff item3 in item2)
+                    {
+                        if (num6 == 0)
+                        {
+                            hediff = item3;
+                        }
+                        textureAndColor = item3.StateIcon;
+                        if (item3.Bleeding)
+                        {
+                            texture2D = BleedingIcon;
+                        }
+                        num7 += item3.BleedRate;
+                        num6++;
+                    }
+                    string text2 = hediff.LabelCap;
+                    if (num6 != 1)
+                    {
+                        text2 = text2 + " x" + num6.ToStringCached();
+                    }
+                    GUI.color = hediff.LabelColor;
+                    float num8 = Text.CalcHeight(text2, width);
+                    Rect rect3 = new Rect(num, curY, width, num8);
+                    Widgets.Label(rect3, text2);
+                    GUI.color = Color.white;
+                    Rect rect4 = new Rect(rect2.xMax - 20f, curY, 20f, 20f);
+                    if ((bool)texture2D)
+                    {
+                        Rect position = rect4.ContractedBy(GenMath.LerpDouble(0f, 0.6f, 5f, 0f, Mathf.Min(num7, 1f)));
+                        GUI.DrawTexture(position, texture2D);
+                        rect4.x -= rect4.width;
+                    }
+                    if (textureAndColor.HasValue)
+                    {
+                        GUI.color = textureAndColor.Color;
+                        GUI.DrawTexture(rect4, textureAndColor.Texture);
+                        GUI.color = Color.white;
+                        rect4.x -= rect4.width;
+                    }
+                    curY += num8;
+                }
+                GUI.color = Color.white;
+                curY = num3 + Mathf.Max(a, num2);
+                /*
+                if (Widgets.ButtonInvisible(rect2))
+                {
+                    EntryClicked(diffs, pawn);
+                }
+                TooltipHandler.TipRegion(rect2, new TipSignal(() => GetTooltip(diffs, pawn, part), (int)curY + 7857));
+                */
+            }
+
+            private IEnumerable<IGrouping<BodyPartRecord, Hediff>> VisibleHediffGroupsInOrder(Pawn pawn, bool showBloodLoss)
+            {
+                foreach (IGrouping<BodyPartRecord, Hediff> item in from x in VisibleHediffs(pawn, showBloodLoss)
+                                                                   group x by x.Part into x
+                                                                   orderby GetListPriority(x.First().Part) descending
+                                                                   select x)
+                {
+                    yield return item;
+                }
+            }
+
+            private float GetListPriority(BodyPartRecord rec)
+            {
+                if (rec == null)
+                {
+                    return 9999999f;
+                }
+                return (float)((int)rec.height * 10000) + rec.coverageAbsWithChildren;
+            }
+
+            private IEnumerable<Hediff> VisibleHediffs(Pawn pawn, bool showBloodLoss)
+            {
+                if (!showAllHediffs)
+                {
+                    List<Hediff_MissingPart> mpca = pawn.health.hediffSet.GetMissingPartsCommonAncestors();
+                    for (int i = 0; i < mpca.Count; i++)
+                    {
+                        yield return mpca[i];
+                    }
+                    IEnumerable<Hediff> visibleDiffs = pawn.health.hediffSet.hediffs.Where(delegate (Hediff d)
+                    {
+                        if (d is Hediff_MissingPart)
+                        {
+                            return false;
+                        }
+                        if (!d.Visible)
+                        {
+                            return false;
+                        }
+                        return (!showBloodLoss && d.def == HediffDefOf.BloodLoss) ? false : true;
+                    });
+                    foreach (Hediff item in visibleDiffs)
+                    {
+                        yield return item;
+                    }
+                }
+                else
+                {
+                    foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
+                    {
+                        yield return hediff;
+                    }
+                }
+            }
+
+            private void DoRightRowHighlight(Rect rowRect)
+            {
+                if (highlight)
+                {
+                    GUI.color = StaticHighlightColor;
+                    GUI.DrawTexture(rowRect, TexUI.HighlightTex);
+                }
+                highlight = !highlight;
+                if (Mouse.IsOver(rowRect))
+                {
+                    GUI.color = HighlightColor;
+                    GUI.DrawTexture(rowRect, TexUI.HighlightTex);
+                }
+            }
+        }
+
         private Pawn curPawn;
 
         private static readonly Vector2 PawnPortraitSize = new Vector2(100f, 140f);
@@ -35,17 +288,9 @@ namespace WorldEdit.Editor
 
         private static List<SkillDef> skillDefsInListOrderCached;
 
-        private const float SkillWidth = 240f;
-
         public const float SkillHeight = 24f;
 
         public const float SkillYSpacing = 3f;
-
-        private const float LeftEdgeMargin = 6f;
-
-        private const float IncButX = 205f;
-
-        private const float IncButSpacing = 10f;
 
         private static readonly Color DisabledSkillColor = new Color(1f, 1f, 1f, 0.5f);
 
@@ -55,14 +300,9 @@ namespace WorldEdit.Editor
 
         private static Texture2D SkillBarFillTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
 
-        private int SkillsPerColumn = -1;
-
         public override string PageTitle => "CreateCharacters".Translate();
 
         private List<Pawn> allPawns = new List<Pawn>();
-
-        private string test;
-
         public PawnMenu(List<Pawn> selectedPawns)
         {
             allPawns = selectedPawns;
@@ -188,6 +428,10 @@ namespace WorldEdit.Editor
             rect3.height = 200f;
             Text.Font = GameFont.Medium;
             Widgets.Label(rect3, "Health".Translate());
+            if (Widgets.ButtonText(new Rect(rect3.x + 130f, rect3.y, 120f, 20f), Translator.Translate("ModifyHealth")))
+            {
+                Find.WindowStack.Add(new HealthMenu(curPawn));
+            }
             Text.Font = GameFont.Small;
             rect3.yMin += 35f;
             HealthCardUtility.DrawHediffListing(rect3, curPawn, showBloodLoss: true);
@@ -197,43 +441,6 @@ namespace WorldEdit.Editor
             Text.Font = GameFont.Small;
             rect4.yMin += 35f;
             SocialCardUtility.DrawRelationsAndOpinions(rect4, curPawn);
-        }
-
-        private void DrawSkillSummaries(Rect rect)
-        {
-            rect.xMin += 10f;
-            rect.xMax -= 10f;
-            Widgets.DrawMenuSection(rect);
-            rect = rect.ContractedBy(17f);
-            Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(rect.min, new Vector2(rect.width, 45f)), "TeamSkills".Translate());
-            Text.Font = GameFont.Small;
-            rect.yMin += 45f;
-            rect = rect.LeftPart(0.25f);
-            rect.height = 27f;
-            List<SkillDef> allDefsListForReading = DefDatabase<SkillDef>.AllDefsListForReading;
-            if (SkillsPerColumn < 0)
-            {
-                SkillsPerColumn = Mathf.CeilToInt((float)(from sd in allDefsListForReading
-                                                          where sd.pawnCreatorSummaryVisible
-                                                          select sd).Count() / 4f);
-            }
-            int num = 0;
-            for (int i = 0; i < allDefsListForReading.Count; i++)
-            {
-                SkillDef skillDef = allDefsListForReading[i];
-                if (skillDef.pawnCreatorSummaryVisible)
-                {
-                    Rect r = rect;
-                    r.x = rect.x + rect.width * (float)(num / SkillsPerColumn);
-                    r.y = rect.y + rect.height * (float)(num % SkillsPerColumn);
-                    r.height = 24f;
-                    r.width -= 4f;
-                    Pawn pawn = FindBestSkillOwner(skillDef);
-                    SkillUI.DrawSkill(pawn.skills.GetSkill(skillDef), r.Rounded(), SkillUI.SkillDrawMode.Menu, pawn.Name.ToString());
-                    num++;
-                }
-            }
         }
 
         private Pawn FindBestSkillOwner(SkillDef skill)
@@ -257,12 +464,10 @@ namespace WorldEdit.Editor
             curPawn = DownedRefugeeQuestUtility.GenerateRefugee(-1);
         }
 
-
         protected override void DoNext()
         {
             Close();
         }
-
         public void SelectPawn(Pawn c)
         {
             if (c != curPawn)
@@ -368,6 +573,7 @@ namespace WorldEdit.Editor
                     num -= 40f;
                 }
             }
+
             string label = pawn.MainDesc(writeAge: true);
             Rect rect9 = new Rect(0f, 45f, rect.width, 60f);
             Widgets.Label(rect9, label);
@@ -419,6 +625,12 @@ namespace WorldEdit.Editor
                                     {
                                         SkillDef skillDef = skillDefsInListOrderCached[j];
                                         pawn.skills.GetSkill(skillDef).Notify_SkillDisablesChanged();
+                                    }
+
+                                    MethodInfo cache = typeof(Pawn_StoryTracker).GetMethod("Notify_TraitChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                    if(cache != null)
+                                    {
+                                        cache.Invoke(pawn.story, null);
                                     }
                                 }));
                             }
@@ -484,7 +696,11 @@ namespace WorldEdit.Editor
             Widgets.Label(rect14, text);
             num2 += 100f;
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, num2, 200f, 30f), "Traits".Translate());
+            if(Widgets.ButtonText(new Rect(0f, num2, 200f, 30f), "Traits".Translate()))
+            {
+                Find.WindowStack.Add(new AddTraitMenu(pawn));
+            }
+            //Widgets.Label(new Rect(0f, num2, 200f, 30f), "Traits".Translate());
             num2 += 30f;
             Text.Font = GameFont.Small;
             for (int i = 0; i < pawn.story.traits.allTraits.Count; i++)
@@ -496,6 +712,10 @@ namespace WorldEdit.Editor
                     Widgets.DrawHighlight(rect15);
                 }
                 Widgets.Label(rect15, trait.LabelCap);
+                if (Widgets.ButtonText(new Rect(position.width - 30f, num2, 20f, 24f), "X"))
+                {
+                    pawn.story.traits.allTraits.Remove(trait);
+                }
                 num2 += rect15.height + 2f;
                 Trait trLocal = trait;
                 TooltipHandler.TipRegion(tip: new TipSignal(() => trLocal.TipString(pawn), (int)num2 * 37), rect: rect15);
