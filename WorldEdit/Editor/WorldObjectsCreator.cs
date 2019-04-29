@@ -116,7 +116,7 @@ namespace WorldEdit.Editor
             }
         }
 
-        public override Vector2 InitialSize => new Vector2(350, 200);
+        public override Vector2 InitialSize => new Vector2(350, 240);
 
         public WorldObjectsCreator()
         {
@@ -153,6 +153,11 @@ namespace WorldEdit.Editor
             if (Widgets.ButtonText(new Rect(0, 145, 340, 20), Translator.Translate("AddPreciousLump")))
             {
                 Find.WindowStack.Add(new PreciousLumpMenu());
+            }
+
+            if (Widgets.ButtonText(new Rect(0, 170, 340, 20), Translator.Translate("AddDownedRefugee")))
+            {
+                Find.WindowStack.Add(new DownedRefugeeMenu());
             }
         }
     }

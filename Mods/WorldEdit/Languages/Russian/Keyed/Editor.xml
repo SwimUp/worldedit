@@ -166,4 +166,10 @@
   <ResourceType>Тип</ResourceType>
   <ThreatType>Угроза</ThreatType>
   
+  <AddDownedRefugee>Беженец</AddDownedRefugee>
+  <DownedRefugeeMenuTitle>Беженец</DownedRefugeeMenuTitle>
+  <ThreatTypes>Угрозы</ThreatTypes>
+  <OpenPawnMenu>Настроить пешек</OpenPawnMenu>
+  <SaveRefugeeList>Сохранить</SaveRefugeeList>
+  
 </LanguageData>
