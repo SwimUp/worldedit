@@ -58,6 +58,7 @@ namespace WorldEdit.Editor
             private void AddTrait()
             {
                 pawn.story.traits.GainTrait(new Trait(trait, range.max));
+
                 Close();
             }
         }
@@ -78,19 +79,47 @@ namespace WorldEdit.Editor
 
             private readonly Texture2D BleedingIcon = ContentFinder<Texture2D>.Get("UI/Icons/Medical/Bleeding");
 
-            public override Vector2 InitialSize => new Vector2(400, 600);
-
+            public override Vector2 InitialSize => new Vector2(400, 520);
+            private int heddiffCount = 0;
             private Pawn pawn;
+
+            private BodyPartRecord bodyPart = null;
+            private HediffStage hediffStage = null;
+            private HediffDef hediffDef = null;
+            private DamageDef damageType = null;
+
+            private string buffAmount = string.Empty;
+            private float damageAmount = 0;
+
+            private string buffSever = string.Empty;
+            private float sevAmount = 0;
+
             public HealthMenu(Pawn p)
             {
                 pawn = p;
                 resizeable = false;
+
+                RecalculateHeight();
+
+                bodyPart = pawn.health.hediffSet.GetNotMissingParts().RandomElement();
+                hediffDef = DefDatabase<HediffDef>.GetRandom();
+                hediffStage = hediffDef.stages.RandomElement();
+                buffSever = $"{hediffStage.minSeverity}";
+                sevAmount = hediffStage.minSeverity;
+
+                damageType = DefDatabase<DamageDef>.GetRandom();
             }
 
             public override void DoWindowContents(Rect inRect)
             {
-                Widgets.Label(new Rect(0, 5, 390, 20), Translator.Translate("HeddifsCurrent"));
-                int defSize = 500;
+                Widgets.Label(new Rect(0, 5, 150, 20), Translator.Translate("HeddifsCurrent"));
+
+                if (Widgets.ButtonText(new Rect(150, 5, 210, 20), Translator.Translate("FullHeal")))
+                {
+                    FullHeal();
+                }
+
+                int defSize = heddiffCount;
                 Rect scrollRectFact = new Rect(0, 30, 390, 200);
                 Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, defSize);
                 Widgets.BeginScrollView(scrollRectFact, ref scrollPosition, scrollVertRectFact);
@@ -100,6 +129,116 @@ namespace WorldEdit.Editor
                     DrawHediffRow(inRect, pawn, item, ref curY);
                 }
                 Widgets.EndScrollView();
+
+                Widgets.Label(new Rect(0, 250, 120, 20), Translator.Translate("BodyPartInfo"));
+                if (Widgets.ButtonText(new Rect(110, 250, 270, 20), bodyPart.LabelCap))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    foreach (var p in pawn.health.hediffSet.GetNotMissingParts())
+                    {
+                        list.Add(new FloatMenuOption(p.LabelCap, delegate
+                        {
+                            bodyPart = p;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+
+                Widgets.DrawLineHorizontal(0, 280, 400);
+
+                Widgets.Label(new Rect(0, 290, 120, 20), Translator.Translate("HeddifDefInfo"));
+                if (Widgets.ButtonText(new Rect(110, 290, 270, 20), hediffDef.LabelCap))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    foreach (var h in DefDatabase<HediffDef>.AllDefsListForReading)
+                    {
+                        list.Add(new FloatMenuOption(h.LabelCap, delegate
+                        {
+                            hediffDef = h;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+                Widgets.Label(new Rect(0, 315, 120, 20), Translator.Translate("HeddifStageInfo"));
+                if (Widgets.ButtonText(new Rect(110, 315, 270, 20), hediffStage.label))
+                {
+                    if (hediffDef != null || hediffDef.stages.Count > 1)
+                    {
+                        List<FloatMenuOption> list = new List<FloatMenuOption>();
+                        foreach (var stage in hediffDef.stages)
+                        {
+                            list.Add(new FloatMenuOption(stage.label, delegate
+                            {
+                                buffSever = $"{stage.minSeverity}";
+                                sevAmount = stage.minSeverity;
+                                hediffStage = stage;
+                            }));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(list));
+                    }
+                }
+
+                Widgets.Label(new Rect(0, 340, 120, 20), Translator.Translate("SeverityInfo"));
+                Widgets.TextFieldNumeric(new Rect(130, 340, 240, 20), ref sevAmount, ref buffSever, 0, 1);
+
+                if (Widgets.ButtonText(new Rect(0, 370, 390, 20), Translator.Translate("AddNewHediffLabel")))
+                {
+                    AddNewHediff();
+                }
+
+                Widgets.DrawLineHorizontal(0, 405, 400);
+
+                Widgets.Label(new Rect(0, 420, 120, 20), Translator.Translate("DamageType"));
+                if (Widgets.ButtonText(new Rect(110, 420, 270, 20), damageType.LabelCap))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    foreach (var dmg in DefDatabase<DamageDef>.AllDefsListForReading)
+                    {
+                        list.Add(new FloatMenuOption(dmg.LabelCap, delegate
+                        {
+                            damageType = dmg;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+
+                Widgets.Label(new Rect(0, 445, 120, 20), Translator.Translate("DamageAmount"));
+                Widgets.TextFieldNumeric(new Rect(130, 445, 240, 20), ref damageAmount, ref buffAmount, 0);
+
+                if (Widgets.ButtonText(new Rect(0, 470, 390, 20), Translator.Translate("AddDamageLabel")))
+                {
+                    AddDamage();
+                }
+            }
+
+            private void FullHeal()
+            {
+                foreach (BodyPartRecord notMissingPart in pawn.health.hediffSet.GetNotMissingParts())
+                {
+                    pawn.health.RestorePart(notMissingPart);
+                }
+
+                RecalculateHeight();
+            }
+
+            private void AddDamage()
+            {
+                DamageInfo info = new DamageInfo(damageType, damageAmount, hitPart: bodyPart);
+
+                pawn.TakeDamage(info);
+
+                RecalculateHeight();
+            }
+
+            private void AddNewHediff()
+            {
+                Hediff hediff = HediffMaker.MakeHediff(hediffDef, pawn, bodyPart);
+
+                hediff.Severity = sevAmount;
+
+                pawn.health.AddHediff(hediff);
+
+                RecalculateHeight();
             }
 
             private void DrawHediffRow(Rect rect, Pawn pawn, IEnumerable<Hediff> diffs, ref float curY)
@@ -183,6 +322,12 @@ namespace WorldEdit.Editor
                         rect4.x -= rect4.width;
                     }
                     curY += num8;
+
+                    if (Widgets.ButtonText(new Rect(rect3.x + 205f, rect3.y, 20, 20), "X"))
+                    {
+                        pawn.health.RemoveHediff(hediff);
+                        RecalculateHeight();
+                    }
                 }
                 GUI.color = Color.white;
                 curY = num3 + Mathf.Max(a, num2);
@@ -194,6 +339,8 @@ namespace WorldEdit.Editor
                 TooltipHandler.TipRegion(rect2, new TipSignal(() => GetTooltip(diffs, pawn, part), (int)curY + 7857));
                 */
             }
+
+            private void RecalculateHeight() => heddiffCount = VisibleHediffGroupsInOrder(pawn, true).Count() * 40;
 
             private IEnumerable<IGrouping<BodyPartRecord, Hediff>> VisibleHediffGroupsInOrder(Pawn pawn, bool showBloodLoss)
             {
@@ -266,23 +413,125 @@ namespace WorldEdit.Editor
             }
         }
 
+        private class RelationsMenu : FWindow
+        {
+            public override Vector2 InitialSize => new Vector2(400, 140);
+
+            private PawnRelationDef relationType = null;
+
+            private Faction faction = null;
+
+            private Pawn pawnToRelation = null;
+            private Pawn parentPawn = null;
+
+            private FactionManager rimfactionManager = Find.FactionManager;
+
+            private List<Faction> getFactionList => Find.FactionManager.AllFactionsListForReading.Where(f =>
+            rimfactionManager.OfMechanoids.def != f.def && rimfactionManager.OfInsects.def != f.def &&
+            rimfactionManager.OfAncientsHostile.def != f.def && rimfactionManager.OfAncients.def != f.def).ToList();
+
+            public RelationsMenu(Pawn p)
+            {
+                resizeable = false;
+                
+                relationType = DefDatabase<PawnRelationDef>.GetRandom();
+                faction = getFactionList.RandomElement();
+
+                pawnToRelation = (from x in PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead
+                                  where x.Faction == faction
+                                  select x).RandomElement();
+
+                parentPawn = p;
+            }
+
+            public override void DoWindowContents(Rect inRect)
+            {
+                Widgets.Label(new Rect(0, 10, 120, 20), Translator.Translate("RelationType"));
+                if (Widgets.ButtonText(new Rect(110, 10, 270, 20), relationType.LabelCap))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    foreach (var rDef in DefDatabase<PawnRelationDef>.AllDefsListForReading)
+                    {
+                        list.Add(new FloatMenuOption(rDef.LabelCap, delegate
+                        {
+                            relationType = rDef;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+
+                Widgets.Label(new Rect(0, 40, 120, 20), Translator.Translate("FactionForSort"));
+                if (Widgets.ButtonText(new Rect(110, 40, 270, 20), faction.Name))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    foreach (var f in getFactionList)
+                    {
+                        list.Add(new FloatMenuOption(f.Name, delegate
+                        {
+                            faction = f;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+
+                Widgets.Label(new Rect(0, 70, 120, 20), Translator.Translate("PawnToSelect"));
+                if (Widgets.ButtonText(new Rect(110, 70, 270, 20), pawnToRelation.Name.ToStringFull))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    foreach (var p in from x in PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead
+                                      where x.Faction == faction select x)
+                    {
+                        list.Add(new FloatMenuOption(p.Name.ToStringShort, delegate
+                        {
+                            pawnToRelation = p;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(list));
+                }
+
+                if (Widgets.ButtonText(new Rect(0, 100, 390, 20), Translator.Translate("AddNewRelationToPawn")))
+                {
+                    AddNewRelationToPawn();
+                }
+
+                if (Widgets.ButtonText(new Rect(0, 130, 390, 20), Translator.Translate("AddNewRelationToPawn")))
+                {
+                    AddNewRelationToPawn2();
+                }
+            }
+
+            private void AddNewRelationToPawn()
+            {
+                
+                var req = new PawnGenerationRequest(pawnToRelation.kindDef, pawnToRelation.Faction);
+                relationType.Worker.CreateRelation(parentPawn, pawnToRelation, ref req);
+            }
+
+            private void AddNewRelationToPawn2()
+            {
+
+                var req = new PawnGenerationRequest(parentPawn.kindDef, parentPawn.Faction);
+                relationType.Worker.CreateRelation(parentPawn, pawnToRelation, ref req);
+            }
+        }
+
         private Pawn curPawn;
 
-        private static readonly Vector2 PawnPortraitSize = new Vector2(100f, 140f);
+        private readonly Vector2 PawnPortraitSize = new Vector2(100f, 140f);
 
-        private static readonly Vector2 PawnSelectorPortraitSize = new Vector2(70f, 110f);
+        private readonly Vector2 PawnSelectorPortraitSize = new Vector2(70f, 110f);
 
         private Vector2 scroll = Vector2.zero;
 
         public const int MainRectsY = 100;
 
-        public static Vector2 PawnCardSize = new Vector2(570f, 470f);
+        public Vector2 PawnCardSize = new Vector2(570f, 470f);
 
         public const int MaxNickLength = 16;
 
         public const int MaxTitleLength = 25;
 
-        public static Regex ValidNameRegex = new Regex("^[\\p{L}0-9 '\\-]*$");
+        public Regex ValidNameRegex = new Regex("^[\\p{L}0-9 '\\-]*$");
 
         private static float levelLabelWidth = -1f;
 
@@ -292,13 +541,13 @@ namespace WorldEdit.Editor
 
         public const float SkillYSpacing = 3f;
 
-        private static readonly Color DisabledSkillColor = new Color(1f, 1f, 1f, 0.5f);
+        private readonly Color DisabledSkillColor = new Color(1f, 1f, 1f, 0.5f);
 
-        private static Texture2D PassionMinorIcon = ContentFinder<Texture2D>.Get("UI/Icons/PassionMinor");
+        private Texture2D PassionMinorIcon = ContentFinder<Texture2D>.Get("UI/Icons/PassionMinor");
 
-        private static Texture2D PassionMajorIcon = ContentFinder<Texture2D>.Get("UI/Icons/PassionMajor");
+        private Texture2D PassionMajorIcon = ContentFinder<Texture2D>.Get("UI/Icons/PassionMajor");
 
-        private static Texture2D SkillBarFillTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
+        private Texture2D SkillBarFillTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
 
         public override string PageTitle => "CreateCharacters".Translate();
 
@@ -333,7 +582,27 @@ namespace WorldEdit.Editor
 
         private void AddNewPawn()
         {
-            allPawns.Add(DownedRefugeeQuestUtility.GenerateRefugee(-1));
+            allPawns.Add(GeneratePawn());
+            // allPawns.Add(DownedRefugeeQuestUtility.GenerateRefugee(-1));
+        }
+
+        private Pawn GeneratePawn()
+        {
+            PawnKindDef spaceRefugee = PawnKindDefOf.SpaceRefugee;
+            Faction randomFactionForRefugee = GetRandomFactionForRefugee();
+            PawnGenerationRequest request = new PawnGenerationRequest(spaceRefugee, randomFactionForRefugee, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, 20f, forceAddFreeWarmLayerIfNeeded: true, allowGay: true, allowFood: true, inhabitant: false, certainlyBeenInCryptosleep: false, forceRedressWorldPawnIfFormerColonist: false, worldPawnFactionDoesntMatter: false, null, null, 0.2f);
+            Pawn pawn = PawnGenerator.GeneratePawn(request);
+
+            return pawn;
+        }
+
+        private Faction GetRandomFactionForRefugee()
+        {
+            if (Rand.Chance(0.6f) && Find.FactionManager.TryGetRandomNonColonyHumanlikeFaction(out Faction faction, tryMedievalOrBetter: true))
+            {
+                return faction;
+            }
+            return null;
         }
 
         private void DrawPawnList(Rect rect)
@@ -428,7 +697,7 @@ namespace WorldEdit.Editor
             rect3.height = 200f;
             Text.Font = GameFont.Medium;
             Widgets.Label(rect3, "Health".Translate());
-            if (Widgets.ButtonText(new Rect(rect3.x + 130f, rect3.y, 120f, 20f), Translator.Translate("ModifyHealth")))
+            if (Widgets.ButtonText(new Rect(rect3.x + 130f, rect3.y - 10f, 160f, 40f), Translator.Translate("ModifyHealth")))
             {
                 Find.WindowStack.Add(new HealthMenu(curPawn));
             }
@@ -438,30 +707,18 @@ namespace WorldEdit.Editor
             Rect rect4 = new Rect(rect3.x, rect3.yMax, rect3.width, 200f);
             Text.Font = GameFont.Medium;
             Widgets.Label(rect4, "Relations".Translate());
+            if (Widgets.ButtonText(new Rect(rect4.x + 130f, rect4.y - 10f, 160f, 40f), Translator.Translate("ModifyRelations")))
+            {
+                Find.WindowStack.Add(new RelationsMenu(curPawn));
+            }
             Text.Font = GameFont.Small;
             rect4.yMin += 35f;
             SocialCardUtility.DrawRelationsAndOpinions(rect4, curPawn);
         }
 
-        private Pawn FindBestSkillOwner(SkillDef skill)
-        {
-            Pawn pawn = allPawns[0];
-            SkillRecord skillRecord = pawn.skills.GetSkill(skill);
-            for (int i = 1; i < allPawns.Count; i++)
-            {
-                SkillRecord skill2 = allPawns[i].skills.GetSkill(skill);
-                if (skillRecord.TotallyDisabled || skill2.Level > skillRecord.Level || (skill2.Level == skillRecord.Level && (int)skill2.passion > (int)skillRecord.passion))
-                {
-                    pawn = allPawns[i];
-                    skillRecord = skill2;
-                }
-            }
-            return pawn;
-        }
-
         private void RandomizeCurPawn()
         {
-            curPawn = DownedRefugeeQuestUtility.GenerateRefugee(-1);
+            curPawn = GeneratePawn();
         }
 
         protected override void DoNext()

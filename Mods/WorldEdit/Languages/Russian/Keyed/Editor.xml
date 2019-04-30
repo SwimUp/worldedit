@@ -174,7 +174,23 @@
   <AddNewRefugee>Добавить</AddNewRefugee>
   <TraitLabel>Трейт</TraitLabel>
   <DegreeLabel>Степень (в случае ошибки, уменьшите или увеличьте число)</DegreeLabel>
+  <HeddifsCurrent>Состояния</HeddifsCurrent>
   <AddNewTrait>Добавить</AddNewTrait>
   <ModifyHealth>Изменить</ModifyHealth>
+  <BodyPartInfo>Часть тела</BodyPartInfo>
+  <HeddifDefInfo>Состояние</HeddifDefInfo>
+  <AddNewHediffLabel>Добавить состояние</AddNewHediffLabel>
+  <FullHeal>Вылечить</FullHeal>
+  <AddDamageLabel>Нанести урон</AddDamageLabel>
+  <HeddifStageInfo>Стадия</HeddifStageInfo>
+  <SeverityInfo>Severity</SeverityInfo>
+  <DamageType>Тип урона</DamageType>
+  <DamageAmount>Урон</DamageAmount>
+  
+  <ModifyRelations>Изменить</ModifyRelations>
+  <RelationType>Тип</RelationType>
+  <FactionForSort>Фракция</FactionForSort>
+  <PawnToSelect>Павн</PawnToSelect>
+  <AddNewRelationToPawn>Добавить отношение</AddNewRelationToPawn>
   
 </LanguageData>
