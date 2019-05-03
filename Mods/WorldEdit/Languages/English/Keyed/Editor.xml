@@ -9,8 +9,8 @@
   <DeleteRangeRoads>Delete range of roads</DeleteRangeRoads>
   <DeleteSingleRiver>Delete the selected river</DeleteSingleRiver>
   <DeleteRangeRivers>Delete range of rivers</DeleteRangeRivers>
-  <DeleteAllRoads>Удалить все дороги</DeleteAllRoads>
-  <DeleteAllRivers>Удалить все реки</DeleteAllRivers>
+  <DeleteAllRoads>Delete all roads</DeleteAllRoads>
+  <DeleteAllRivers>Delete all rivers</DeleteAllRivers>
   
   <SaveWorldTemplate>Save world template</SaveWorldTemplate>
   <SelectedStorytellerTitle>Storyteller</SelectedStorytellerTitle>
@@ -23,10 +23,10 @@
   <ClearAllHillnses>Delete All Mountains</ClearAllHillnses>
   <SetTileToAllMap>Set biome to all tiles</SetTileToAllMap>
   
-  <SetHillnesToAllMap>Установить горы на всю карту</SetHillnesToAllMap>
-  <SetHillnesToAllBiome>Установить горы на тайлы выбранного биома</SetHillnesToAllBiome>
-  <SetToAllMap>Установить на всю карту</SetToAllMap>
-  <SetToAllBiome>Установить на выбранный биом</SetToAllBiome>
+  <SetHillnesToAllMap>Set mountains to the whole map</SetHillnesToAllMap>
+  <SetHillnesToAllBiome>Set the mountains on the tiles of the selected biome</SetHillnesToAllBiome>
+  <SetToAllMap>Set to Entire Map</SetToAllMap>
+  <SetToAllBiome>Set to Selected Biome</SetToAllBiome>
   
   <UpdateAllTiles>Update all tiles</UpdateAllTiles>
   <UpdateAllTilesInfo>Updates information about all tiles</UpdateAllTilesInfo>

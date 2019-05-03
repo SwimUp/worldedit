@@ -8,6 +8,7 @@ using Verse;
 
 namespace WorldEdit.HarmonyHooks
 {
+    /*
     [HarmonyPatch(typeof(Dialog_FileList))]
     [HarmonyPatch("PostOpen")]
     class GetSavesGamesConstructorHook
@@ -49,4 +50,5 @@ namespace WorldEdit.HarmonyHooks
             }
         }
     }
+    */
 }
