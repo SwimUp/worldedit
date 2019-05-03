@@ -61,6 +61,7 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 480, 20), spawnedFaction.Name))
                 {
                     selectedFaction = spawnedFaction;
+                    Messages.Message($"Selected faction: {selectedFaction.Name}", MessageTypeDefOf.NeutralEvent);
                 }
                 yButtonPos += 22;
             }
@@ -75,16 +76,28 @@ namespace WorldEdit.Editor
         private void CreateSettlement()
         {
             if (selectedFaction == null)
+            {
+                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
-            if (settlementName == null)
+            if (string.IsNullOrEmpty(settlementName))
+            {
+                Messages.Message($"Enter valid settlement name", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             if (Find.WorldSelector.selectedTile < 0)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             if (Find.WorldObjects.AnySettlementAt(Find.WorldSelector.selectedTile))
+            {
+                Messages.Message($"Some settlement is already in this place", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             newSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
             newSettlement.SetFaction(selectedFaction);

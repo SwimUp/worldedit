@@ -18,9 +18,22 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
         private WorldObjectDef type = WorldObjectDefOf.AbandonedSettlement;
 
+        private bool edit = false;
+        private WorldObject editObject = null;
+
         public AbandonedSettlementMenu()
         {
             resizeable = false;
+        }
+
+        public AbandonedSettlementMenu(WorldObject obj)
+        {
+            resizeable = false;
+
+            edit = true;
+            editObject = obj;
+
+            type = editObject.def;
         }
         public override void DoWindowContents(Rect inRect)
         {
@@ -40,6 +53,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 290, 20), spawnedSettl.Name))
                 {
                     selectedSettlement = spawnedSettl;
+                    Messages.Message($"Selected settlement {selectedSettlement.Name}", MessageTypeDefOf.NeutralEvent);
                 }
                 yButtonPos += 22;
             }
@@ -71,11 +85,29 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
         private void AddSettlementObject()
         {
-            if (Find.WorldSelector.selectedTile == -1)
+            if(edit)
+            {
+                if(selectedSettlement != null)
+                    editObject = selectedSettlement;
+
+                editObject.def = type;
+
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+
                 return;
+            }
+
+            if (Find.WorldSelector.selectedTile == -1)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
 
             if (selectedSettlement == null)
+            {
+                Messages.Message($"Selected settlement", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             Utils.CreateWorldObject(type, Find.WorldSelector.selectedTile, selectedSettlement.Faction);
         }

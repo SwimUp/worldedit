@@ -10,13 +10,13 @@ using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor.WorldObjectsMenu
 {
-    internal class DownedRefugeeMenu : FWindow
+    internal class PrisonerWillingToJoinMenu : FWindow
     {
         public override Vector2 InitialSize => new Vector2(500, 590); //635
         private Vector2 scroll = Vector2.zero;
         private Vector2 scroll2 = Vector2.zero;
 
-        private SiteCoreDef core = SiteCoreDefOf.DownedRefugee;
+        private SiteCoreDef core = SiteCoreDefOf.PrisonerWillingToJoin;
         private List<SitePartDef> parts = new List<SitePartDef>();
 
         public string time = string.Empty;
@@ -31,13 +31,13 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         private bool edit = false;
         private Site editSite = null;
 
-        public DownedRefugeeMenu()
+        public PrisonerWillingToJoinMenu()
         {
             resizeable = false;
             edit = false;
         }
 
-        public DownedRefugeeMenu(Site s)
+        public PrisonerWillingToJoinMenu(Site s)
         {
             resizeable = false;
             edit = true;
@@ -54,9 +54,9 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
             threatsFloat = editSite.desiredThreatPoints;
 
-            var pawns = editSite.GetComponent<DownedRefugeeComp>();
+            var pawns = editSite.GetComponent<PrisonerWillingToJoinComp>();
             pawnList.Clear();
-            foreach(var p in pawns.pawn)
+            foreach (var p in pawns.pawn)
             {
                 pawnList.Add(p);
             }
@@ -67,11 +67,11 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         {
             Text.Font = GameFont.Small;
 
-            Widgets.Label(new Rect(0, 0, 290, 20), Translator.Translate("DownedRefugeeMenuTitle"));
+            Widgets.Label(new Rect(0, 0, 290, 20), Translator.Translate("PrisonerWillingToJoinMenuTitle"));
 
             Widgets.Label(new Rect(0, 40, 400, 20), Translator.Translate("ThreatTypes"));
             int size2 = DefDatabase<SitePartDef>.AllDefsListForReading.Count * 25;
-            Rect scrollRectFact = new Rect(0, 65, 485, 200);
+            Rect scrollRectFact = new Rect(0, 65, 490, 200);
             Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, size2);
             Widgets.BeginScrollView(scrollRectFact, ref scroll, scrollVertRectFact);
             int x = 0;
@@ -88,7 +88,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
             }
             Widgets.EndScrollView();
 
-            if(Widgets.ButtonText(new Rect(0, 240, 490, 20), Translator.Translate("OpenPawnMenu")))
+            if (Widgets.ButtonText(new Rect(0, 240, 490, 20), Translator.Translate("OpenPawnMenu")))
             {
                 DrawPawnMenu();
             }
@@ -132,7 +132,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 return;
             }
 
-            if(edit)
+            if (edit)
             {
                 editSite.parts.Clear();
                 foreach (var p in parts)
@@ -169,7 +169,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 return;
             }
 
-            if(selectedFaction == null)
+            if (selectedFaction == null)
             {
                 selectedFaction = Find.FactionManager.AllFactionsListForReading.RandomElement();
             }
@@ -177,8 +177,8 @@ namespace WorldEdit.Editor.WorldObjectsMenu
             Site site = SiteMaker.MakeSite(core, parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
             site.sitePartsKnown = true;
 
-            var comp = site.GetComponent<DownedRefugeeComp>();
-            foreach(var p in pawnList)
+            var comp = site.GetComponent<PrisonerWillingToJoinComp>();
+            foreach (var p in pawnList)
             {
                 comp.pawn.TryAdd(p);
             }

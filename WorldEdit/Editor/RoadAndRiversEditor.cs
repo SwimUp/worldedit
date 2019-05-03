@@ -12,10 +12,12 @@ namespace WorldEdit.Editor
 {
     internal sealed class RoadAndRiversEditor : FWindow
     {
-        public override Vector2 InitialSize => new Vector2(450, 400);
+        public override Vector2 InitialSize => new Vector2(450, 450);
         private Vector2 scrollPosition = Vector2.zero;
         private Vector2 riverScrollPosition = Vector2.zero;
         private Vector2 mainScrollPosition = Vector2.zero;
+
+        private bool PaintMode = false;
 
         /// <summary>
         /// Список доступных типов дорог
@@ -52,17 +54,17 @@ namespace WorldEdit.Editor
             avaliableRoads = DefDatabase<RoadDef>.AllDefs.ToList();
             avaliableRivers = DefDatabase<RiverDef>.AllDefs.ToList();
         }
-  
+
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Small;
 
-            Rect mainScrollRect = new Rect(0, 0, inRect.width, inRect.height);
+            Rect mainScrollRect = new Rect(0, 20, inRect.width, inRect.height);
             Rect mainScrollVertRect = new Rect(0, 0, mainScrollRect.x, inRect.width);
             Widgets.BeginScrollView(mainScrollRect, ref mainScrollPosition, mainScrollVertRect);
 
             Rect group1 = new Rect(0, 0, inRect.width, inRect.height);
-            if(Widgets.ButtonText(new Rect(0, 0, 200, 20), Translator.Translate("DeleteSingleRoad")))
+            if (Widgets.ButtonText(new Rect(0, 0, 200, 20), Translator.Translate("DeleteSingleRoad")))
             {
                 DeleteRoad();
             }
@@ -87,16 +89,25 @@ namespace WorldEdit.Editor
                 DeleteAllRivers();
             }
 
+            if (Widgets.ButtonText(new Rect(0, 80, 200, 20), Translator.Translate("NoText")))
+            {
+                selectedRoad = null;
+                Messages.Message($"Selected road: None", MessageTypeDefOf.NeutralEvent);
+            }
             int roadListLength = avaliableRoads.Count * 25;
-            Rect roadScrollRect = new Rect(0, 80, 200, 200);
+            Rect roadScrollRect = new Rect(0, 110, 200, 170);
             Rect roadScrollVertRect = new Rect(0, 0, roadScrollRect.x, roadListLength);
             int yButtonPos = 0;
             Widgets.BeginScrollView(roadScrollRect, ref scrollPosition, roadScrollVertRect);
-            foreach(var road in avaliableRoads)
+            foreach (var road in avaliableRoads)
             {
-                if(Widgets.ButtonText(new Rect(0, yButtonPos, 200, 20), road.label))
+                if (Widgets.ButtonText(new Rect(0, yButtonPos, 200, 20), road.label))
                 {
                     selectedRoad = road;
+                    Messages.Message($"Selected road: {selectedRoad.LabelCap}", MessageTypeDefOf.NeutralEvent);
+
+                    if (selectedRiver != null)
+                        PaintMode = false;
                 }
                 yButtonPos += 22;
             }
@@ -113,9 +124,14 @@ namespace WorldEdit.Editor
                 CreateRoad();
             }
 
-            yButtonPos = 80;
+            if (Widgets.ButtonText(new Rect(210, 80, 200, 20), Translator.Translate("NoText")))
+            {
+                selectedRiver = null;
+                Messages.Message($"Selected river: None", MessageTypeDefOf.NeutralEvent);
+            }
+            yButtonPos = 110;
             int riverListLength = avaliableRivers.Count * 25;
-            Rect riverScrollRect = new Rect(210, 80, 200, 200);
+            Rect riverScrollRect = new Rect(210, 110, 200, 170);
             Rect riverScrollVertRect = new Rect(0, 0, riverScrollRect.x, riverListLength);
             Widgets.BeginScrollView(riverScrollRect, ref riverScrollPosition, riverScrollRect);
             foreach (var river in avaliableRivers)
@@ -123,6 +139,10 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(210, yButtonPos, 200, 20), river.label))
                 {
                     selectedRiver = river;
+                    Messages.Message($"Selected river: {selectedRiver.LabelCap}", MessageTypeDefOf.NeutralEvent);
+
+                    if (selectedRoad != null)
+                        PaintMode = false;
                 }
                 yButtonPos += 22;
             }
@@ -139,22 +159,130 @@ namespace WorldEdit.Editor
                 CreateRiver();
             }
             yButtonPos += 30;
-            Widgets.Label(new Rect(0, yButtonPos, 430, 20), $"Selected tile ID: {Find.WorldSelector.selectedTile}");
+            Widgets.Label(new Rect(0, yButtonPos, 200, 20), $"Selected tile ID: {Find.WorldSelector.selectedTile}");
+            if (Widgets.RadioButtonLabeled(new Rect(210, yButtonPos, 200, 20), Translator.Translate("PaintMode"), PaintMode))
+            {
+                TurnPaintMode();
+            }
 
             Widgets.EndScrollView();
-
         }
+
+        private void TurnPaintMode()
+        {
+            if (selectedRiver != null && selectedRoad != null)
+            {
+                Messages.Message("Choose one thing: roads or rivers", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            PaintMode = !PaintMode;
+
+            Messages.Message("Paint mode active: click left mouse to select start point, second mouse to draw", MessageTypeDefOf.NeutralEvent);
+        }
+
+        public override void WindowUpdate()
+        {
+            if (PaintMode)
+            {
+                if (GenWorld.MouseTile() < 0)
+                    return;
+
+                if (selectedRiver != null)
+                {
+                    if (Input.GetKeyDown(KeyCode.Mouse0))
+                    {
+                        riverId1 = GenWorld.MouseTile().ToString();
+                        Messages.Message($"Start river: {riverId1}, select second point", MessageTypeDefOf.NeutralEvent);
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Mouse1))
+                    {
+                        riverId2 = GenWorld.MouseTile().ToString();
+                        Messages.Message($"End river: {riverId2}", MessageTypeDefOf.NeutralEvent);
+
+                        TryPrintRiver();
+                    }
+                }
+
+                if (selectedRoad != null)
+                {
+                    if (Input.GetKeyDown(KeyCode.Mouse0))
+                    {
+                        roadId1 = GenWorld.MouseTile().ToString();
+                        Messages.Message($"Start road: {roadId1}, select second point", MessageTypeDefOf.NeutralEvent);
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Mouse1))
+                    {
+                        roadId2 = GenWorld.MouseTile().ToString();
+                        Messages.Message($"End road: {roadId2}", MessageTypeDefOf.NeutralEvent);
+
+                        TryPrintRoad();
+                    }
+                }
+            }
+        }
+
+        private void TryPrintRiver()
+        {
+            if (!int.TryParse(riverId1, out int tile1ID) || !int.TryParse(riverId2, out int tile2ID))
+            {
+                Messages.Message($"Select correct tile Ids (not -1 and not null)", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile1ID < 0)
+            {
+                Messages.Message($"Start tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile2ID < 0)
+            {
+                Messages.Message($"End tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            PrintRiver(tile1ID, tile2ID);
+        }
+
+        private void TryPrintRoad()
+        {
+            if (!int.TryParse(roadId1, out int tile1ID) || !int.TryParse(roadId2, out int tile2ID))
+            {
+                Messages.Message($"Select correct tile Ids (not -1 and not null)", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile1ID < 0)
+            {
+                Messages.Message($"Start tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile2ID < 0)
+            {
+                Messages.Message($"End tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            PrintRoad(tile1ID, tile2ID);
+        }
+
 
         private void DeleteAllRoads()
         {
-            for(int i = 0; i < Find.WorldGrid.TilesCount; i++)
+            for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
             {
                 Tile tile = Find.WorldGrid[i];
 
-                 tile.potentialRoads = null;
+                tile.potentialRoads = null;
             }
 
             worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
+
+            Messages.Message($"All roads has been removed", MessageTypeDefOf.NeutralEvent);
         }
 
         private void DeleteAllRivers()
@@ -167,62 +295,160 @@ namespace WorldEdit.Editor
             }
 
             worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
+
+            Messages.Message($"All rivers has been removed", MessageTypeDefOf.NeutralEvent);
         }
 
         private void CreateRoad()
         {
             if (selectedRoad == null)
-                return;
-
-            if (!int.TryParse(roadId1, out int tile1ID) || !int.TryParse(roadId2, out int tile2ID))
-                return;
-
-            WorldGrid worldGrid = Find.WorldGrid;
-            var path = Find.WorldPathFinder.FindPath(tile1ID, tile2ID, null);
-            for (int i = 0; i < path.NodesLeftCount - 1; i++)
             {
-                worldGrid.OverlayRoad(path.Peek(i), path.Peek(i + 1), selectedRoad);
+                Messages.Message($"Select road type", MessageTypeDefOf.NeutralEvent);
+                return;
             }
 
-            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
+            if (!int.TryParse(roadId1, out int tile1ID) || !int.TryParse(roadId2, out int tile2ID))
+            {
+                Messages.Message($"Enter correct tile Ids", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile1ID < 0)
+            {
+                Messages.Message($"Start tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile2ID < 0)
+            {
+                Messages.Message($"End tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            PrintRoad(tile1ID, tile2ID);
         }
         private void CreateRiver()
         {
             if (selectedRiver == null)
-                return;
-
-            if (!int.TryParse(riverId1, out int tile1ID) || !int.TryParse(riverId2, out int tile2ID))
-                return;
-
-            WorldGrid worldGrid = Find.WorldGrid;
-            var path = Find.WorldPathFinder.FindPath(tile1ID, tile2ID, null);
-            for (int i = 0; i < path.NodesLeftCount - 1; i++)
             {
-                worldGrid.OverlayRiver(path.Peek(i), path.Peek(i + 1), selectedRiver);
+                Messages.Message($"Select river type", MessageTypeDefOf.NeutralEvent);
+                return;
             }
 
-            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
+            if (!int.TryParse(riverId1, out int tile1ID) || !int.TryParse(riverId2, out int tile2ID))
+            {
+                Messages.Message($"Enter correct tile Ids", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile1ID < 0)
+            {
+                Messages.Message($"Start tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile2ID < 0)
+            {
+                Messages.Message($"End tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            PrintRiver(tile1ID, tile2ID);
         }
         private void DeleteRoad()
         {
             int tileID = Find.WorldSelector.selectedTile;
             if (tileID < 0)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             Tile tile = Find.WorldGrid[tileID];
             if (tile.potentialRoads == null || tile.potentialRoads.Count == 0)
+            {
+                Messages.Message($"No road(s) on selected tile", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             tile.potentialRoads = null;
 
             worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
+
+            Messages.Message($"Roads removed", MessageTypeDefOf.NeutralEvent);
         }
 
         private void DeleteRangeRoad()
         {
             if (!int.TryParse(roadId1, out int tile1ID) || !int.TryParse(roadId2, out int tile2ID))
+            {
+                Messages.Message($"Enter correct tile Ids", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
+            if (tile1ID < 0)
+            {
+                Messages.Message($"Start tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile2ID < 0)
+            {
+                Messages.Message($"End tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            DeleteRoad(tile1ID, tile2ID);
+        }
+
+        private void DeleteRiver()
+        {
+            int tileID = Find.WorldSelector.selectedTile;
+            if (tileID < 0)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            Tile tile = Find.WorldGrid[tileID];
+            if (tile.potentialRivers == null || tile.potentialRivers.Count == 0)
+            {
+                Messages.Message($"No river(s) on selected tile", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            tile.potentialRivers = null;
+
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
+
+            Messages.Message($"Rivers removed", MessageTypeDefOf.NeutralEvent);
+        }
+
+        private void DeleteRangeRivers()
+        {
+            if (!int.TryParse(riverId1, out int tile1ID) || !int.TryParse(riverId2, out int tile2ID))
+            {
+                Messages.Message($"Enter correct tile Ids", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile1ID < 0)
+            {
+                Messages.Message($"Start tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if (tile2ID < 0)
+            {
+                Messages.Message($"End tile is -1", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            DeleteRoad(tile1ID, tile2ID);
+        }
+
+        private void DeleteRoad(int tile1ID, int tile2ID)
+        {
             WorldGrid worldGrid = Find.WorldGrid;
             var path = Find.WorldPathFinder.FindPath(tile1ID, tile2ID, null);
             for (int i = 0; i < path.NodesLeftCount - 1; i++)
@@ -232,28 +458,12 @@ namespace WorldEdit.Editor
             }
 
             worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
+
+            Messages.Message($"Roads removed", MessageTypeDefOf.NeutralEvent);
         }
 
-        private void DeleteRiver()
+        private void DeleteRiver(int tile1ID, int tile2ID)
         {
-            int tileID = Find.WorldSelector.selectedTile;
-            if (tileID < 0)
-                return;
-
-            Tile tile = Find.WorldGrid[tileID];
-            if (tile.potentialRivers == null || tile.potentialRivers.Count == 0)
-                return;
-
-            tile.potentialRivers = null;
-
-            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
-        }
-
-        private void DeleteRangeRivers()
-        {
-            if (!int.TryParse(riverId1, out int tile1ID) || !int.TryParse(riverId2, out int tile2ID))
-                return;
-
             WorldGrid worldGrid = Find.WorldGrid;
             var path = Find.WorldPathFinder.FindPath(tile1ID, tile2ID, null);
             for (int i = 0; i < path.NodesLeftCount - 1; i++)
@@ -263,6 +473,36 @@ namespace WorldEdit.Editor
             }
 
             worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
+
+            Messages.Message($"Rivers removed", MessageTypeDefOf.NeutralEvent);
+        }
+
+        private void PrintRoad(int tile1ID, int tile2ID)
+        {
+            WorldGrid worldGrid = Find.WorldGrid;
+            var path = Find.WorldPathFinder.FindPath(tile1ID, tile2ID, null);
+            for (int i = 0; i < path.NodesLeftCount - 1; i++)
+            {
+                worldGrid.OverlayRoad(path.Peek(i), path.Peek(i + 1), selectedRoad);
+            }
+
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Roads"]);
+
+            Messages.Message($"Road created", MessageTypeDefOf.NeutralEvent);
+        }
+
+        private void PrintRiver(int tile1ID, int tile2ID)
+        {
+            WorldGrid worldGrid = Find.WorldGrid;
+            var path = Find.WorldPathFinder.FindPath(tile1ID, tile2ID, null);
+            for (int i = 0; i < path.NodesLeftCount - 1; i++)
+            {
+                worldGrid.OverlayRiver(path.Peek(i), path.Peek(i + 1), selectedRiver);
+            }
+
+            worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
+
+            Messages.Message($"River created", MessageTypeDefOf.NeutralEvent);
         }
     }
 }

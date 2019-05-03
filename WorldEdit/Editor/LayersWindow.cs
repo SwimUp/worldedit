@@ -32,8 +32,11 @@ namespace WorldEdit.Editor
             {
                 if(Widgets.ButtonText(new Rect(0, yButton, 230, 20), layer))
                 {
-                    WorldLayer curLayer = WorldEditor.Editor.Layers[layer];
-                    WorldEditor.Editor.WorldUpdater.UpdateLayer(curLayer);
+                    LongEventHandler.QueueLongEvent(delegate
+                    {
+                        WorldLayer curLayer = WorldEditor.Editor.Layers[layer];
+                        WorldEditor.Editor.WorldUpdater.UpdateLayer(curLayer);
+                    }, "Updating layer...", doAsynchronously: false, null);
                 }
                 yButton += 25;
             }

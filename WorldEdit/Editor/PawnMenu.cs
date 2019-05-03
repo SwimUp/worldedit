@@ -10,6 +10,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using WorldEdit.Interfaces;
+using WorldEdits;
 
 namespace WorldEdit.Editor
 {
@@ -18,35 +19,40 @@ namespace WorldEdit.Editor
         private class AddTraitMenu : FWindow
         {
             public override Vector2 InitialSize => new Vector2(250, 150);
-            private TraitDef trait = DefDatabase<TraitDef>.GetRandom();
+            private TraitDef trait = TraitDefOf.Abrasive;
             private Pawn pawn;
-
-            IntRange range = new IntRange();
+            private int degree = 0;
+            private TraitDegreeData degreeData = null;
 
             public AddTraitMenu(Pawn pawn)
             {
                 resizeable = false;
 
                 this.pawn = pawn;
-            }
 
+                degreeData = trait.degreeDatas.FirstOrDefault();
+            }
             public override void DoWindowContents(Rect inRect)
             {
                 Widgets.Label(new Rect(0, 15, 70, 20), Translator.Translate("TraitLabel"));
-                if(Widgets.ButtonText(new Rect(80, 15, 160, 20), trait.defName))
+                if(Widgets.ButtonText(new Rect(80, 15, 160, 20), degreeData.label))
                 {
                     List<FloatMenuOption> list = new List<FloatMenuOption>();
                     foreach (var trait in DefDatabase<TraitDef>.AllDefsListForReading)
                     {
-                        list.Add(new FloatMenuOption(trait.defName, delegate
+                        for (int i = 0; i < trait.degreeDatas.Count; i++)
                         {
-                            this.trait = trait;
-                        }));
+                            TraitDegreeData deg = trait.degreeDatas[i];
+                            list.Add(new FloatMenuOption(deg.label, delegate
+                            {
+                                this.trait = trait;
+                                degree = deg.degree;
+                                degreeData = deg;
+                            }));
+                        }
                     }
                     Find.WindowStack.Add(new FloatMenu(list));
                 }
-
-                Widgets.IntRange(new Rect(5, 50, 230, 40), 454325, ref range, 0, 2, Translator.Translate("DegreeLabel"));
 
                 if (Widgets.ButtonText(new Rect(0, 110, 240, 20), Translator.Translate("AddNewTrait")))
                 {
@@ -57,7 +63,7 @@ namespace WorldEdit.Editor
 
             private void AddTrait()
             {
-                pawn.story.traits.GainTrait(new Trait(trait, range.max));
+                pawn.story.traits.GainTrait(new Trait(trait, degree));
 
                 Close();
             }
@@ -102,12 +108,18 @@ namespace WorldEdit.Editor
                 RecalculateHeight();
 
                 bodyPart = pawn.health.hediffSet.GetNotMissingParts().RandomElement();
-                hediffDef = DefDatabase<HediffDef>.GetRandom();
-                hediffStage = hediffDef.stages.RandomElement();
-                buffSever = $"{hediffStage.minSeverity}";
-                sevAmount = hediffStage.minSeverity;
+                hediffDef = HediffDefOf.Asthma;
 
-                damageType = DefDatabase<DamageDef>.GetRandom();
+                if(hediffDef.stages != null)
+                    hediffStage = hediffDef.stages.RandomElement();
+
+                if (hediffStage != null)
+                {
+                    buffSever = $"{hediffStage.minSeverity}";
+                    sevAmount = hediffStage.minSeverity;
+                }
+
+                damageType = DamageDefOf.Arrow;
             }
 
             public override void DoWindowContents(Rect inRect)
@@ -415,7 +427,9 @@ namespace WorldEdit.Editor
 
         private class RelationsMenu : FWindow
         {
-            public override Vector2 InitialSize => new Vector2(400, 140);
+            public override Vector2 InitialSize => new Vector2(400, 315);
+
+            private Vector2 scroll = Vector2.zero;
 
             private PawnRelationDef relationType = null;
 
@@ -446,11 +460,30 @@ namespace WorldEdit.Editor
 
             public override void DoWindowContents(Rect inRect)
             {
-                Widgets.Label(new Rect(0, 10, 120, 20), Translator.Translate("RelationType"));
-                if (Widgets.ButtonText(new Rect(110, 10, 270, 20), relationType.LabelCap))
+                int size = parentPawn.relations.DirectRelations.Count * 25;
+                Rect scrollRectFact = new Rect(0, 20, 385, 170);
+                Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, size);
+                Widgets.BeginScrollView(scrollRectFact, ref scroll, scrollVertRectFact);
+                int xP = 0;
+                for(int i = 0; i < parentPawn.relations.DirectRelations.Count; i++)
+                //foreach (var rel in parentPawn.relations.DirectRelations)
+                {
+                    DirectPawnRelation rel = parentPawn.relations.DirectRelations[i];
+
+                    Widgets.Label(new Rect(0, xP, 260, 20), $"{rel.otherPawn.Name.ToStringFull} - {rel.def.LabelCap}");
+                    if(Widgets.ButtonText(new Rect(270, xP, 110, 20), Translator.Translate("DeleteTargetRelation")))
+                    {
+                        parentPawn.relations.RemoveDirectRelation(rel);
+                    }
+                    xP += 22;
+                }
+                Widgets.EndScrollView();
+
+                Widgets.Label(new Rect(0, 190, 120, 20), Translator.Translate("RelationType"));
+                if (Widgets.ButtonText(new Rect(110, 190, 270, 20), relationType.LabelCap))
                 {
                     List<FloatMenuOption> list = new List<FloatMenuOption>();
-                    foreach (var rDef in DefDatabase<PawnRelationDef>.AllDefsListForReading)
+                    foreach (var rDef in DefDatabase<PawnRelationDef>.AllDefsListForReading.Where(rel => !rel.implied))
                     {
                         list.Add(new FloatMenuOption(rDef.LabelCap, delegate
                         {
@@ -460,8 +493,8 @@ namespace WorldEdit.Editor
                     Find.WindowStack.Add(new FloatMenu(list));
                 }
 
-                Widgets.Label(new Rect(0, 40, 120, 20), Translator.Translate("FactionForSort"));
-                if (Widgets.ButtonText(new Rect(110, 40, 270, 20), faction.Name))
+                Widgets.Label(new Rect(0, 220, 120, 20), Translator.Translate("FactionForSort"));
+                if (Widgets.ButtonText(new Rect(110, 220, 270, 20), faction.Name))
                 {
                     List<FloatMenuOption> list = new List<FloatMenuOption>();
                     foreach (var f in getFactionList)
@@ -469,19 +502,21 @@ namespace WorldEdit.Editor
                         list.Add(new FloatMenuOption(f.Name, delegate
                         {
                             faction = f;
+                            pawnToRelation = (from x in PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead
+                                              where x.Faction == faction select x).FirstOrDefault();
                         }));
                     }
                     Find.WindowStack.Add(new FloatMenu(list));
                 }
 
-                Widgets.Label(new Rect(0, 70, 120, 20), Translator.Translate("PawnToSelect"));
-                if (Widgets.ButtonText(new Rect(110, 70, 270, 20), pawnToRelation.Name.ToStringFull))
+                Widgets.Label(new Rect(0, 250, 120, 20), Translator.Translate("PawnToSelect"));
+                if (Widgets.ButtonText(new Rect(110, 250, 270, 20), pawnToRelation.Name.ToStringFull))
                 {
                     List<FloatMenuOption> list = new List<FloatMenuOption>();
                     foreach (var p in from x in PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead
                                       where x.Faction == faction select x)
                     {
-                        list.Add(new FloatMenuOption(p.Name.ToStringShort, delegate
+                        list.Add(new FloatMenuOption(p.Name.ToStringFull, delegate
                         {
                             pawnToRelation = p;
                         }));
@@ -489,33 +524,19 @@ namespace WorldEdit.Editor
                     Find.WindowStack.Add(new FloatMenu(list));
                 }
 
-                if (Widgets.ButtonText(new Rect(0, 100, 390, 20), Translator.Translate("AddNewRelationToPawn")))
+                if (Widgets.ButtonText(new Rect(0, 280, 390, 20), Translator.Translate("AddNewRelationToPawn")))
                 {
                     AddNewRelationToPawn();
-                }
-
-                if (Widgets.ButtonText(new Rect(0, 130, 390, 20), Translator.Translate("AddNewRelationToPawn")))
-                {
-                    AddNewRelationToPawn2();
                 }
             }
 
             private void AddNewRelationToPawn()
             {
-                
-                var req = new PawnGenerationRequest(pawnToRelation.kindDef, pawnToRelation.Faction);
-                relationType.Worker.CreateRelation(parentPawn, pawnToRelation, ref req);
-            }
-
-            private void AddNewRelationToPawn2()
-            {
-
-                var req = new PawnGenerationRequest(parentPawn.kindDef, parentPawn.Faction);
-                relationType.Worker.CreateRelation(parentPawn, pawnToRelation, ref req);
+                parentPawn.relations.AddDirectRelation(relationType, pawnToRelation);
             }
         }
 
-        private Pawn curPawn;
+        private static Pawn curPawn;
 
         private readonly Vector2 PawnPortraitSize = new Vector2(100f, 140f);
 
@@ -548,17 +569,23 @@ namespace WorldEdit.Editor
         private Texture2D PassionMajorIcon = ContentFinder<Texture2D>.Get("UI/Icons/PassionMajor");
 
         private Texture2D SkillBarFillTex = SolidColorMaterials.NewSolidColorTexture(new Color(1f, 1f, 1f, 0.1f));
-
         public override string PageTitle => "CreateCharacters".Translate();
 
         private List<Pawn> allPawns = new List<Pawn>();
-        public PawnMenu(List<Pawn> selectedPawns)
+
+        private int maxPawns = 1;
+
+        public PawnMenu(List<Pawn> selectedPawns, int maxPawnInList = 1)
         {
             allPawns = selectedPawns;
 
             skillDefsInListOrderCached = (from sd in DefDatabase<SkillDef>.AllDefs
                                           orderby sd.listOrder descending
                                           select sd).ToList();
+
+            maxPawns = maxPawnInList;
+
+            curPawn = null;
         }
 
         public override void DoWindowContents(Rect rect)
@@ -582,6 +609,12 @@ namespace WorldEdit.Editor
 
         private void AddNewPawn()
         {
+            if(allPawns.Count == maxPawns)
+            {
+                Messages.Message("Max pawns", MessageTypeDefOf.NegativeEvent);
+                return;
+            }
+
             allPawns.Add(GeneratePawn());
             // allPawns.Add(DownedRefugeeQuestUtility.GenerateRefugee(-1));
         }
@@ -878,17 +911,7 @@ namespace WorldEdit.Editor
                                     else
                                         pawn.story.childhood = story.Value;
 
-                                    for (int j = 0; j < skillDefsInListOrderCached.Count; j++)
-                                    {
-                                        SkillDef skillDef = skillDefsInListOrderCached[j];
-                                        pawn.skills.GetSkill(skillDef).Notify_SkillDisablesChanged();
-                                    }
-
-                                    MethodInfo cache = typeof(Pawn_StoryTracker).GetMethod("Notify_TraitChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                                    if(cache != null)
-                                    {
-                                        cache.Invoke(pawn.story, null);
-                                    }
+                                    RecacheSkillsData(pawn);
                                 }));
                             }
                             Find.WindowStack.Add(new FloatMenu(list));
@@ -917,6 +940,47 @@ namespace WorldEdit.Editor
                 rect13.width -= 90f;
                 Widgets.Label(rect13, pawn.story.title);
                 num2 += rect12.height + 2f;
+            }
+            if (Widgets.ButtonText(new Rect(0, num2 + 5f, 80f, 20f), Translator.Translate("AddNewBackstory")))
+            {
+                Find.WindowStack.Add(new BackStoryCreator());
+            }
+            if (Widgets.ButtonText(new Rect(85, num2 + 5f, 80f, 20f), Translator.Translate("EditBackStory")))
+            {
+                List<FloatMenuOption> list = new List<FloatMenuOption>();
+                foreach (var story in BackstoryDatabase.allBackstories)
+                {
+                    list.Add(new FloatMenuOption(story.Value.title, delegate
+                    {
+                        Find.WindowStack.Add(new BackStoryCreator(story.Value));
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(list));
+            }
+            if (Widgets.ButtonText(new Rect(170, num2 + 5f, 80f, 20f), Translator.Translate("DeleteBackStory")))
+            {
+                List<FloatMenuOption> list = new List<FloatMenuOption>();
+
+                if (CustomBacktories.CustomStories.Count == 0)
+                {
+                    list.Add(new FloatMenuOption("No stories", delegate
+                    {
+                    }));
+                }
+                else
+                {
+                    foreach (var story in CustomBacktories.CustomStories)
+                    {
+                        list.Add(new FloatMenuOption(story.title, delegate
+                        {
+                            BackstoryDatabase.allBackstories.Remove(story.identifier);
+                            CustomBacktories.DeleteStory(story);
+
+                            RecacheSkillsData(pawn);
+                        }));
+                    }
+                }
+                Find.WindowStack.Add(new FloatMenu(list));
             }
             num2 += 25f;
             Text.Font = GameFont.Medium;
@@ -1010,6 +1074,26 @@ namespace WorldEdit.Editor
         public void DrawSkill(SkillRecord skill, Vector2 topLeft, string tooltipPrefix = "")
         {
             DrawSkill(skill, new Rect(topLeft.x, topLeft.y, 240f, 24f), string.Empty);
+        }
+
+        public static void RecacheSkillsData(Pawn pawn = null)
+        {
+            if(pawn == null)
+            {
+                pawn = curPawn;
+            }
+
+            for (int j = 0; j < skillDefsInListOrderCached.Count; j++)
+            {
+                SkillDef skillDef = skillDefsInListOrderCached[j];
+                pawn.skills.GetSkill(skillDef).Notify_SkillDisablesChanged();
+            }
+
+            MethodInfo cache = typeof(Pawn_StoryTracker).GetMethod("Notify_TraitChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (cache != null)
+            {
+                cache.Invoke(pawn.story, null);
+            }
         }
 
         public void DrawSkill(SkillRecord skill, Rect holdingRect, string tooltipPrefix = "")

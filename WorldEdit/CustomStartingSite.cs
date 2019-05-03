@@ -25,11 +25,14 @@ namespace WorldEdit
             shadowAlpha = 0f;
             preventCameraMotion = false;
 
-            var init = new GameInitData();
-            init.playerFaction = Find.FactionManager.OfPlayer;
+            var init = new GameInitData
+            {
+                playerFaction = Find.FactionManager.OfPlayer
+            };
 
             Current.Game.InitData = init;
             Current.Game.Scenario.PreConfigure();
+            
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -39,6 +42,9 @@ namespace WorldEdit
 
         public override void ExtraOnGUI()
         {
+            if (WorldEditor.isEdit)
+                return;
+
             base.ExtraOnGUI();
             Text.Anchor = TextAnchor.UpperCenter;
             DrawPageTitle(new Rect(0f, 5f, UI.screenWidth, 300f));

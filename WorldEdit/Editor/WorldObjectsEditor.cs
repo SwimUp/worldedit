@@ -7,13 +7,14 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
+using WorldEdit.Editor.WorldObjectsMenu;
 using WorldEdit.Interfaces;
 
 namespace WorldEdit.Editor
 {
     public sealed class WorldObjectsEditor : FWindow
     {
-        public override Vector2 InitialSize => new Vector2(630, 450);
+        public override Vector2 InitialSize => new Vector2(630, 460);
         private Vector2 scrollPosition = Vector2.zero;
         private Vector2 scrollPositionWb = Vector2.zero;
 
@@ -21,21 +22,13 @@ namespace WorldEdit.Editor
         /// Выбарнная надпись
         /// </summary>
         private WorldFeature selectedFeature = null;
-        /// <summary>
-        /// Редактор надписей
-        /// </summary>
-        private WorldFeatureCreator featureCreator;
 
-
-        private WorldObjectsCreator objectsCreator = null;
         private WorldObject selectedObject = null;
         private List<WorldObject> allObjects => Find.WorldObjects.AllWorldObjects.Where(o => o.def != WorldObjectDefOf.Settlement).ToList();
 
         public WorldObjectsEditor()
         {
             resizeable = false;
-            featureCreator = new WorldFeatureCreator();
-            objectsCreator = new WorldObjectsCreator();
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -60,6 +53,7 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(0, x, 290, 20), feat.name))
                 {
                     selectedFeature = feat;
+                    Messages.Message($"Selected feature: {selectedFeature.name}", MessageTypeDefOf.NeutralEvent); 
                 }
                 x += 22;
             }
@@ -67,7 +61,7 @@ namespace WorldEdit.Editor
 
             if (Widgets.ButtonText(new Rect(0, 340, 300, 20), Translator.Translate("CreateNewFeature")))
             {
-                featureCreator.Show();
+                Find.WindowStack.Add(new WorldFeatureCreator());
             }
 
             if (Widgets.ButtonText(new Rect(0, 365, 300, 20), Translator.Translate("DeleteFeature")))
@@ -78,6 +72,11 @@ namespace WorldEdit.Editor
             if (Widgets.ButtonText(new Rect(0, 390, 300, 20), Translator.Translate("RemoveAllFeatures")))
             {
                 RemoveAllFeatures();
+            }
+
+            if (Widgets.ButtonText(new Rect(0, 415, 300, 20), Translator.Translate("EditFeature")))
+            {
+                EditFeature();
             }
         }
 
@@ -92,9 +91,11 @@ namespace WorldEdit.Editor
             int x = 0;
             foreach (var obj in allObjects)
             {
-                if (Widgets.ButtonText(new Rect(0, x, 290, 20), $"[{obj.Tile}] {obj.def.defName}"))
+                if (Widgets.ButtonText(new Rect(0, x, 290, 20), $"[{obj.Tile}] {obj.LabelCap}"))
                 {
                     selectedObject = obj;
+                    Find.WorldCameraDriver.JumpTo(obj.Tile);
+                    Messages.Message($"Selected object: {selectedObject.LabelCap}", MessageTypeDefOf.NeutralEvent);
                 }
                 x += 22;
             }
@@ -102,7 +103,7 @@ namespace WorldEdit.Editor
 
             if (Widgets.ButtonText(new Rect(310, 340, 300, 20), Translator.Translate("CreateNewObject")))
             {
-                objectsCreator.Show();
+                Find.WindowStack.Add(new WorldObjectsCreator());
             }
 
             if (Widgets.ButtonText(new Rect(310, 365, 300, 20), Translator.Translate("DeleteObject")))
@@ -114,12 +115,20 @@ namespace WorldEdit.Editor
             {
                 RemoveAllObjects();
             }
+
+            if (Widgets.ButtonText(new Rect(310, 415, 300, 20), Translator.Translate("EditObject")))
+            {
+                EditObject();
+            }
         }
 
         private void DeleteWorldObject()
         {
             if (selectedObject == null)
+            {
+                Messages.Message($"Select object", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             Find.WorldObjects.Remove(selectedObject);
         }
@@ -130,6 +139,8 @@ namespace WorldEdit.Editor
             {
                 Find.WorldObjects.Remove(allObjects[i]);
             }
+
+            Messages.Message($"All objects has been removed", MessageTypeDefOf.NeutralEvent);
         }
 
         private void RemoveAllFeatures()
@@ -149,12 +160,17 @@ namespace WorldEdit.Editor
             Find.WorldFeatures.textsCreated = false;
 
             Find.WorldFeatures.UpdateFeatures();
+
+            Messages.Message($"All features has been removed", MessageTypeDefOf.NeutralEvent);
         }
 
         private void DeleteFeature()
         {
             if (selectedFeature == null)
+            {
+                Messages.Message($"Select feature to delete", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             WorldGrid grid = Find.WorldGrid;
             foreach(var t in selectedFeature.Tiles)
@@ -169,6 +185,61 @@ namespace WorldEdit.Editor
             Find.WorldFeatures.UpdateFeatures();
 
             selectedFeature = null;
+        }
+
+        private void EditFeature()
+        {
+            if (selectedFeature == null)
+            {
+                Messages.Message($"Select feature to edit", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            Find.WindowStack.Add(new WorldFeatureCreator(selectedFeature));
+        }
+
+        private void EditObject()
+        {
+            if (selectedObject == null)
+            {
+                Messages.Message($"Select feature to edit", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            if(selectedObject.def == WorldObjectDefOf.AbandonedSettlement ||
+                selectedObject.def == WorldObjectDefOf.DestroyedSettlement)
+            {
+                Find.WindowStack.Add(new AbandonedSettlementMenu(selectedObject));
+
+                return;
+            }
+
+            if(selectedObject.def == WorldObjectDefOf.EscapeShip)
+            {
+                Find.WindowStack.Add(new EscapeShipMenu(selectedObject));
+
+                return;
+            }
+
+            SiteCore core = ((Site)selectedObject).core;
+
+            if (core.def == SiteCoreDefOf.Nothing)
+            {
+                Find.WindowStack.Add(new SingleObjectEditor((Site)selectedObject));
+            }
+            else if (core.def == SiteCoreDefOf.PreciousLump)
+            {
+                Find.WindowStack.Add(new PreciousLumpMenu((Site)selectedObject));
+            }else if(core.def == SiteCoreDefOf.ItemStash)
+            {
+                Find.WindowStack.Add(new StashMenu((Site)selectedObject));
+            }else if(core.def == SiteCoreDefOf.DownedRefugee)
+            {
+                Find.WindowStack.Add(new DownedRefugeeMenu((Site)selectedObject));
+            }else if (core.def == SiteCoreDefOf.PrisonerWillingToJoin)
+            {
+                Find.WindowStack.Add(new PrisonerWillingToJoinMenu((Site)selectedObject));
+            }
         }
     }
 }

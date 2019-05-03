@@ -126,11 +126,13 @@ namespace WorldEdit.Editor.Factions
                 Find.WindowStack.Add(new FloatMenu(list));
             }
 
+            /*
             if (Widgets.ButtonText(new Rect(330, 30, 240, 20), Translator.Translate("GenerateItemTemplate")))
             {
                 GenerateTemplate();
             }
 
+            
             if (newItem != null && canSeek)
             {
                 Widgets.Label(new Rect(330, 60, 440, 20), Translator.Translate("DefNameUnique"));
@@ -202,8 +204,9 @@ namespace WorldEdit.Editor.Factions
 
                     //Widgets.TextField(new Rect(330, 190, 440, 20), $"{v}");
                 }
+                
             }
-
+            */
             Widgets.EndScrollView();
         }
 
@@ -215,13 +218,20 @@ namespace WorldEdit.Editor.Factions
         private void GenerateTemplate()
         {
             if (templateItem == null)
+            {
+                Messages.Message($"Select template item", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             if (templateItem.MadeFromStuff && templateStuff == null)
+            {
+                Messages.Message($"Select stuff", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
+            /*
             canSeek = false;
-
+            
             newItem = new ThingDef();
             FieldInfo[] fields = newItem.GetType().GetFields();
             foreach (var f in fields)
@@ -237,8 +247,9 @@ namespace WorldEdit.Editor.Factions
                 }
                 catch { }
             }
-
+            
             canSeek = true;
+            */
         }
 
         private void UpdateItemInfo()

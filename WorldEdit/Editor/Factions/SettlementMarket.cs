@@ -80,15 +80,8 @@ namespace WorldEdit.Editor
 
         public void Show(Settlement settlement)
         {
-            if (Find.WindowStack.IsOpen(this))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                Init(settlement);
-                Find.WindowStack.Add(this);
-            }
+            Init(settlement);
+            Find.WindowStack.Add(this);
         }
 
         private void RegenerateStock()

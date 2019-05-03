@@ -130,7 +130,7 @@
   <CreateNewFeature>Создать</CreateNewFeature>
   <RotateFeature>Угол</RotateFeature>
   <FeatureLengthMax>Размер</FeatureLengthMax>
-  <CreateNewWorldPrint>Создать новую надпись</CreateNewWorldPrint>
+  <CreateNewWorldPrint>Сохранить</CreateNewWorldPrint>
   
   <SelectScenario>Выбрать сценарий</SelectScenario>
   <SelectStorytellerTitle>Рассказчик</SelectStorytellerTitle>
@@ -142,18 +142,18 @@
   <AddAbandonedDestroyedSettlement>Заброшенное/уничтоженное поселение</AddAbandonedDestroyedSettlement>
   <FactionOwner>Фракция</FactionOwner>
   <WorldObjectsTitle>Глобальные объекты</WorldObjectsTitle>
-  <SetAbandonedDestroyedSettlement>Установить объект</SetAbandonedDestroyedSettlement>
+  <SetAbandonedDestroyedSettlement>Сохранить</SetAbandonedDestroyedSettlement>
   <DestroyedType>Тип: Уничтоженное поселение</DestroyedType>
   <AbandonedType>Тип: Заброшенное поселение</AbandonedType>
   <AddEscapeShipPod>Скрытый корабль</AddEscapeShipPod>
   <DurationTimeDays>Задержка (дни)</DurationTimeDays>
-  <AddEscapeShipPoint>Установить объект</AddEscapeShipPoint>
+  <AddEscapeShipPoint>Сохранить</AddEscapeShipPoint>
   
   <AddSingleObject>Настраиваемый одиночный объект</AddSingleObject>
   <AddSingleObjectTitle>Настраиваемый одиночный объект</AddSingleObjectTitle>
   <ThreatPoint>Степень угрозы (оставьте пустым для автоматического расчета)</ThreatPoint>
   <SiteParts>Тип</SiteParts>
-  <AddNewSingleObject>Добавить новый объект</AddNewSingleObject>
+  <AddNewSingleObject>Сохранить</AddNewSingleObject>
   
   <AddItemStash>Схрон</AddItemStash>
   <AdditemStashTitle>Новый схрон</AdditemStashTitle>
@@ -161,7 +161,7 @@
   <CreateNewItemToStash>Добавить предмет</CreateNewItemToStash>
   
   <AddPreciousLump>Месторождение</AddPreciousLump>
-  <PreciousLumpMenuTitle>Создать месторождение</PreciousLumpMenuTitle>
+  <PreciousLumpMenuTitle>Сохранить</PreciousLumpMenuTitle>
   <DurationTimeDaysLump>Таймер (оставьте пустым, если навсегда)</DurationTimeDaysLump>
   <ResourceType>Тип</ResourceType>
   <ThreatType>Угроза</ThreatType>
@@ -192,5 +192,63 @@
   <FactionForSort>Фракция</FactionForSort>
   <PawnToSelect>Павн</PawnToSelect>
   <AddNewRelationToPawn>Добавить отношение</AddNewRelationToPawn>
+  <DeleteTargetRelation>Удалить</DeleteTargetRelation>
+  <AddNewBackstory>Создать</AddNewBackstory>
+  
+  <BackstorySlotInfo>Тип</BackstorySlotInfo>
+  <BackstoryTitle>Название</BackstoryTitle>
+  <BackstoryTitleFemale>Название(жен.)</BackstoryTitleFemale>
+  <BackstoryTitleShort>Короткое название</BackstoryTitleShort>
+  <BackstoryTitleShortFemale>Короткое название(жен.)</BackstoryTitleShortFemale>
+  <GainsPerksInfo>Добавляемые навыки</GainsPerksInfo>
+  <AddNewSkillGained>Добавить</AddNewSkillGained>
+  <CountInfo>Кол-во</CountInfo>
+  <AddNewSkillGain>Добавить</AddNewSkillGain>
+  <DescriptionBasic>Описание</DescriptionBasic>
+  <SaveBacktoryToWorld>Сохранить историю</SaveBacktoryToWorld>
+  <DoesntMatter>Не важно</DoesntMatter>
+  <BlockTag>Запрещенно</BlockTag>
+  <Required>Требуется</Required>
+  <EditBackStory>Редакт.</EditBackStory>
+  <DeleteBackStory>Удалить</DeleteBackStory>
+  <ForcedTag>Обязательная черта</ForcedTag>
+  <DissalowTrait>Запрещенная черта</DissalowTrait>
+  <TraitsData>Настройка трейтов</TraitsData>
+  
+  <AddNewDownedRefugee>Добавить</AddNewDownedRefugee>
+  
+  <AddPrisonerWillingToJoin>Заключенный</AddPrisonerWillingToJoin>
+  <PrisonerWillingToJoinMenuTitle>Заключенный</PrisonerWillingToJoinMenuTitle>
+  
+  <FactionDiagramm>Показать диаграмму фракций</FactionDiagramm>
+  
+  <EditFeature>Редактировать надпись</EditFeature>
+  <EditObject>Редактировать объект</EditObject>
+  
+  <WE_Settings_General>Основные настройки</WE_Settings_General>
+  <PernamentEditor>Повсеместная активация редактора</PernamentEditor>
+  <ActiveFullyMode>Активирован</ActiveFullyMode>
+  <WE_HotKeysSettings>Горячие клавиши</WE_HotKeysSettings>
+  <EditHotKeyInfo>Редактор</EditHotKeyInfo>
+  <FactionHotKeyInfo>Фракции</FactionHotKeyInfo>
+  <RiversAndRoadsHotKeyInfo>Реки и дороги</RiversAndRoadsHotKeyInfo>
+  <WorldObjectHotKeyInfo>Глобальные объекты</WorldObjectHotKeyInfo>
+  
+  <ConfirmActionWindow>Подтвердите действие</ConfirmActionWindow>
+  <ConfirmAction>Подтвердить</ConfirmAction>
+  <DeclineAction>Отмена</DeclineAction>
+  
+  <TemplateHead>Шаблон - </TemplateHead>
+  <TemplateStoryteller>\n-----------------------------------------------\n\nРассказчик: </TemplateStoryteller>
+  <TemplateScenario>\nСценарий: </TemplateScenario>
+  <TemplateDesc>\n\n\nОписание:\n </TemplateDesc>
+  <TemplateAuthor>\n\nАвтор: </TemplateAuthor>
+  <LoadTemplate>Загрузить шаблон</LoadTemplate>
+  
+  <TemplateNameEdit>Имя шаблона</TemplateNameEdit>
+  <TemplateAuthorEdit>Автор</TemplateAuthorEdit>
+  <TemplateDescription>Описание</TemplateDescription>
+  
+  <PaintMode>Режим рисования</PaintMode>
   
 </LanguageData>

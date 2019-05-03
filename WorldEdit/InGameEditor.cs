@@ -1,14 +1,11 @@
-﻿using Harmony;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 using Verse;
-using Verse.Noise;
 using WorldEdit.Editor;
 
 namespace WorldEdit
@@ -78,12 +75,12 @@ namespace WorldEdit
         /// <summary>
         /// Редактор дорог и рек
         /// </summary>
-        private RoadAndRiversEditor roadEditor;
+        internal RoadAndRiversEditor roadEditor;
 
         /// <summary>
         /// Окно со списком всех слоёв для обновления конкретного
         /// </summary>
-        private LayersWindow layersWindow;
+        internal LayersWindow layersWindow;
 
         /// <summary>
         /// Редактор фракций и поселений
@@ -154,6 +151,11 @@ namespace WorldEdit
                         {
                             tile.biome = selectedBiome;
 
+                            if(selectedBiome == BiomeDefOf.Ocean || selectedBiome == BiomeDefOf.Lake)
+                            {
+                                tile.elevation = -400f;
+                            }
+
                             if (updateImmediately)
                             {
                                 WorldUpdater.RenderSingleTile(tileID, tile.biome.DrawMaterial, LayersSubMeshes["WorldLayer_Terrain"]);
@@ -200,7 +202,10 @@ namespace WorldEdit
             WidgetRow row = new WidgetRow(0, 0, UIDirection.RightThenDown);
             if(row.ButtonText(Translator.Translate("UpdateAllTiles"), Translator.Translate("UpdateAllTilesInfo")))
             {
-                WorldUpdater.UpdateMap();
+                LongEventHandler.QueueLongEvent(delegate
+                {
+                    WorldUpdater.UpdateMap();
+                }, "Updating layers...", doAsynchronously: false, null);
             }
             if (row.ButtonText(Translator.Translate("UpdateCustomLayer"), Translator.Translate("UpdateCustomLayerInfo")))
             {
@@ -234,6 +239,7 @@ namespace WorldEdit
             if (Widgets.ButtonText(new Rect(0, yButtonPos, 230, 20), Translator.Translate("NoText")))
             {
                 selectedBiome = null;
+                Messages.Message($"Biome: none", MessageTypeDefOf.NeutralEvent);
             }
             yButtonPos += 25;
             foreach (BiomeDef def in avaliableBiomes)
@@ -241,6 +247,7 @@ namespace WorldEdit
                 if(Widgets.ButtonText(new Rect(0, yButtonPos, 230, 20), def.label))
                 {
                     selectedBiome = def;
+                    Messages.Message($"Biome: {selectedBiome.defName}", MessageTypeDefOf.NeutralEvent);
                 }
                 yButtonPos += 22;
             }
@@ -279,13 +286,48 @@ namespace WorldEdit
             }
 
             yButtonPos += 50;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 210, 20), Translator.Translate("FactionEditor")))
+            {
+                factionEditor.Show();
+            }
+            yButtonPos += 25;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 210, 20), Translator.Translate("FactionDiagramm")))
+            {
+                Find.WindowStack.Add(new Dialog_FactionDuringLanding());
+            }
+
+            yButtonPos += 35;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 210, 20), Translator.Translate("RoadAndRiverEditor")))
+            {
+                roadEditor.Show();
+            }
+
+            yButtonPos += 35;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 210, 20), Translator.Translate("WorldFeaturesEditor")))
+            {
+                worldObjectsEditor.Show();
+            }
+
+            yButtonPos += 50;
+            if (Widgets.ButtonText(new Rect(0, yButtonPos, 270, 20), Translator.Translate("SaveWorldTemplate")))
+            {
+                Find.WindowStack.Add(new WorldTemplateManager());
+            }
+
+            GUI.EndGroup();
+
+            float group2Width = 270;
+            Rect group2 = new Rect(group2Width, 20, inRect.width / 2, inRect.height);
+            GUI.BeginGroup(group2);
+            yButtonPos = 25;
+
             Widgets.Label(new Rect(0, yButtonPos, 100, 20), Translator.Translate("Temperature"));
             fieldValue = Widgets.TextField(new Rect(100, yButtonPos, 100, 20), fieldValue);
-            if(int.TryParse(fieldValue, out int temperature))
+            if (int.TryParse(fieldValue, out int temperature))
             {
                 this.temperature = temperature;
             }
-            if(Widgets.RadioButtonLabeled(new Rect(200, yButtonPos, 50, 20), "", useTemperature == true))
+            if (Widgets.RadioButtonLabeled(new Rect(200, yButtonPos, 50, 20), "", useTemperature == true))
             {
                 useTemperature = !useTemperature;
             }
@@ -368,34 +410,6 @@ namespace WorldEdit
 
             GUI.EndGroup();
 
-            float group2Width = 270;
-            Rect group2 = new Rect(group2Width, 20, inRect.width / 2, inRect.height);
-            GUI.BeginGroup(group2);
-            yButtonPos = 25;
-            if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), Translator.Translate("FactionEditor")))
-            {
-                factionEditor.Show();
-            }
-
-            yButtonPos += 35;
-            if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), Translator.Translate("RoadAndRiverEditor")))
-            {
-                roadEditor.Show();
-            }
-
-            yButtonPos += 35;
-            if (Widgets.ButtonText(new Rect(0, yButtonPos, 190, 20), Translator.Translate("WorldFeaturesEditor")))
-            {
-                worldObjectsEditor.Show();
-            }
-
-            if (Widgets.ButtonText(new Rect(0, inRect.height - 70, 270, 20), Translator.Translate("SaveWorldTemplate")))
-            {
-                Find.WindowStack.Add(new WorldTemplateManager());
-            }
-
-            GUI.EndGroup();
-
             Widgets.EndScrollView();
         }
 
@@ -408,24 +422,28 @@ namespace WorldEdit
                 case SetType.temp:
                     {
                         grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => tile.temperature = temperature);
+                        Messages.Message($"Temperature {temperature} set to all map", MessageTypeDefOf.NeutralEvent);
 
                         break;
                     }
                 case SetType.evel:
                     {
                         grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => tile.elevation = elevation);
+                        Messages.Message($"Elevation {elevation} set to all map", MessageTypeDefOf.NeutralEvent);
 
                         break;
                     }
                 case SetType.rain:
                     {
                         grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => tile.rainfall = rainfall);
+                        Messages.Message($"Rainfall {rainfall} set to all map", MessageTypeDefOf.NeutralEvent);
 
                         break;
                     }
                 case SetType.swamp:
                     {
                         grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => tile.swampiness = swampiness);
+                        Messages.Message($"Swampiness {swampiness} set to all map", MessageTypeDefOf.NeutralEvent);
 
                         break;
                     }
@@ -435,7 +453,10 @@ namespace WorldEdit
         private void SetToAllBiomes(SetType type)
         {
             if (selectedBiome == null)
+            {
+                Messages.Message($"First choose a biome", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             WorldGrid grid = Find.WorldGrid;
 
@@ -444,24 +465,28 @@ namespace WorldEdit
                 case SetType.temp:
                     {
                         grid.tiles.Where(tile => tile.biome == selectedBiome).ForEach(tile => tile.temperature = temperature);
+                        Messages.Message($"Temperature {temperature} set to all {selectedBiome.defName}", MessageTypeDefOf.NeutralEvent);
 
                         break;
                     }
                 case SetType.evel:
                     {
                         grid.tiles.Where(tile => tile.biome == selectedBiome).ForEach(tile => tile.elevation = elevation);
+                        Messages.Message($"Elevation {elevation} set to all {selectedBiome.defName}", MessageTypeDefOf.NeutralEvent);
 
                         break;
                     }
                 case SetType.rain:
                     {
                         grid.tiles.Where(tile => tile.biome == selectedBiome).ForEach(tile => tile.rainfall = rainfall);
+                        Messages.Message($"Rainfall {rainfall} set to all {selectedBiome.defName}", MessageTypeDefOf.NeutralEvent);
 
                         break;
                     }
                 case SetType.swamp:
                     {
                         grid.tiles.Where(tile => tile.biome == selectedBiome).ForEach(tile => tile.swampiness = swampiness);
+                        Messages.Message($"Swampiness {swampiness} set to all {selectedBiome.defName}", MessageTypeDefOf.NeutralEvent);
 
                         break;
                     }
@@ -478,24 +503,38 @@ namespace WorldEdit
             }
 
             WorldUpdater.UpdateLayer(Layers["WorldLayer_Hills"]);
+
+            Messages.Message($"Hilliness removed", MessageTypeDefOf.NeutralEvent);
         }
 
         private void SetBiomeToAllTiles()
         {
             if (selectedBiome == null)
+            {
+                Messages.Message($"First choose a biome", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             WorldGrid grid = Find.WorldGrid;
-            grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => tile.biome = selectedBiome);
+            grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => 
+            {
+                tile.biome = selectedBiome;
+            });
 
-            LayersSubMeshes["WorldLayer_Terrain"].Clear();
-            WorldUpdater.UpdateLayer(Layers["WorldLayer_Terrain"]);
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                LayersSubMeshes["WorldLayer_Terrain"].Clear();
+                WorldUpdater.UpdateLayer(Layers["WorldLayer_Terrain"]);
+            }, "Set biome on the whole map ...", doAsynchronously: false, null);
         }
 
         private void SetHillnesToAllMap()
         {
             if (selectedHillness == Hilliness.Undefined)
+            {
+                Messages.Message($"First choose a hilliness type", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             WorldGrid grid = Find.WorldGrid;
             grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => tile.hilliness = selectedHillness);
@@ -506,10 +545,16 @@ namespace WorldEdit
         private void SetHillnesToAllBiome()
         {
             if (selectedHillness == Hilliness.Undefined)
+            {
+                Messages.Message($"First choose a hilliness type", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             if (selectedBiome == null)
+            {
+                Messages.Message($"Choose a biome", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             WorldGrid grid = Find.WorldGrid;
             grid.tiles.Where(tile => tile.biome == selectedBiome).ForEach(tile => tile.hilliness = selectedHillness);

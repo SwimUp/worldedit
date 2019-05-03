@@ -32,15 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>Libs\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\workshop\content\294100\818773962\Assemblies\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>Libs\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Rainbeau%27s Realistic Planets">
-      <HintPath>..\..\..\..\Games\RimWorld v1.0.2231\Mods\1571623829 [RF] Realistic Planets [1.0]\Assemblies\Rainbeau's Realistic Planets.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -62,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomBacktories.cs" />
     <Compile Include="CustomStartingSite.cs" />
     <Compile Include="Editor\Factions\FactionCreator.cs" />
     <Compile Include="Editor\Factions\FactionEditor.cs" />
@@ -78,6 +76,7 @@
     <Compile Include="Editor\WorldFeatureCreator.cs" />
     <Compile Include="Editor\WorldObjectsEditor.cs" />
     <Compile Include="Editor\WorldObjectsMenu\AbandonedSettlementMenu.cs" />
+    <Compile Include="Editor\WorldObjectsMenu\PrisonerWillingToJoinMenu.cs" />
     <Compile Include="Editor\WorldObjectsMenu\DownedRefugeeMenu.cs" />
     <Compile Include="Editor\WorldObjectsMenu\EscapeShipMenu.cs" />
     <Compile Include="Editor\WorldObjectsMenu\SingleObjectEditor.cs" />
@@ -85,6 +84,8 @@
     <Compile Include="Editor\WorldObjectsMenu\PreciousLumpMenu.cs" />
     <Compile Include="HarmonyHooks\MainMenuHooks.cs" />
     <Compile Include="HarmonyHooks\RP_Patch.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Utils\BackStoryCreator.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="HarmonyHooks\Dialog_FileList_Patch.cs" />
     <Compile Include="HarmonyHooks\Page_SelectStartingSite_Patch.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="WorldTemplate.cs" />
     <Compile Include="WorldTemplateManager.cs" />
     <Compile Include="Utils\WorldUpdater.cs" />
+    <Compile Include="XmLSerializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

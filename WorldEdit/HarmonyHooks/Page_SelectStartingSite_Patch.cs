@@ -30,4 +30,21 @@ namespace WorldEdit.HarmonyHooks
             }
         }
     }
+
+    [HarmonyPatch("ExtraOnGUI"), HarmonyPatch(typeof(Page_SelectStartingSite))]
+    class ExtraOnGUI_Patch
+    {
+        public static bool Prefix()
+        {
+            if (WorldEditor.isEdit)
+            {
+                if (WorldEditor.isInit)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
 }

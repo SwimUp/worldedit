@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
+using Verse.Profile;
 
 namespace WorldEdit.HarmonyHooks
 {
@@ -30,23 +32,44 @@ namespace WorldEdit.HarmonyHooks
     {
         public static void Postfix()
         {
-            if (Input.GetKeyDown(KeyCode.F5))
+            if (!WorldEditor.isEdit && !WorldEditor.isInit)
+                return;
+
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (!WorldEditor.isEdit)
+                if (Find.WindowStack.IsOpen(typeof(CustomStartingSite)))
                     return;
 
-                if (!WorldEditor.isInit)
-                    return;
+                Find.WindowStack.Add(new ConfirmActionPage(delegate
+                {
+                    LongEventHandler.ClearQueuedEvents();
+                    LongEventHandler.QueueLongEvent(delegate
+                    {
+                        MemoryUtility.ClearAllMapsAndWorld();
+                        Current.Game = null;
+                    }, "Entry", "LoadingLongEvent", doAsynchronously: true, null);
+                }));
+            }
 
-                if (Find.WindowStack.IsOpen(typeof(InGameEditor)))
-                {
-                    Log.Message("Currntly open...");
-                }
-                else
-                {
-                    WorldEditor.Editor.Reset();
-                    Find.WindowStack.Add(WorldEditor.Editor);
-                }
+            if (Input.GetKeyDown(Settings.EditorHotKey))
+            {
+                WorldEditor.Editor.Reset();
+                Find.WindowStack.Add(WorldEditor.Editor);
+            }
+
+            if (Input.GetKeyDown(Settings.FactionHotKey))
+            {
+                Find.WindowStack.Add(WorldEditor.Editor.factionEditor);
+            }
+
+            if (Input.GetKeyDown(Settings.RiversAndRoadsHotKey))
+            {
+                Find.WindowStack.Add(WorldEditor.Editor.roadEditor);
+            }
+
+            if (Input.GetKeyDown(Settings.WorldObjectHotKey))
+            {
+                Find.WindowStack.Add(WorldEditor.Editor.worldObjectsEditor);
             }
         }
     }

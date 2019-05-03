@@ -69,15 +69,8 @@ namespace WorldEdit.Editor
 
         public void Show(Settlement settlement)
         {
-            if (Find.WindowStack.IsOpen(typeof(SettlementEditor)))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                selectedSettlement = settlement;
-                Find.WindowStack.Add(this);
-            }
+            selectedSettlement = settlement;
+            Find.WindowStack.Add(this);
         }
 
         private void SaveSettlement()

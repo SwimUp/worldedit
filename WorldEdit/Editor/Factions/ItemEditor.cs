@@ -141,26 +141,15 @@ namespace WorldEdit.Editor.Factions
             }
 
             stuffs = DefDatabase<ThingDef>.AllDefsListForReading.Where(thingDef => thingDef.IsStuff).ToList();
-            /*
-            StatRequest request = StatRequest.For(item, item);
-
-            stats = item.SpecialDisplayStats(request).ToList();
-            */
         }
 
         private void GenerateItem()
         {
             if (item == null)
+            {
+                Messages.Message($"Select item", MessageTypeDefOf.NeutralEvent);
                 return;
-
-            /*
-            ThingSetMakerParams parms = default(ThingSetMakerParams);
-            parms.validator = x => x == item;
-
-            var item2 = ThingSetMakerDefOf.TraderStock.root.Generate(parms).FirstOrDefault();
-
-            var item2 = ThingMaker.MakeThing(item);
-            */
+            }
 
             Thing thing = ThingMaker.MakeThing(item, stuff);
             thing.TryGetComp<CompQuality>()?.SetQuality(quality, ArtGenerationContext.Colony);
@@ -171,19 +160,14 @@ namespace WorldEdit.Editor.Factions
             thing.stackCount = stackCount;
 
             stockList.Add(thing);
+
+            Messages.Message($"Item has been added", MessageTypeDefOf.NeutralEvent);
         }
 
         public void Show(List<Thing> stock)
         {
-            if (Find.WindowStack.IsOpen(this))
-            {
-                Log.Message("Currntly open...");
-            }
-            else
-            {
-                stockList = stock;
-                Find.WindowStack.Add(this);
-            }
+            stockList = stock;
+            Find.WindowStack.Add(this);
         }
     }
 }

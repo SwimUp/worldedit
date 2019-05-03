@@ -16,9 +16,23 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
         private string time = "4";
 
+        private bool edit = false;
+        private WorldObject editObject = null;
+        
         public EscapeShipMenu()
         {
             resizeable = false;
+            edit = false;
+        }
+
+        public EscapeShipMenu(WorldObject obj)
+        {
+            resizeable = false;
+
+            edit = true;
+            editObject = obj;
+
+            time = editObject.GetComponent<EnterCooldownComp>().DaysLeft.ToString();
         }
         public override void DoWindowContents(Rect inRect)
         {
@@ -39,11 +53,26 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
         private void AddEscapeShip()
         {
-            if (Find.WorldSelector.selectedTile == -1)
-                return;
-
             if (!float.TryParse(time, out float timeFloat))
+            {
+                Messages.Message($"Enter valid time (> 0)", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
+
+            if (edit)
+            {
+                editObject.GetComponent<EnterCooldownComp>().Start(timeFloat);
+
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+
+                return;
+            }
+
+            if (Find.WorldSelector.selectedTile == -1)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
 
             WorldObject worldObject = WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.EscapeShip);
             worldObject.Tile = Find.WorldSelector.selectedTile;

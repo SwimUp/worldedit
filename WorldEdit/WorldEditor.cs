@@ -57,6 +57,9 @@ namespace WorldEdit
         private static class Page_CreateWorldParams_DoWindowContents_Patch
         {
             private static Vector2 scrollPositionWorlds = Vector2.zero;
+            private static Vector2 scrollPositionInfo = Vector2.zero;
+            private static WorldTemplate selectedTemplate = null;
+            private static string worldInfo = string.Empty;
 
             private static bool Prefix(Rect rect, ref Rect __state)
             {
@@ -71,39 +74,55 @@ namespace WorldEdit
                 Rect baseRect = new Rect(0f, y, 200f, 30f);
                 Widgets.Label(baseRect, Translator.Translate("EditorLabel"));
                 Rect EarthRect = new Rect(200f, y, 200f, 30f);
-                if (Widgets.RadioButtonLabeled(EarthRect, Translator.Translate("isEnableEditorLabel"), isEdit == true))
+                if (Settings.fullyActiveEditor == false)
                 {
-                    isEdit = !isEdit;
+                    if (Widgets.RadioButtonLabeled(EarthRect, Translator.Translate("isEnableEditorLabel"), isEdit == true))
+                    {
+                        isEdit = !isEdit;
+                    }
+                }
+                else
+                {
+                    Widgets.Label(EarthRect, Translator.Translate("ActiveFullyMode"));
+                    isEdit = true;
                 }
 
                 GUI.EndGroup();
 
-                string worldsPath = Path.Combine(GenFilePaths.SaveDataFolderPath, "Saves");
-                string[] worlds = Directory.GetFiles(worldsPath, "wtemplate_*");
-
-                Widgets.Label(new Rect(510, 40, 300, 20), Translator.Translate("WorldTemplates"));
-                int worldsSize = worlds.Length * 25;
-                Rect scrollRect = new Rect(510, 65, 300, 600);
+                Widgets.Label(new Rect(440, 40, 200, 20), Translator.Translate("WorldTemplates"));
+                int worldsSize = WorldTemplateManager.Templates.Count * 25;
+                Rect scrollRect = new Rect(440, 70, 200, 400);
                 Rect scrollVertRect = new Rect(0, 0, scrollRect.x, worldsSize);
                 Widgets.BeginScrollView(scrollRect, ref scrollPositionWorlds, scrollVertRect);
                 int x = 0;
-                foreach (string world in worlds)
+                foreach (var world in WorldTemplateManager.Templates)
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(world).Substring(10);
-                    if (Widgets.ButtonText(new Rect(0, x, 290, 20), fileName))
+                    if (Widgets.ButtonText(new Rect(0, x, 180, 20), world.WorldName))
                     {
-                        isWorldTemplate = true;
-                        LoadedTemplate = new WorldTemplate()
-                        {
-                            FilePath = world,
-                            WorldName = fileName
-                        };
-                        GameDataSaveLoader.LoadGame(Path.GetFileNameWithoutExtension(world));
+                        selectedTemplate = world;
+                        StringBuilder builder = new StringBuilder();
+                        builder.AppendLine($"{Translator.Translate("TemplateHead")}{world.WorldName}");
+                        builder.AppendLine($"{Translator.Translate("TemplateAuthor")}{world.Author}");
+                        builder.AppendLine($"{Translator.Translate("TemplateStoryteller")}{world.Storyteller}");
+                        builder.AppendLine($"{Translator.Translate("TemplateScenario")}{world.Scenario}");
+                        builder.AppendLine($"{Translator.Translate("TemplateDesc")}{world.Description}");
+                        worldInfo = builder.ToString();
                     }
+                    
                     x += 22;
                 }
-
                 Widgets.EndScrollView();
+                Widgets.LabelScrollable(new Rect(650, 70, 440, 400), worldInfo, ref scrollPositionInfo, false, false);
+
+                if (selectedTemplate != null)
+                {
+                    if (Widgets.ButtonText(new Rect(440, 500, 200, 20), Translator.Translate("LoadTemplate")))
+                    {
+                        isWorldTemplate = true;
+                        LoadedTemplate = selectedTemplate;
+                        GameDataSaveLoader.LoadGame(selectedTemplate.FilePath);
+                    }
+                }
             }
         }
 

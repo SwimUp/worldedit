@@ -140,6 +140,115 @@
   <DeleteObject>Delete selected object</DeleteObject>
   <RemoveAllObjects>Delete all objects</RemoveAllObjects>
   
-   <ThreatPoint>Threat points (empty for auto)</ThreatPoint>
+  <AddAbandonedDestroyedSettlement>Abandoned/destroyed settlement</AddAbandonedDestroyedSettlement>
+  <FactionOwner>Faction</FactionOwner>
+  <WorldObjectsTitle>World objects</WorldObjectsTitle>
+  <SetAbandonedDestroyedSettlement>Save</SetAbandonedDestroyedSettlement>
+  <DestroyedType>Type: Destroyed settlement</DestroyedType>
+  <AbandonedType>Type: Abandoned settlement</AbandonedType>
+  <AddEscapeShipPod>Escape ship</AddEscapeShipPod>
+  <DurationTimeDays>Timeout (days)</DurationTimeDays>
+  <AddEscapeShipPoint>Save</AddEscapeShipPoint>
+  
+  <AddSingleObject>Customizable single object</AddSingleObject>
+  <AddSingleObjectTitle>Customizable single object</AddSingleObjectTitle>
+  <ThreatPoint>The degree of threat (leave blank for automatic calculation)</ThreatPoint>
+  <SiteParts>Type</SiteParts>
+  <AddNewSingleObject>Save</AddNewSingleObject>
+  
+  <AddItemStash>Item stash</AddItemStash>
+  <AdditemStashTitle>New item stash</AdditemStashTitle>
+  <AddNewItemStash>Add item stash</AddNewItemStash>
+  <CreateNewItemToStash>Add item</CreateNewItemToStash>
+  
+  <AddPreciousLump>Resource field</AddPreciousLump>
+  <PreciousLumpMenuTitle>Save</PreciousLumpMenuTitle>
+  <DurationTimeDaysLump>Timer (leave blank if forever)</DurationTimeDaysLump>
+  <ResourceType>Type</ResourceType>
+  <ThreatType>Threat</ThreatType>
+  
+  <AddDownedRefugee>Refugee</AddDownedRefugee>
+  <DownedRefugeeMenuTitle>Refugee</DownedRefugeeMenuTitle>
+  <ThreatTypes>Threat type</ThreatTypes>
+  <OpenPawnMenu>Configure pawns</OpenPawnMenu>
+  <SaveRefugeeList>Save</SaveRefugeeList>
+  <AddNewRefugee>Add</AddNewRefugee>
+  <TraitLabel>Trait</TraitLabel>
+  <HeddifsCurrent>Heddifs</HeddifsCurrent>
+  <AddNewTrait>Add new trait</AddNewTrait>
+  <ModifyHealth>Modify health</ModifyHealth>
+  <BodyPartInfo>Body part</BodyPartInfo>
+  <HeddifDefInfo>Health state</HeddifDefInfo>
+  <AddNewHediffLabel>Add hediff</AddNewHediffLabel>
+  <FullHeal>Full heal</FullHeal>
+  <AddDamageLabel>To damage</AddDamageLabel>
+  <HeddifStageInfo>Stage</HeddifStageInfo>
+  <SeverityInfo>Severity</SeverityInfo>
+  <DamageType>Damage type</DamageType>
+  <DamageAmount>Damage</DamageAmount>
+  
+  <ModifyRelations>Change</ModifyRelations>
+  <RelationType>Type</RelationType>
+  <FactionForSort>Faction</FactionForSort>
+  <PawnToSelect>Pawn</PawnToSelect>
+  <AddNewRelationToPawn>Add relation</AddNewRelationToPawn>
+  <DeleteTargetRelation>Delete</DeleteTargetRelation>
+  <AddNewBackstory>Create</AddNewBackstory>
+  
+  <BackstorySlotInfo>Type</BackstorySlotInfo>
+  <BackstoryTitle>Title</BackstoryTitle>
+  <BackstoryTitleFemale>Title(female)</BackstoryTitleFemale>
+  <BackstoryTitleShort>Short title</BackstoryTitleShort>
+  <BackstoryTitleShortFemale>Short title(female)</BackstoryTitleShortFemale>
+  <GainsPerksInfo>Gains skills</GainsPerksInfo>
+  <AddNewSkillGained>Add</AddNewSkillGained>
+  <CountInfo>Count</CountInfo>
+  <AddNewSkillGain>Add</AddNewSkillGain>
+  <DescriptionBasic>Description</DescriptionBasic>
+  <SaveBacktoryToWorld>Save backstory</SaveBacktoryToWorld>
+  <DoesntMatter>No matter</DoesntMatter>
+  <BlockTag>Dissalow</BlockTag>
+  <Required>Required</Required>
+  <EditBackStory>Edit</EditBackStory>
+  <DeleteBackStory>Delete</DeleteBackStory>
+  <ForcedTag>Forced trait</ForcedTag>
+  <DissalowTrait>Dissalow trait</DissalowTrait>
+  <TraitsData>Trait setup</TraitsData>
+  
+  <AddNewDownedRefugee>Add</AddNewDownedRefugee>
+  
+  <AddPrisonerWillingToJoin>Prisoner</AddPrisonerWillingToJoin>
+  <PrisonerWillingToJoinMenuTitle>Prisoner</PrisonerWillingToJoinMenuTitle>
+  
+  <FactionDiagramm>Show faction diagram</FactionDiagramm>
+  
+  <EditFeature>Edit label</EditFeature>
+  <EditObject>Edit object</EditObject>
+  
+  <WE_Settings_General>Basic settings</WE_Settings_General>
+  <PernamentEditor>Ubiquitous Editor Activation</PernamentEditor>
+  <ActiveFullyMode>Activate</ActiveFullyMode>
+  <WE_HotKeysSettings>Hot keys</WE_HotKeysSettings>
+  <EditHotKeyInfo>Editor</EditHotKeyInfo>
+  <FactionHotKeyInfo>Faction editor</FactionHotKeyInfo>
+  <RiversAndRoadsHotKeyInfo>Rivers and roads</RiversAndRoadsHotKeyInfo>
+  <WorldObjectHotKeyInfo>World objects</WorldObjectHotKeyInfo>
+  
+  <ConfirmActionWindow>Confirm action</ConfirmActionWindow>
+  <ConfirmAction>Confirm</ConfirmAction>
+  <DeclineAction>Cancel</DeclineAction>
+  
+  <TemplateHead>Template - </TemplateHead>
+  <TemplateStoryteller>\n-----------------------------------------------\n\nStoryteller: </TemplateStoryteller>
+  <TemplateScenario>\nScenario: </TemplateScenario>
+  <TemplateDesc>\n\n\nDescription:\n </TemplateDesc>
+  <TemplateAuthor>\n\nAuthor: </TemplateAuthor>
+  <LoadTemplate>Load template</LoadTemplate>
+  
+  <TemplateNameEdit>Template name</TemplateNameEdit>
+  <TemplateAuthorEdit>Author</TemplateAuthorEdit>
+  <TemplateDescription>Description</TemplateDescription>
+  
+  <PaintMode>Paint mode</PaintMode>
   
 </LanguageData>

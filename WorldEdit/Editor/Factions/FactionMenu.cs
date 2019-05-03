@@ -72,7 +72,6 @@ namespace WorldEdit.Editor
         {
             Text.Font = GameFont.Small;
 
-            WidgetRow mainRow = new WidgetRow(0, 0);
             PrintFactionManager();
             PrintSettlementManager();
         }
@@ -87,6 +86,7 @@ namespace WorldEdit.Editor
             if (Widgets.ButtonText(new Rect(0, 25, 450, 20), Translator.Translate("NoText")))
             {
                 selectedFaction = null;
+                Messages.Message($"Selected faction: None", MessageTypeDefOf.NeutralEvent);
             }
 
             Rect scrollRectFact = new Rect(0, 50, 460, 200);
@@ -98,6 +98,7 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 450, 20), spawnedFaction.Name))
                 {
                     selectedFaction = spawnedFaction;
+                    Messages.Message($"Selected faction: {selectedFaction.Name}", MessageTypeDefOf.NeutralEvent);
                 }
                 yButtonPos += 22;
             }
@@ -133,7 +134,10 @@ namespace WorldEdit.Editor
         private void RemoveFaction()
         {
             if (selectedFaction == null)
+            {
+                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             if (deleteSettlements)
             {
@@ -148,6 +152,8 @@ namespace WorldEdit.Editor
                 Find.WorldPawns.RemoveAndDiscardPawnViaGC(selectedFaction.leader);
 
             Find.FactionManager.Remove(selectedFaction);
+
+            Messages.Message($"Faction deleted", MessageTypeDefOf.NeutralEvent);
         }
 
         private void PrintSettlementManager()
@@ -158,6 +164,7 @@ namespace WorldEdit.Editor
             if (Widgets.ButtonText(new Rect(460, 25, 450, 20), Translator.Translate("NoText")))
             {
                 selectedSettlement = null;
+                Messages.Message($"Selected settlement: None", MessageTypeDefOf.NeutralEvent);
             }
 
             Rect scrollRectFact = new Rect(460, 50, 460, 200);
@@ -169,6 +176,7 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 450, 20), spawnedSettl.Name))
                 {
                     selectedSettlement = spawnedSettl;
+                    Messages.Message($"Selected settlement: {selectedSettlement.Name}", MessageTypeDefOf.NeutralEvent);
                 }
                 yButtonPos += 22;
             }
@@ -196,7 +204,10 @@ namespace WorldEdit.Editor
         private void RemoveSettlement()
         {
             if (selectedSettlement == null)
+            {
+                Messages.Message($"Select settlement", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             Find.WorldObjects.Remove(selectedSettlement);
         }
@@ -204,8 +215,6 @@ namespace WorldEdit.Editor
         private void RemoveAllSettlements()
         {
             WorldObjectsHolder objects = Find.WorldObjects;
-
-            Log.Message($"{objects.Settlements.Count}");
 
             List<Settlement> settlements = new List<Settlement>(objects.Settlements);
 
@@ -215,6 +224,8 @@ namespace WorldEdit.Editor
             }
 
             settlements.Clear();
+
+            Messages.Message($"All settlements has been removed", MessageTypeDefOf.NeutralEvent);
         }
     }
 }

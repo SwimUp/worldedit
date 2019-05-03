@@ -30,9 +30,36 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
         private ItemEditor editor = new ItemEditor();
 
+        private bool edit = false;
+        private Site editSite = null;
         public StashMenu()
         {
             resizeable = false;
+            edit = false;
+        }
+
+        public StashMenu(Site s)
+        {
+            resizeable = false;
+            edit = true;
+
+            editSite = s;
+
+            parts.Clear();
+            foreach(var p in editSite.parts)
+            {
+                parts.Add(p.def);
+            }
+
+            selectedFaction = editSite.Faction;
+
+            threatsFloat = editSite.desiredThreatPoints;
+
+            stock.Clear();
+            foreach(var stockItem in editSite.GetComponent<ItemStashContentsComp>().contents)
+            {
+                stock.Add(stockItem);
+            }
         }
         public override void DoWindowContents(Rect inRect)
         {
@@ -117,14 +144,48 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
         private void AddItemStash()
         {
-            if (Find.WorldSelector.selectedTile == -1 || selectedFaction == null || parts.Count == 0)
+            if (selectedFaction == null)
+            {
+                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
+
                 return;
+            }
+
+            if (parts.Count == 0)
+            {
+                Messages.Message($"Select minimum 1 part", MessageTypeDefOf.NeutralEvent);
+
+                return;
+            }
+
+            if(edit)
+            {
+                editSite.parts.Clear();
+                foreach (var p in parts)
+                    editSite.parts.Add(new SitePart(p, p.Worker.GenerateDefaultParams(editSite, threatsFloat)));
+
+                if(selectedFaction != null)
+                    editSite.SetFaction(selectedFaction);
+
+                editSite.GetComponent<ItemStashContentsComp>().contents.Clear();
+
+                foreach (var thing in stock)
+                    editSite.GetComponent<ItemStashContentsComp>().contents.TryAdd(thing);
+
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+
+                return;
+            }
+
+            if (Find.WorldSelector.selectedTile == -1 || selectedFaction == null || parts.Count == 0)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+
+                return;
+            }
 
             Site site;
-            if (threatsFloat > 0f)
-                site = SiteMaker.MakeSite(core, parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
-            else
-                site = SiteMaker.MakeSite(core, parts, Find.WorldSelector.selectedTile, selectedFaction);
+            site = SiteMaker.MakeSite(core, parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
 
             site.sitePartsKnown = true;
 

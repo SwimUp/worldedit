@@ -48,6 +48,7 @@ namespace WorldEdit.Editor
                     if (Widgets.ButtonText(new Rect(0, yButtonPos, 290, 20), siteCore.defName))
                     {
                         selectedSiteCore = siteCore;
+                        Messages.Message($"Selected core: {selectedSiteCore.LabelCap}", MessageTypeDefOf.NeutralEvent);
                     }
                     yButtonPos += 22;
                 }
@@ -83,6 +84,7 @@ namespace WorldEdit.Editor
                     if (Widgets.ButtonText(new Rect(0, yButtonPos, 610, 20), spawnedFaction.Name))
                     {
                         selectedFaction = spawnedFaction;
+                        Messages.Message($"Selected faction: {selectedFaction.Name}", MessageTypeDefOf.NeutralEvent);
                     }
                     yButtonPos += 22;
                 }
@@ -101,9 +103,29 @@ namespace WorldEdit.Editor
 
             private void AddNewSite()
             {
-                if (Find.WorldSelector.selectedTile == -1 || selectedSiteCore == null || parts.Count == 0
-                    || selectedFaction == null)
+                if(Find.WorldSelector.selectedTile == -1)
+                {
+                    Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
                     return;
+                }
+
+                if(selectedSiteCore == null)
+                {
+                    Messages.Message($"Select core", MessageTypeDefOf.NeutralEvent);
+                    return;
+                }
+
+                if(parts.Count == 0)
+                {
+                    Messages.Message($"Select at least one part", MessageTypeDefOf.NeutralEvent);
+                    return;
+                }
+
+                if(selectedFaction == null)
+                {
+                    Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
+                    return;
+                }
 
                 Site site;
                 if (!string.IsNullOrEmpty(threatPoints) && int.TryParse(threatPoints, out int points))
@@ -113,6 +135,8 @@ namespace WorldEdit.Editor
 
                 site.sitePartsKnown = true;
                 Find.WorldObjects.Add(site);
+
+                Messages.Message($"Site created", MessageTypeDefOf.NeutralEvent);
             }
         }
 
@@ -121,7 +145,6 @@ namespace WorldEdit.Editor
         public WorldObjectsCreator()
         {
             resizeable = false;
-            
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -158,6 +181,11 @@ namespace WorldEdit.Editor
             if (Widgets.ButtonText(new Rect(0, 170, 340, 20), Translator.Translate("AddDownedRefugee")))
             {
                 Find.WindowStack.Add(new DownedRefugeeMenu());
+            }
+
+            if (Widgets.ButtonText(new Rect(0, 195, 340, 20), Translator.Translate("AddPrisonerWillingToJoin")))
+            {
+                Find.WindowStack.Add(new PrisonerWillingToJoinMenu());
             }
         }
     }

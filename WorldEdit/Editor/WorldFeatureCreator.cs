@@ -31,9 +31,28 @@ namespace WorldEdit.Editor
         private float maxLength = 10f;
         private string maxLengthBuff = "1";
 
+        private WorldFeature editFeature = null;
+        private bool edit = false;
+
         public WorldFeatureCreator()
         {
             resizeable = false;
+            edit = false;
+        }
+
+        public WorldFeatureCreator(WorldFeature feat)
+        {
+            resizeable = false;
+
+            editFeature = feat;
+            edit = true;
+
+            featureName = editFeature.name;
+            rotate = editFeature.drawAngle;
+            rotateBuff = $"{editFeature.drawAngle}";
+
+            maxLength = editFeature.maxDrawSizeInTiles;
+            maxLengthBuff = $"{editFeature.maxDrawSizeInTiles}";
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -60,15 +79,38 @@ namespace WorldEdit.Editor
         private void CreateNew()
         {
             if (featureName == null)
+            {
+                Messages.Message($"Enter correct feature name", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             if (maxLength <= 0)
+            {
+                Messages.Message($"Enter correct size", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
+
+            if (edit)
+            {
+                editFeature.name = featureName;
+                editFeature.drawAngle = rotate;
+                editFeature.maxDrawSizeInTiles = maxLength;
+
+                Find.WorldFeatures.textsCreated = false;
+                Find.WorldFeatures.UpdateFeatures();
+
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+
+                return;
+            }
 
             int tile = Find.WorldSelector.selectedTile;
 
             if (tile < 0)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
 
             List<int> members = new List<int>();
             members.Add(tile);
@@ -92,6 +134,8 @@ namespace WorldEdit.Editor
 
             Find.WorldFeatures.textsCreated = false;
             Find.WorldFeatures.UpdateFeatures();
+
+            Messages.Message($"Feature created", MessageTypeDefOf.NeutralEvent);
         }
     }
 }

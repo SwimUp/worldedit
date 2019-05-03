@@ -23,24 +23,40 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         private SiteCoreDef core = SiteCoreDefOf.Nothing;
         private SitePartDef part = SitePartDefOf.Outpost;
 
+        private bool edit = false;
+        private Site editSite = null;
+
         public SingleObjectEditor()
         {
             resizeable = false;
+
+            edit = false;
         }
+        public SingleObjectEditor(Site s)
+        {
+            resizeable = false;
+
+            edit = true;
+            editSite = s;
+
+            part = editSite.parts[0].def;
+            selectedFaction = editSite.Faction;
+
+            threatsFloat = editSite.desiredThreatPoints;
+        }
+
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Small;
 
             Widgets.Label(new Rect(0, 0, 390, 20), Translator.Translate("AddSingleObjectTitle"));
 
-            int x = 0;
-
             Widgets.Label(new Rect(310, 40, 240, 20), Translator.Translate("SiteParts"));
             int size2 = DefDatabase<SitePartDef>.AllDefsListForReading.Count * 25;
             Rect scrollRectFact2 = new Rect(310, 60, 300, 200);
             Rect scrollVertRectFact2 = new Rect(0, 0, scrollRectFact2.x, size2);
             Widgets.BeginScrollView(scrollRectFact2, ref scroll2, scrollVertRectFact2);
-            x = 0;
+            int x = 0;
             foreach (var sitePart in DefDatabase<SitePartDef>.AllDefsListForReading)
             {
                 if (Widgets.RadioButtonLabeled(new Rect(0, x, 295, 20), sitePart.defName, part == sitePart))
@@ -80,14 +96,32 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
         private void AddSingleObject()
         {
-            if (Find.WorldSelector.selectedTile == -1 || selectedFaction == null)
+            if (selectedFaction == null)
+            {
+                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
                 return;
+            }
+
+            if(edit)
+            {
+                editSite.parts.Clear();
+                editSite.parts.Add(new SitePart(part, part.Worker.GenerateDefaultParams(editSite, threatsFloat)));
+
+                editSite.SetFaction(selectedFaction);
+
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+
+                return;
+            }
+
+            if (Find.WorldSelector.selectedTile == -1)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                return;
+            }
 
             Site site;
-            if (threatsFloat > 0f)
-                site = SiteMaker.MakeSite(core, part, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
-            else
-                site = SiteMaker.MakeSite(core, part, Find.WorldSelector.selectedTile, selectedFaction);
+            site = SiteMaker.MakeSite(core, part, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
 
             site.sitePartsKnown = true;
             Find.WorldObjects.Add(site);
