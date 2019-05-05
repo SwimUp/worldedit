@@ -54,12 +54,11 @@ namespace WorldEdit.Editor
         public FactionCreator()
         {
             resizeable = false;
-
             var rimfactionManager = Find.FactionManager;
 
             avaliableFactions = DefDatabase<FactionDef>.AllDefs.Where(f => !f.isPlayer &&
-            rimfactionManager.OfMechanoids.def != f && rimfactionManager.OfInsects.def != f &&
-            rimfactionManager.OfAncientsHostile.def != f && rimfactionManager.OfAncients.def != f).ToList();
+            rimfactionManager.OfMechanoids?.def != f && rimfactionManager.OfInsects?.def != f &&
+            rimfactionManager.OfAncientsHostile?.def != f && rimfactionManager.OfAncients?.def != f).ToList();
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -99,7 +98,7 @@ namespace WorldEdit.Editor
                 {
                     selectedFaction = def;
 
-                    if(newFaction == null)
+                    if (newFaction == null)
                         newFaction = GenerateFaction();
                 }
                 yButtonPos += 22;
@@ -185,8 +184,9 @@ namespace WorldEdit.Editor
                 }
                 Widgets.EndScrollView();
                 
-                Widgets.Label(new Rect(0, 315, 180, 30), Translator.Translate("FactionMelanin"));
-                float.TryParse(Widgets.TextField(new Rect(195, 315, 160, 30), newFaction.centralMelanin.ToString()), out newFaction.centralMelanin);
+                Widgets.Label(new Rect(0, 315, 180, 30), Translator.Translate("FactionIcon"));
+                Widgets.DrawTextureFitted(new Rect(195, 315, 160, 30), selectedFaction.ExpandingIconTexture, 1.0f);
+                //float.TryParse(Widgets.TextField(new Rect(195, 315, 160, 30), newFaction.centralMelanin.ToString()), out newFaction.centralMelanin);
 
                 Widgets.Label(new Rect(0, 360, 160, 30), Translator.Translate("ColorSpectrum"));
                 Widgets.FloatRange(new Rect(195, 360, 130, 30), 42, ref color, 0, 1);
@@ -210,6 +210,8 @@ namespace WorldEdit.Editor
             if (newFaction == null)
                 return;
 
+            newFaction.GenerateNewLeader();
+
             newFaction.colorFromSpectrum = color.max;
 
             if(leaderName != null)
@@ -224,7 +226,7 @@ namespace WorldEdit.Editor
 
         private Faction GenerateFaction()
         {
-            if(newFaction != null)
+            if(newFaction != null && newFaction.leader != null)
             {
                 Find.WorldPawns.RemoveAndDiscardPawnViaGC(newFaction.leader);
             }
@@ -255,9 +257,9 @@ namespace WorldEdit.Editor
             {
                 faction.TryMakeInitialRelationsWith(item);
             }
-            faction.GenerateNewLeader();
 
-            leaderName = faction.leader.Name.ToStringFull;
+            Pawn p = PawnGenerator.GeneratePawn(PawnKindDefOf.AncientSoldier);
+            leaderName = p.Name.ToStringFull;
 
             FieldInfo relations = typeof(Faction).GetField("relations", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             newFactionRelation = relations.GetValue(faction) as List<FactionRelation>;

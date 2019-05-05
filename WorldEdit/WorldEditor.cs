@@ -10,6 +10,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Profile;
+using WorldEdit.WorldGen;
 
 namespace WorldEdit
 {
@@ -35,6 +36,8 @@ namespace WorldEdit
         /// </summary>
         public static WorldUpdater WorldUpdater = null;
 
+        public static TerrainManager TerrainManager = null;
+
         /// <summary>
         /// Была ли загрузка из шаблона
         /// </summary>
@@ -54,27 +57,27 @@ namespace WorldEdit
         {
             typeof(Rect)
         })]
-        private static class Page_CreateWorldParams_DoWindowContents_Patch
+        public static class Page_CreateWorldParams_DoWindowContents_Patch
         {
             private static Vector2 scrollPositionWorlds = Vector2.zero;
             private static Vector2 scrollPositionInfo = Vector2.zero;
             private static WorldTemplate selectedTemplate = null;
             private static string worldInfo = string.Empty;
 
-            private static bool Prefix(Rect rect, ref Rect __state)
+            public static bool Prefix(Rect rect, ref Rect __state)
             {
                 __state = rect;
                 return true;
             }
 
-            private static void Postfix(ref Rect __state, ref Page_CreateWorldParams __instance)
+            public static void Postfix(ref Rect __state, ref Page_CreateWorldParams __instance)
             {
                 GUI.BeginGroup(__state);
                 float y = 280f;
                 Rect baseRect = new Rect(0f, y, 200f, 30f);
                 Widgets.Label(baseRect, Translator.Translate("EditorLabel"));
                 Rect EarthRect = new Rect(200f, y, 200f, 30f);
-                if (Settings.fullyActiveEditor == false)
+                if (Settings.FullyActiveEditor == false)
                 {
                     if (Widgets.RadioButtonLabeled(EarthRect, Translator.Translate("isEnableEditorLabel"), isEdit == true))
                     {
@@ -128,13 +131,80 @@ namespace WorldEdit
 
         public static void InitEditor()
         {
-            if (isEdit)
+            if (isEdit || Settings.FullyActiveEditor)
             {
                 if (!isInit)
                 {
                     WorldUpdater = new WorldUpdater();
                     Editor = new InGameEditor();
+                    TerrainManager = new TerrainManager();
                     isInit = true;
+                }
+            }
+        }
+    }
+
+    class RP_PatchWindow
+    {
+        private static Vector2 scrollPositionWorlds = Vector2.zero;
+        private static Vector2 scrollPositionInfo = Vector2.zero;
+        private static WorldTemplate selectedTemplate = null;
+        private static string worldInfo = string.Empty;
+
+        public static void PostfixRP(Rect rect)
+        {
+            GUI.BeginGroup(rect);
+            float y = 280f;
+            Rect baseRect = new Rect(0f, y, 200f, 30f);
+            Widgets.Label(baseRect, Translator.Translate("EditorLabel"));
+            Rect EarthRect = new Rect(200f, y, 200f, 30f);
+            if (Settings.FullyActiveEditor == false)
+            {
+                if (Widgets.RadioButtonLabeled(EarthRect, Translator.Translate("isEnableEditorLabel"), WorldEditor.isEdit == true))
+                {
+                    WorldEditor.isEdit = !WorldEditor.isEdit;
+                }
+            }
+            else
+            {
+                Widgets.Label(EarthRect, Translator.Translate("ActiveFullyMode"));
+                WorldEditor.isEdit = true;
+            }
+
+            GUI.EndGroup();
+
+            Widgets.Label(new Rect(440, 40, 200, 20), Translator.Translate("WorldTemplates"));
+            int worldsSize = WorldTemplateManager.Templates.Count * 25;
+            Rect scrollRect = new Rect(440, 70, 200, 400);
+            Rect scrollVertRect = new Rect(0, 0, scrollRect.x, worldsSize);
+            Widgets.BeginScrollView(scrollRect, ref scrollPositionWorlds, scrollVertRect);
+            int x = 0;
+            foreach (var world in WorldTemplateManager.Templates)
+            {
+                if (Widgets.ButtonText(new Rect(0, x, 180, 20), world.WorldName))
+                {
+                    selectedTemplate = world;
+                    StringBuilder builder = new StringBuilder();
+                    builder.AppendLine($"{Translator.Translate("TemplateHead")}{world.WorldName}");
+                    builder.AppendLine($"{Translator.Translate("TemplateAuthor")}{world.Author}");
+                    builder.AppendLine($"{Translator.Translate("TemplateStoryteller")}{world.Storyteller}");
+                    builder.AppendLine($"{Translator.Translate("TemplateScenario")}{world.Scenario}");
+                    builder.AppendLine($"{Translator.Translate("TemplateDesc")}{world.Description}");
+                    worldInfo = builder.ToString();
+                }
+
+                x += 22;
+            }
+            Widgets.EndScrollView();
+            Widgets.LabelScrollable(new Rect(650, 70, 440, 400), worldInfo, ref scrollPositionInfo, false, false);
+
+            if (selectedTemplate != null)
+            {
+                if (Widgets.ButtonText(new Rect(440, 500, 200, 20), Translator.Translate("LoadTemplate")))
+                {
+                    WorldEditor.isWorldTemplate = true;
+                    WorldEditor.LoadedTemplate = selectedTemplate;
+                    GameDataSaveLoader.LoadGame(selectedTemplate.FilePath);
                 }
             }
         }

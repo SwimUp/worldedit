@@ -35,7 +35,7 @@ namespace WorldEdit.Editor
         /// <summary>
         /// Удалить все поселения вместе с удалением фракции?
         /// </summary>
-        private bool deleteSettlements = false;
+       // private bool deleteSettlements = false;
 
         /// <summary>
         /// FactionManager римки
@@ -86,7 +86,7 @@ namespace WorldEdit.Editor
             if (Widgets.ButtonText(new Rect(0, 25, 450, 20), Translator.Translate("NoText")))
             {
                 selectedFaction = null;
-                Messages.Message($"Selected faction: None", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Selected faction: None", MessageTypeDefOf.NeutralEvent, false);
             }
 
             Rect scrollRectFact = new Rect(0, 50, 460, 200);
@@ -98,7 +98,7 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 450, 20), spawnedFaction.Name))
                 {
                     selectedFaction = spawnedFaction;
-                    Messages.Message($"Selected faction: {selectedFaction.Name}", MessageTypeDefOf.NeutralEvent);
+                    Messages.Message($"Selected faction: {selectedFaction.Name}", MessageTypeDefOf.NeutralEvent, false);
                 }
                 yButtonPos += 22;
             }
@@ -117,11 +117,13 @@ namespace WorldEdit.Editor
             {
                 RemoveFaction();
             }
+            /*
             if (Widgets.RadioButtonLabeled(new Rect(0, 345, 450, 30), Translator.Translate("DeleteAllSettlements"), deleteSettlements == true))
             {
                 deleteSettlements = !deleteSettlements;
             }
-            if (Widgets.ButtonText(new Rect(0, 385, 450, 20), Translator.Translate("FixRelatives")))
+            */
+            if (Widgets.ButtonText(new Rect(0, 345, 450, 20), Translator.Translate("FixRelatives")))
             {
                 foreach (Faction item in Find.FactionManager.AllFactionsInViewOrder)
                 {
@@ -135,25 +137,37 @@ namespace WorldEdit.Editor
         {
             if (selectedFaction == null)
             {
-                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
-            if (deleteSettlements)
+            List<Settlement> toDelete = (Find.WorldObjects.Settlements.Where(sett => sett.Faction == selectedFaction)).ToList();
+            foreach (var del in toDelete)
             {
-                List<Settlement> toDelete = (Find.WorldObjects.Settlements.Where(sett => sett.Faction == selectedFaction)).ToList();
-                foreach (var del in toDelete)
-                {
-                    Find.WorldObjects.Remove(del);
-                }
+                Find.WorldObjects.Remove(del);
             }
 
             if (Find.WorldPawns.Contains(selectedFaction.leader))
                 Find.WorldPawns.RemoveAndDiscardPawnViaGC(selectedFaction.leader);
 
+            FieldInfo relations = typeof(Faction).GetField("relations", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
             Find.FactionManager.Remove(selectedFaction);
 
-            Messages.Message($"Faction deleted", MessageTypeDefOf.NeutralEvent);
+            foreach (var fac in Find.FactionManager.AllFactions)
+            {
+                var factionRelation = relations.GetValue(fac) as List<FactionRelation>;
+                for (int i = 0; i < factionRelation.Count; i++)
+                {
+                    FactionRelation rel = factionRelation[i];
+                    if (rel.other == selectedFaction)
+                    {
+                        factionRelation.Remove(rel);
+                    }
+                }
+            }
+
+            Messages.Message($"Faction deleted", MessageTypeDefOf.NeutralEvent, false);
         }
 
         private void PrintSettlementManager()
@@ -164,7 +178,7 @@ namespace WorldEdit.Editor
             if (Widgets.ButtonText(new Rect(460, 25, 450, 20), Translator.Translate("NoText")))
             {
                 selectedSettlement = null;
-                Messages.Message($"Selected settlement: None", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Selected settlement: None", MessageTypeDefOf.NeutralEvent, false);
             }
 
             Rect scrollRectFact = new Rect(460, 50, 460, 200);
@@ -176,7 +190,7 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 450, 20), spawnedSettl.Name))
                 {
                     selectedSettlement = spawnedSettl;
-                    Messages.Message($"Selected settlement: {selectedSettlement.Name}", MessageTypeDefOf.NeutralEvent);
+                    Messages.Message($"Selected settlement: {selectedSettlement.Name}", MessageTypeDefOf.NeutralEvent, false);
                 }
                 yButtonPos += 22;
             }
@@ -186,7 +200,7 @@ namespace WorldEdit.Editor
             {
                 settlementCreator.Show();
             }
-            if (Widgets.ButtonText(new Rect(460, 295, 450, 20), Translator.Translate("EditSelectedFaction")))
+            if (Widgets.ButtonText(new Rect(460, 295, 450, 20), Translator.Translate("EditSelectedSettlement")))
             {
                 if (selectedSettlement != null)
                     settlementEditor.Show(selectedSettlement);
@@ -205,7 +219,7 @@ namespace WorldEdit.Editor
         {
             if (selectedSettlement == null)
             {
-                Messages.Message($"Select settlement", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select settlement", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -225,7 +239,7 @@ namespace WorldEdit.Editor
 
             settlements.Clear();
 
-            Messages.Message($"All settlements has been removed", MessageTypeDefOf.NeutralEvent);
+            Messages.Message($"All settlements has been removed", MessageTypeDefOf.NeutralEvent, false);
         }
     }
 }

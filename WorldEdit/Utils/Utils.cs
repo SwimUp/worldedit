@@ -64,6 +64,22 @@ namespace WorldEdit
                 return @class;
             }
         }
+
+        public static List<TItem> CreateList<TItem>()
+        {
+            Type listType = GetGenericListType<TItem>();
+            List<TItem> list = (List<TItem>)Activator.CreateInstance(listType);
+            return list;
+        }
+
+        public static Type GetGenericListType<TItem>()
+        {
+            Type objTyp = typeof(TItem);
+            var defaultListType = typeof(List<>);
+            Type[] itemTypes = { objTyp };
+            Type listType = defaultListType.MakeGenericType(itemTypes);
+            return listType;
+        }
     }
 
     public class ConfirmActionPage : Page

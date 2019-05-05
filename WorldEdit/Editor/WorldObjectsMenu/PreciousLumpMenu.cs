@@ -125,7 +125,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         {
             if (resource == null)
             {
-                Messages.Message($"Select resource", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select resource", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -148,14 +148,14 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 if(selectedFaction != null)
                     editSite.SetFaction(selectedFaction);
 
-                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }
 
             if (Find.WorldSelector.selectedTile == -1)
             {
-                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 

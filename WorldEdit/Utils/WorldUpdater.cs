@@ -28,6 +28,9 @@ namespace WorldEdit
         /// </summary>
         public void UpdateMap()
         {
+            foreach (var l in WorldEditor.Editor.LayersSubMeshes)
+                l.Value.Clear();
+
             Find.World.renderer.RegenerateAllLayersNow();
         }
 
@@ -129,6 +132,33 @@ namespace WorldEdit
                     subMesh.tris.Add(count);
                 }
             }
+            FinalizeMesh(MeshParts.All, subMesh);
+        }
+
+        public void RenderSingleTile(List<int> tileIDs, Material drawMaterial, List<LayerSubMesh> subMeshes)
+        {
+            LayerSubMesh subMesh = GetSubMesh(drawMaterial, subMeshes);
+
+            foreach (var tileID in tileIDs)
+            {
+                List<Vector3> verts = new List<Vector3>();
+                Find.WorldGrid.GetTileVertices(tileID, verts);
+
+                int count = subMesh.verts.Count;
+                int i = 0;
+                for (int count2 = verts.Count; i < count2; i++)
+                {
+                    subMesh.verts.Add(verts[i] + verts[i].normalized * 0.012f);
+                    subMesh.uvs.Add((GenGeo.RegularPolygonVertexPosition(count2, i) + Vector2.one) / 2f);
+                    if (i < count2 - 2)
+                    {
+                        subMesh.tris.Add(count + i + 2);
+                        subMesh.tris.Add(count + i + 1);
+                        subMesh.tris.Add(count);
+                    }
+                }
+            }
+
             FinalizeMesh(MeshParts.All, subMesh);
         }
 
@@ -236,6 +266,53 @@ namespace WorldEdit
             IntVec2 texturesInAtlas4 = TexturesInAtlas;
             WorldRendererUtility.PrintTextureAtlasUVs(indexX, indexY, x, texturesInAtlas4.z, subMesh);
 
+            FinalizeMesh(MeshParts.All, subMeshes);
+        }
+
+        public void RenderSingleHill(List<int> tileIDs, List<LayerSubMesh> subMeshes)
+        {
+            WorldGrid grid = Find.WorldGrid;
+
+            foreach (var tileID in tileIDs)
+            {
+                Tile tile = grid[tileID];
+                Material material = WorldMaterials.SmallHills;
+                FloatRange floatRange = BasePosOffsetRange_SmallHills;
+                switch (tile.hilliness)
+                {
+                    case Hilliness.SmallHills:
+                        material = WorldMaterials.SmallHills;
+                        floatRange = BasePosOffsetRange_SmallHills;
+                        break;
+                    case Hilliness.LargeHills:
+                        material = WorldMaterials.LargeHills;
+                        floatRange = BasePosOffsetRange_LargeHills;
+                        break;
+                    case Hilliness.Mountainous:
+                        material = WorldMaterials.Mountains;
+                        floatRange = BasePosOffsetRange_Mountains;
+                        break;
+                    case Hilliness.Impassable:
+                        material = WorldMaterials.ImpassableMountains;
+                        floatRange = BasePosOffsetRange_ImpassableMountains;
+                        break;
+                }
+
+                LayerSubMesh subMesh = GetSubMesh(material, subMeshes);
+                Vector3 tileCenter = grid.GetTileCenter(tileID);
+                Vector3 posForTangents = tileCenter;
+                float magnitude = tileCenter.magnitude;
+                tileCenter = (tileCenter + Rand.UnitVector3 * floatRange.RandomInRange * grid.averageTileSize).normalized * magnitude;
+                WorldRendererUtility.PrintQuadTangentialToPlanet(tileCenter, posForTangents, BaseSizeRange.RandomInRange * grid.averageTileSize, 0.005f, subMesh, counterClockwise: false, randomizeRotation: true, printUVs: false);
+                IntVec2 texturesInAtlas = TexturesInAtlas;
+                int indexX = Rand.Range(0, texturesInAtlas.x);
+                IntVec2 texturesInAtlas2 = TexturesInAtlas;
+                int indexY = Rand.Range(0, texturesInAtlas2.z);
+                IntVec2 texturesInAtlas3 = TexturesInAtlas;
+                int x = texturesInAtlas3.x;
+                IntVec2 texturesInAtlas4 = TexturesInAtlas;
+                WorldRendererUtility.PrintTextureAtlasUVs(indexX, indexY, x, texturesInAtlas4.z, subMesh);
+            }
             FinalizeMesh(MeshParts.All, subMeshes);
         }
 

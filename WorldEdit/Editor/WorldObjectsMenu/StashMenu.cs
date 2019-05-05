@@ -146,14 +146,14 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         {
             if (selectedFaction == null)
             {
-                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }
 
             if (parts.Count == 0)
             {
-                Messages.Message($"Select minimum 1 part", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select minimum 1 part", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }
@@ -172,14 +172,14 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 foreach (var thing in stock)
                     editSite.GetComponent<ItemStashContentsComp>().contents.TryAdd(thing);
 
-                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }
 
             if (Find.WorldSelector.selectedTile == -1 || selectedFaction == null || parts.Count == 0)
             {
-                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }

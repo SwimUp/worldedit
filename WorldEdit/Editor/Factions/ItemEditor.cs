@@ -147,7 +147,7 @@ namespace WorldEdit.Editor.Factions
         {
             if (item == null)
             {
-                Messages.Message($"Select item", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select item", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -161,7 +161,7 @@ namespace WorldEdit.Editor.Factions
 
             stockList.Add(thing);
 
-            Messages.Message($"Item has been added", MessageTypeDefOf.NeutralEvent);
+            Messages.Message($"Item has been added", MessageTypeDefOf.NeutralEvent, false);
         }
 
         public void Show(List<Thing> stock)

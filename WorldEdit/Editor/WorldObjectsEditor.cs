@@ -53,7 +53,7 @@ namespace WorldEdit.Editor
                 if (Widgets.ButtonText(new Rect(0, x, 290, 20), feat.name))
                 {
                     selectedFeature = feat;
-                    Messages.Message($"Selected feature: {selectedFeature.name}", MessageTypeDefOf.NeutralEvent); 
+                    Messages.Message($"Selected feature: {selectedFeature.name}", MessageTypeDefOf.NeutralEvent, false); 
                 }
                 x += 22;
             }
@@ -95,7 +95,7 @@ namespace WorldEdit.Editor
                 {
                     selectedObject = obj;
                     Find.WorldCameraDriver.JumpTo(obj.Tile);
-                    Messages.Message($"Selected object: {selectedObject.LabelCap}", MessageTypeDefOf.NeutralEvent);
+                    Messages.Message($"Selected object: {selectedObject.LabelCap}", MessageTypeDefOf.NeutralEvent, false);
                 }
                 x += 22;
             }
@@ -126,7 +126,7 @@ namespace WorldEdit.Editor
         {
             if (selectedObject == null)
             {
-                Messages.Message($"Select object", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select object", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -140,7 +140,7 @@ namespace WorldEdit.Editor
                 Find.WorldObjects.Remove(allObjects[i]);
             }
 
-            Messages.Message($"All objects has been removed", MessageTypeDefOf.NeutralEvent);
+            Messages.Message($"All objects has been removed", MessageTypeDefOf.NeutralEvent, false);
         }
 
         private void RemoveAllFeatures()
@@ -161,14 +161,14 @@ namespace WorldEdit.Editor
 
             Find.WorldFeatures.UpdateFeatures();
 
-            Messages.Message($"All features has been removed", MessageTypeDefOf.NeutralEvent);
+            Messages.Message($"All features has been removed", MessageTypeDefOf.NeutralEvent, false);
         }
 
         private void DeleteFeature()
         {
             if (selectedFeature == null)
             {
-                Messages.Message($"Select feature to delete", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select feature to delete", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -191,7 +191,7 @@ namespace WorldEdit.Editor
         {
             if (selectedFeature == null)
             {
-                Messages.Message($"Select feature to edit", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select feature to edit", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -202,7 +202,7 @@ namespace WorldEdit.Editor
         {
             if (selectedObject == null)
             {
-                Messages.Message($"Select feature to edit", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select feature to edit", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 

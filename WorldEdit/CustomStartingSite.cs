@@ -1,8 +1,10 @@
-﻿using RimWorld;
+﻿using Harmony;
+using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
@@ -16,6 +18,8 @@ namespace WorldEdit
         public override string PageTitle => "SelectStartingSite".TranslateWithBackup("SelectLandingSite");
 
         protected override float Margin => 0f;
+
+        public static object EdbInstance = null;
 
         public CustomStartingSite()
         {
@@ -32,7 +36,11 @@ namespace WorldEdit
 
             Current.Game.InitData = init;
             Current.Game.Scenario.PreConfigure();
-            
+
+            ScenPart scenPart = Current.Game.Scenario.AllParts.Where(p => p is ScenPart_ConfigPage_ConfigureStartingPawns).FirstOrDefault();
+            Current.Game.InitData.startingPawnCount = (scenPart as ScenPart_ConfigPage_ConfigureStartingPawns).pawnCount;
+
+            Current.Game.InitData.startingAndOptionalPawns = WorldEditor.LoadedTemplate.StartPawns;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -42,8 +50,8 @@ namespace WorldEdit
 
         public override void ExtraOnGUI()
         {
-            if (WorldEditor.isEdit)
-                return;
+         //   if (WorldEditor.isEdit)
+         //       return;
 
             base.ExtraOnGUI();
             Text.Anchor = TextAnchor.UpperCenter;
@@ -150,25 +158,44 @@ namespace WorldEdit
         {
             var init = Current.Game.InitData;
 
-            foreach (var scenPart in Find.Scenario.AllParts)
+            if (WorldEditor.LoadedTemplate.PawnSelectMode == PawnSelectMode.Standart)
             {
-                ScenPart_ConfigPage_ConfigureStartingPawns part = scenPart as ScenPart_ConfigPage_ConfigureStartingPawns;
-                if (part != null)
+                foreach (var scenPart in Find.Scenario.AllParts)
                 {
-                    init.startingAndOptionalPawns = new List<Pawn>(part.pawnChoiceCount);
-                    init.startingPawnCount = part.pawnCount;
-                    for (int i = 0; i < init.startingPawnCount; i++)
+                    ScenPart_ConfigPage_ConfigureStartingPawns part = scenPart as ScenPart_ConfigPage_ConfigureStartingPawns;
+                    if (part != null)
                     {
-                        Pawn p = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, init.playerFaction);
-                        init.startingAndOptionalPawns.Add(p);
-                    }
+                        init.startingAndOptionalPawns = new List<Pawn>(part.pawnChoiceCount);
+                        init.startingPawnCount = part.pawnCount;
+                        for (int i = 0; i < init.startingPawnCount; i++)
+                        {
+                            Pawn p = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, init.playerFaction);
+                            init.startingAndOptionalPawns.Add(p);
+                        }
 
-                    break;
+                        break;
+                    }
                 }
             }
 
             init.startingTile = tile;
             Find.World.renderer.wantedMode = WorldRenderMode.None;
+
+            if (WorldEditor.LoadedTemplate.PawnSelectMode == PawnSelectMode.None)
+            {
+                Action preLoadLevelAction = delegate
+                {
+                    Find.GameInitData.PrepForMapGen();
+                    Find.GameInitData.startedFromEntry = true;
+                    Find.Scenario.PreMapGenerate();
+                };
+                LongEventHandler.QueueLongEvent(preLoadLevelAction, "Play", "GeneratingMap", doAsynchronously: true, null);
+
+                return;
+            }
+
+            //if (WorldEdit.EdbLoaded)
+            //    EdbConfigurator();
 
             var page = new Page_ConfigureStartingPawns();
             page.nextAct = nextAct = delegate
@@ -182,6 +209,21 @@ namespace WorldEdit
                 LongEventHandler.QueueLongEvent(preLoadLevelAction, "Play", "GeneratingMap", doAsynchronously: true, null);
             };
             Find.WindowStack.Add(page);
+        }
+
+        public static void EdbConfigurator(bool show = false)
+        {
+            Type type = AccessTools.TypeByName("EdB.PrepareCarefully.PrepareCarefully");
+            PropertyInfo p1 = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static);
+            object v = p1.GetValue(null, null);
+            type.GetMethod("Initialize").Invoke(v, null);
+
+            Type type2 = AccessTools.TypeByName("EdB.PrepareCarefully.Page_PrepareCarefully");
+            Page page = Activator.CreateInstance(type2) as Page;
+            EdbInstance = page;            
+
+            if(show)
+                Find.WindowStack.Add(page);
         }
     }
 }

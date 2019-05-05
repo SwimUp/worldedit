@@ -8,6 +8,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Profile;
+using WorldEdit.Editor;
 
 namespace WorldEdit.HarmonyHooks
 {
@@ -40,6 +41,19 @@ namespace WorldEdit.HarmonyHooks
                 if (Find.WindowStack.IsOpen(typeof(CustomStartingSite)))
                     return;
 
+                if (!Settings.HideStartMenu)
+                    return;
+
+                Dialog_MessageBox.CreateConfirmation("Back to menu?", delegate
+                {
+                    LongEventHandler.ClearQueuedEvents();
+                    LongEventHandler.QueueLongEvent(delegate
+                    {
+                        MemoryUtility.ClearAllMapsAndWorld();
+                        Current.Game = null;
+                    }, "Entry", "LoadingLongEvent", doAsynchronously: false, null);
+                });
+                /*
                 Find.WindowStack.Add(new ConfirmActionPage(delegate
                 {
                     LongEventHandler.ClearQueuedEvents();
@@ -49,6 +63,7 @@ namespace WorldEdit.HarmonyHooks
                         Current.Game = null;
                     }, "Entry", "LoadingLongEvent", doAsynchronously: true, null);
                 }));
+                */
             }
 
             if (Input.GetKeyDown(Settings.EditorHotKey))
@@ -70,6 +85,21 @@ namespace WorldEdit.HarmonyHooks
             if (Input.GetKeyDown(Settings.WorldObjectHotKey))
             {
                 Find.WindowStack.Add(WorldEditor.Editor.worldObjectsEditor);
+            }
+        }
+    }
+
+    [HarmonyPatch("SetInitialSizeAndPosition"), HarmonyPatch(typeof(WorldInspectPane))]
+    class WorldInspect_Patch
+    {
+        public static void Postfix()
+        {
+            if (Settings.FullyActiveEditor)
+            {
+                if(!WorldEditor.isInit)
+                {
+                    WorldEditor.InitEditor();
+                }
             }
         }
     }

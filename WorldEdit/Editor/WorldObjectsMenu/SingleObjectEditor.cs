@@ -98,7 +98,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         {
             if (selectedFaction == null)
             {
-                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -109,14 +109,14 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
                 editSite.SetFaction(selectedFaction);
 
-                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }
 
             if (Find.WorldSelector.selectedTile == -1)
             {
-                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 

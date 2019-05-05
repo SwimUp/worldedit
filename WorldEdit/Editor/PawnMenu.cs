@@ -611,7 +611,7 @@ namespace WorldEdit.Editor
         {
             if(allPawns.Count == maxPawns)
             {
-                Messages.Message("Max pawns", MessageTypeDefOf.NegativeEvent);
+                Messages.Message("Max pawns", MessageTypeDefOf.NegativeEvent, false);
                 return;
             }
 

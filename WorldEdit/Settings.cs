@@ -9,7 +9,9 @@ namespace WorldEdit
 {
     public class Settings : ModSettings
     {
-        public static bool fullyActiveEditor = false;
+        public static bool FullyActiveEditor = false;
+
+        public static bool HideStartMenu = false;
 
         public static KeyCode EditorHotKey = KeyCode.F5;
         public static KeyCode FactionHotKey = KeyCode.F6;
@@ -22,9 +24,17 @@ namespace WorldEdit
             listing_Standard.Begin(inRect);
             listing_Standard.GapLine();
             listing_Standard.Label(Translator.Translate("WE_Settings_General"));
-            if (listing_Standard.RadioButton(Translator.Translate("PernamentEditor"), fullyActiveEditor))
+            Rect rect2 = new Rect(0, listing_Standard.CurHeight, 600, 20);
+            TooltipHandler.TipRegion(rect2, Translator.Translate("PernamentEditorInfo"));
+            if (listing_Standard.RadioButton(Translator.Translate("PernamentEditor"), FullyActiveEditor))
             {
-                fullyActiveEditor = !fullyActiveEditor;
+                FullyActiveEditor = !FullyActiveEditor;
+            }
+            Rect rect1 = new Rect(0, listing_Standard.CurHeight, 600, 20);
+            TooltipHandler.TipRegion(rect1, Translator.Translate("HideBottomMenuInfo"));
+            if (listing_Standard.RadioButton(Translator.Translate("HideBottomMenu"), HideStartMenu))
+            {
+                HideStartMenu = !HideStartMenu;
             }
             listing_Standard.GapLine();
             if (listing_Standard.ButtonText($"{Translator.Translate("EditHotKeyInfo")}: {EditorHotKey}"))
@@ -82,7 +92,8 @@ namespace WorldEdit
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref fullyActiveEditor, "fullyActiveEditor", false);
+            Scribe_Values.Look(ref FullyActiveEditor, "FullyActiveEditor", false);
+            Scribe_Values.Look(ref HideStartMenu, "HideStartMenu", false);
             Scribe_Values.Look(ref EditorHotKey, "EditorHotKey", KeyCode.F5);
             Scribe_Values.Look(ref FactionHotKey, "FactionHotKey", KeyCode.F6);
             Scribe_Values.Look(ref RiversAndRoadsHotKey, "RiversAndRoadsHotKey", KeyCode.F7);

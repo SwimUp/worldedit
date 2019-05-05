@@ -80,13 +80,13 @@ namespace WorldEdit.Editor
         {
             if (featureName == null)
             {
-                Messages.Message($"Enter correct feature name", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Enter correct feature name", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
             if (maxLength <= 0)
             {
-                Messages.Message($"Enter correct size", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Enter correct size", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -99,7 +99,7 @@ namespace WorldEdit.Editor
                 Find.WorldFeatures.textsCreated = false;
                 Find.WorldFeatures.UpdateFeatures();
 
-                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }
@@ -108,7 +108,7 @@ namespace WorldEdit.Editor
 
             if (tile < 0)
             {
-                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -135,7 +135,7 @@ namespace WorldEdit.Editor
             Find.WorldFeatures.textsCreated = false;
             Find.WorldFeatures.UpdateFeatures();
 
-            Messages.Message($"Feature created", MessageTypeDefOf.NeutralEvent);
+            Messages.Message($"Feature created", MessageTypeDefOf.NeutralEvent, false);
         }
     }
 }

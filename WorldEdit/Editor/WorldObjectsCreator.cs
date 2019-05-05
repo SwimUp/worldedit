@@ -48,7 +48,7 @@ namespace WorldEdit.Editor
                     if (Widgets.ButtonText(new Rect(0, yButtonPos, 290, 20), siteCore.defName))
                     {
                         selectedSiteCore = siteCore;
-                        Messages.Message($"Selected core: {selectedSiteCore.LabelCap}", MessageTypeDefOf.NeutralEvent);
+                        Messages.Message($"Selected core: {selectedSiteCore.LabelCap}", MessageTypeDefOf.NeutralEvent, false);
                     }
                     yButtonPos += 22;
                 }
@@ -84,7 +84,7 @@ namespace WorldEdit.Editor
                     if (Widgets.ButtonText(new Rect(0, yButtonPos, 610, 20), spawnedFaction.Name))
                     {
                         selectedFaction = spawnedFaction;
-                        Messages.Message($"Selected faction: {selectedFaction.Name}", MessageTypeDefOf.NeutralEvent);
+                        Messages.Message($"Selected faction: {selectedFaction.Name}", MessageTypeDefOf.NeutralEvent, false);
                     }
                     yButtonPos += 22;
                 }
@@ -105,25 +105,25 @@ namespace WorldEdit.Editor
             {
                 if(Find.WorldSelector.selectedTile == -1)
                 {
-                    Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                    Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
                     return;
                 }
 
                 if(selectedSiteCore == null)
                 {
-                    Messages.Message($"Select core", MessageTypeDefOf.NeutralEvent);
+                    Messages.Message($"Select core", MessageTypeDefOf.NeutralEvent, false);
                     return;
                 }
 
                 if(parts.Count == 0)
                 {
-                    Messages.Message($"Select at least one part", MessageTypeDefOf.NeutralEvent);
+                    Messages.Message($"Select at least one part", MessageTypeDefOf.NeutralEvent, false);
                     return;
                 }
 
                 if(selectedFaction == null)
                 {
-                    Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent);
+                    Messages.Message($"Select faction", MessageTypeDefOf.NeutralEvent, false);
                     return;
                 }
 
@@ -136,7 +136,7 @@ namespace WorldEdit.Editor
                 site.sitePartsKnown = true;
                 Find.WorldObjects.Add(site);
 
-                Messages.Message($"Site created", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Site created", MessageTypeDefOf.NeutralEvent, false);
             }
         }
 

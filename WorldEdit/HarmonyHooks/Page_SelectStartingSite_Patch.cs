@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
+using WorldEdit.WorldGen;
 
 namespace WorldEdit.HarmonyHooks
 {
@@ -24,7 +25,10 @@ namespace WorldEdit.HarmonyHooks
 
                 WorldEditor.WorldUpdater = new WorldUpdater();
                 WorldEditor.Editor = new InGameEditor();
+                WorldEditor.TerrainManager = new TerrainManager();
                 Find.WindowStack.Add(WorldEditor.Editor);
+
+                WorldEditor.LoadedTemplate = new WorldTemplate();
 
                 WorldEditor.isInit = true;
             }
@@ -38,7 +42,7 @@ namespace WorldEdit.HarmonyHooks
         {
             if (WorldEditor.isEdit)
             {
-                if (WorldEditor.isInit)
+                if (Settings.HideStartMenu && WorldEditor.isInit)
                 {
                     return false;
                 }

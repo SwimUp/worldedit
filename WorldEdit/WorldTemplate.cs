@@ -21,5 +21,40 @@ namespace WorldEdit
         public string Storyteller;
 
         public string Scenario;
+
+        public PawnSelectMode PawnSelectMode = PawnSelectMode.Standart;
+
+        [XmlIgnore]
+        public List<Pawn> StartPawns = new List<Pawn>();
+    }
+
+    public class StartPawnsFromTemplate : GameComponent
+    {
+        public static List<Pawn> StartPawns = new List<Pawn>();
+
+        public StartPawnsFromTemplate()
+        {
+
+        }
+
+        public StartPawnsFromTemplate(Game game)
+        {
+
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+
+            Scribe_Collections.Look(ref StartPawns, "StartingPawnFromTemplate", LookMode.Deep);
+        }
+
+        public override void LoadedGame()
+        {
+            if (StartPawns != null)
+            {
+                WorldEditor.LoadedTemplate.StartPawns = StartPawns;
+            }
+        }
     }
 }

@@ -39,7 +39,7 @@
   <Swampiness>Заболоченность</Swampiness>
   
   <SetHillnesToAllMap>Установить горы на всю карту</SetHillnesToAllMap>
-  <SetHillnesToAllBiome>Установить горы на тайлы выбранного биома</SetHillnesToAllBiome>
+  <SetHillnesToAllBiome>Горы на выбранный биом</SetHillnesToAllBiome>
   <SetToAllMap>Установить на всю карту</SetToAllMap>
   <SetToAllBiome>Установить на выбранный биом</SetToAllBiome>
 	
@@ -250,5 +250,31 @@
   <TemplateDescription>Описание</TemplateDescription>
   
   <PaintMode>Режим рисования</PaintMode>
+  
+  <HideBottomMenu>Показывать стандартное меню</HideBottomMenu>
+  <HideBottomMenuInfo>Будет ли показано стандартное нижнее меню при создании шаблона или его редактировании</HideBottomMenuInfo>
+  <PernamentEditorInfo>Если активно, то больше не требуется включать редактор при создании мира или редактировании шаблонов. А так-же редактор будет активен при загрузке сохранений</PernamentEditorInfo>
+ 
+  <BrushEnable>Кисть</BrushEnable>
+  <BrushSettings>Размер кисти</BrushSettings>
+  
+  <FactionIcon>Иконка</FactionIcon>
+  
+  <SelectPawnMode>Режим выбора пешек</SelectPawnMode>
+  <SelectPawnModeInfo>Без выбора - пешки заранее подготовлены, их нельзя перевыбрать;
+  
+  Стандартный выбор - стандартное меню выбора (если установлен EdB Prepare Carefully, то будет возможность его включить)
+  </SelectPawnModeInfo>
+  
+  <TemperatureMenuTitle>Параметры тайла</TemperatureMenuTitle>
+  <Utilities>Утилиты</Utilities>
+  <BackstoryUtils>Предыстории</BackstoryUtils>
+  <AddNewNaturalRock>Добавить новый ресурс</AddNewNaturalRock>
+  <UpdateRockType>Обновлять типы пород при выборе тайла</UpdateRockType>
+  <HasCaves>Пещеры</HasCaves>
+  <SelectTileTile>Выберите тайл</SelectTileTile>
+  <WorldGenSteps>World Gen Steps</WorldGenSteps>
+  <WorldGenStepsInfo>Различные генераторы, которые помогут быстро сгенерировать или перегенерировать температуры, высоты, биомы и т.д</WorldGenStepsInfo>
+  <WorldGenStepsTitle>Запуск генераторов</WorldGenStepsTitle>
   
 </LanguageData>

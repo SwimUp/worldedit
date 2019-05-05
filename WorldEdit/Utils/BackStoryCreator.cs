@@ -101,11 +101,23 @@ namespace WorldEdits
 
         private List<TraitData> traitEntrys = new List<TraitData>();
 
+        private bool onlyCreate = false;
+
         public BackStoryCreator()
+        {
+            resizeable = false;
+            onlyCreate = false;
+
+            CreateNew();
+        }
+
+        public BackStoryCreator(bool onlyCreate)
         {
             resizeable = false;
 
             CreateNew();
+
+            this.onlyCreate = onlyCreate;
         }
 
         private void CreateNew()
@@ -125,6 +137,7 @@ namespace WorldEdits
         public BackStoryCreator(Backstory b)
         {
             resizeable = false;
+            onlyCreate = false;
 
             story = b;
 
@@ -403,7 +416,8 @@ namespace WorldEdits
                     CustomBacktories.CustomStories.Add(story);
             }
 
-            PawnMenu.RecacheSkillsData();
+            if(!onlyCreate)
+                PawnMenu.RecacheSkillsData();
 
             Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
         }

@@ -53,7 +53,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 if (Widgets.ButtonText(new Rect(0, yButtonPos, 290, 20), spawnedSettl.Name))
                 {
                     selectedSettlement = spawnedSettl;
-                    Messages.Message($"Selected settlement {selectedSettlement.Name}", MessageTypeDefOf.NeutralEvent);
+                    Messages.Message($"Selected settlement {selectedSettlement.Name}", MessageTypeDefOf.NeutralEvent, false);
                 }
                 yButtonPos += 22;
             }
@@ -92,20 +92,20 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
                 editObject.def = type;
 
-                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }
 
             if (Find.WorldSelector.selectedTile == -1)
             {
-                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
             if (selectedSettlement == null)
             {
-                Messages.Message($"Selected settlement", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Selected settlement", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 

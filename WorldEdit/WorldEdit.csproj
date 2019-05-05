@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomBacktories.cs" />
+    <Compile Include="CustomNaturalRocks.cs" />
     <Compile Include="CustomStartingSite.cs" />
     <Compile Include="Editor\Factions\FactionCreator.cs" />
     <Compile Include="Editor\Factions\FactionEditor.cs" />
@@ -72,6 +73,9 @@
     <Compile Include="Editor\PawnMenu.cs" />
     <Compile Include="Editor\RoadAndRiversEditor.cs" />
     <Compile Include="Editor\Factions\SettlementMarket.cs" />
+    <Compile Include="Editor\TileParametersMenu.cs" />
+    <Compile Include="Editor\UtilsMenu.cs" />
+    <Compile Include="Editor\WorldGenStepsMenu.cs" />
     <Compile Include="Editor\WorldObjectsCreator.cs" />
     <Compile Include="Editor\WorldFeatureCreator.cs" />
     <Compile Include="Editor\WorldObjectsEditor.cs" />
@@ -82,12 +86,13 @@
     <Compile Include="Editor\WorldObjectsMenu\SingleObjectEditor.cs" />
     <Compile Include="Editor\WorldObjectsMenu\StashMenu.cs" />
     <Compile Include="Editor\WorldObjectsMenu\PreciousLumpMenu.cs" />
-    <Compile Include="HarmonyHooks\MainMenuHooks.cs" />
+    <Compile Include="HarmonyHooks\EdbPatch.cs" />
+    <Compile Include="HarmonyHooks\Game_Patch.cs" />
+    <Compile Include="HarmonyHooks\GenerationHooks.cs" />
     <Compile Include="HarmonyHooks\RP_Patch.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils\BackStoryCreator.cs" />
     <Compile Include="Utils\Extensions.cs" />
-    <Compile Include="HarmonyHooks\Dialog_FileList_Patch.cs" />
     <Compile Include="HarmonyHooks\Page_SelectStartingSite_Patch.cs" />
     <Compile Include="HarmonyHooks\World_Patch.cs" />
     <Compile Include="InGameEditor.cs" />
@@ -97,10 +102,10 @@
     <Compile Include="HarmonyHooks\WindowHelper.cs" />
     <Compile Include="WorldEdit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorldGen\TerrainManager.cs" />
     <Compile Include="WorldTemplate.cs" />
     <Compile Include="WorldTemplateManager.cs" />
     <Compile Include="Utils\WorldUpdater.cs" />
-    <Compile Include="XmLSerializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

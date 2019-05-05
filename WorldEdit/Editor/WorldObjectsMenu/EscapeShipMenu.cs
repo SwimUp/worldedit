@@ -55,7 +55,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         {
             if (!float.TryParse(time, out float timeFloat))
             {
-                Messages.Message($"Enter valid time (> 0)", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Enter valid time (> 0)", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
@@ -63,14 +63,14 @@ namespace WorldEdit.Editor.WorldObjectsMenu
             {
                 editObject.GetComponent<EnterCooldownComp>().Start(timeFloat);
 
-                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Success", MessageTypeDefOf.NeutralEvent, false);
 
                 return;
             }
 
             if (Find.WorldSelector.selectedTile == -1)
             {
-                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 

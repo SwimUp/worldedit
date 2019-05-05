@@ -23,8 +23,8 @@
   <ClearAllHillnses>Delete All Mountains</ClearAllHillnses>
   <SetTileToAllMap>Set biome to all tiles</SetTileToAllMap>
   
-  <SetHillnesToAllMap>Set mountains to the whole map</SetHillnesToAllMap>
-  <SetHillnesToAllBiome>Set the mountains on the tiles of the selected biome</SetHillnesToAllBiome>
+  <SetHillnesToAllMap>Set mountains to the entire map</SetHillnesToAllMap>
+  <SetHillnesToAllBiome>Set Mountains to selected biome</SetHillnesToAllBiome>
   <SetToAllMap>Set to Entire Map</SetToAllMap>
   <SetToAllBiome>Set to Selected Biome</SetToAllBiome>
   
@@ -226,7 +226,7 @@
   <EditObject>Edit object</EditObject>
   
   <WE_Settings_General>Basic settings</WE_Settings_General>
-  <PernamentEditor>Ubiquitous Editor Activation</PernamentEditor>
+  <PernamentEditor>Everywhere Editor Activation</PernamentEditor>
   <ActiveFullyMode>Activate</ActiveFullyMode>
   <WE_HotKeysSettings>Hot keys</WE_HotKeysSettings>
   <EditHotKeyInfo>Editor</EditHotKeyInfo>
@@ -250,5 +250,28 @@
   <TemplateDescription>Description</TemplateDescription>
   
   <PaintMode>Paint mode</PaintMode>
+  
+  <HideBottomMenu>Show Standard Menu</HideBottomMenu>
+  <HideBottomMenuInfo>Will the standard bottom menu be shown when creating a template or editing it</HideBottomMenuInfo>
+  <PernamentEditorInfo>f active, then you no longer need to include an editor when creating the world or editing templates. And also the editor will be active when loading saves</PernamentEditorInfo>
+ 
+  <BrushEnable>Brush</BrushEnable>
+  <BrushSettings>Brush size</BrushSettings>
+  
+  <FactionIcon>Icon</FactionIcon>
+  
+  <SelectPawnMode>Pawns select mode</SelectPawnMode>
+  <SelectPawnModeInfo>Without a choice - pawns are prepared in advance, they cannot be re-selected;
+  
+  Standard selection - standard selection menu (if EdB Prepare Carefully is installed, then it will be possible to enable it)
+  </SelectPawnModeInfo>
+  
+  <TemperatureMenuTitle>Tile parameters</TemperatureMenuTitle>
+  <Utilities>Utilities</Utilities>
+  <BackstoryUtils>Backstorys</BackstoryUtils>
+  <AddNewNaturalRock>Add new resource</AddNewNaturalRock>
+  <UpdateRockType>Update rocks when selecting tile</UpdateRockType>
+  <HasCaves>Caves</HasCaves>
+  <SelectTileTile>Select tile</SelectTileTile>
   
 </LanguageData>

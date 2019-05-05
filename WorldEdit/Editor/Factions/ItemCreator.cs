@@ -219,13 +219,13 @@ namespace WorldEdit.Editor.Factions
         {
             if (templateItem == null)
             {
-                Messages.Message($"Select template item", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select template item", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
             if (templateItem.MadeFromStuff && templateStuff == null)
             {
-                Messages.Message($"Select stuff", MessageTypeDefOf.NeutralEvent);
+                Messages.Message($"Select stuff", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
