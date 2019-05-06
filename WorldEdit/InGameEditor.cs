@@ -152,9 +152,10 @@ namespace WorldEdit
                     foreach (var s in neightbors)
                     {
                         Tile tile = Find.WorldGrid[s];
+                        Log.Message($"SEL: {tile.biome}");
 
                         if ((tile.biome == selectedBiome) && (tile.hilliness == selectedHillness))
-                            return;
+                            continue;
 
                         if (selectedBiome != null)
                         {
@@ -166,11 +167,6 @@ namespace WorldEdit
                                 {
                                     tile.elevation = -400f;
                                 }
-
-                                if (updateImmediately)
-                                {
-                                    WorldUpdater.RenderSingleTile(neightbors, tile.biome.DrawMaterial, LayersSubMeshes["WorldLayer_Terrain"]);
-                                }
                             }
                         }
 
@@ -179,12 +175,16 @@ namespace WorldEdit
                             if (tile.hilliness != selectedHillness)
                             {
                                 tile.hilliness = selectedHillness;
-                                if (updateImmediately)
-                                {
-                                    WorldUpdater.RenderSingleHill(neightbors, LayersSubMeshes["WorldLayer_Hills"]);
-                                }
                             }
                         }
+
+                        Log.Message($"-- AFTER: {tile.biome}");
+                    }
+
+                    if (updateImmediately)
+                    {
+                        WorldUpdater.RenderSingleTile(neightbors, selectedBiome.DrawMaterial, LayersSubMeshes["WorldLayer_Terrain"]);
+                        WorldUpdater.RenderSingleHill(neightbors, LayersSubMeshes["WorldLayer_Hills"]);
                     }
                 }
                 else
@@ -240,10 +240,7 @@ namespace WorldEdit
             WidgetRow row = new WidgetRow(0, 0, UIDirection.RightThenDown, 580);
             if(row.ButtonText(Translator.Translate("UpdateAllTiles"), Translator.Translate("UpdateAllTilesInfo")))
             {
-                LongEventHandler.QueueLongEvent(delegate
-                {
-                    WorldUpdater.UpdateMap();
-                }, "Updating layers...", doAsynchronously: false, null);
+                WorldUpdater.UpdateMap();
             }
             if (row.ButtonText(Translator.Translate("UpdateCustomLayer"), Translator.Translate("UpdateCustomLayerInfo")))
             {

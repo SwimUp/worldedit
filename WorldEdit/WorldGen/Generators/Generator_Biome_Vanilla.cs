@@ -22,6 +22,8 @@ namespace WorldEdit.WorldGen.Generators
         {
             for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
                 GenerateFor(i);
+
+            WorldEditor.WorldUpdater.UpdateMap();
         }
 
         private void GenerateFor(int tileID)

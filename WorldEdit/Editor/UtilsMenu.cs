@@ -18,14 +18,12 @@ namespace WorldEdit.Editor
         }
         public override void DoWindowContents(Rect inRect)
         {
-            WidgetRow row1 = new WidgetRow(0, 0, UIDirection.RightThenDown, 200);
-            if (row1.ButtonText(Translator.Translate("BackstoryUtils")))
+            if(Widgets.ButtonText(new Rect(0, 15, 200, 20), Translator.Translate("BackstoryUtils")))
             {
                 Find.WindowStack.Add(new BackStoryCreator(true));
             }
 
-            WidgetRow row2 = new WidgetRow(210, 0, UIDirection.RightThenDown, 200);
-            if (row2.ButtonText(Translator.Translate("WorldGenSteps"), Translator.Translate("WorldGenStepsInfo")))
+            if (Widgets.ButtonText(new Rect(210, 15, 200, 20), Translator.Translate("WorldGenSteps")))
             {
                 Find.WindowStack.Add(new WorldGenStepsMenu());
             }

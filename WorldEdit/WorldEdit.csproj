@@ -104,6 +104,7 @@
     <Compile Include="WorldGen\Generators\Generator.cs" />
     <Compile Include="WorldGen\Generators\Generator_Biome_Vanilla.cs" />
     <Compile Include="WorldGen\Generators\Generator_Elevation_Vanilla.cs" />
+    <Compile Include="WorldGen\Generators\Generator_Features_Vanilla.cs" />
     <Compile Include="WorldGen\Generators\Generator_Full_Vanilla.cs" />
     <Compile Include="WorldGen\Generators\Generator_Hilliness_Vanilla.cs" />
     <Compile Include="WorldGen\Generators\Generator_Rainfall_Vanilla.cs" />

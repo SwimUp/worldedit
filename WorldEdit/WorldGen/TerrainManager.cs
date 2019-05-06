@@ -19,7 +19,8 @@ namespace WorldEdit.WorldGen
         Swampiness,
         Hilliness,
         Biome,
-        Full
+        Full,
+        Features
     };
 
     public enum GeneratorType : byte

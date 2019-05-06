@@ -16,17 +16,6 @@ namespace WorldEdit.WorldGen.Generators
 
         public override string Title => Translator.Translate($"{GetType().Name}_title");
 
-        public override void RunGenerator()
-        {
-            SetupElevationNoise();
-            SetupTemperatureOffsetNoise();
-            SetupRainfallNoise();
-            SetupHillinessNoise();
-            SetupSwampinessNoise();
-
-            for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
-                GenerateTileFor(i);
-        }
 
         [Unsaved]
         private ModuleBase noiseElevation;
@@ -68,6 +57,23 @@ namespace WorldEdit.WorldGen.Generators
         public override GeneratorMode Mode => GeneratorMode.Full;
 
         public override GeneratorType Type => GeneratorType.Vanilla;
+
+        public override void RunGenerator()
+        {
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                SetupElevationNoise();
+                SetupTemperatureOffsetNoise();
+                SetupRainfallNoise();
+                SetupHillinessNoise();
+                SetupSwampinessNoise();
+
+                for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
+                    GenerateTileFor(i);
+
+                WorldEditor.WorldUpdater.UpdateMap();
+            }, "Generating...", doAsynchronously: false, null);
+        }
 
         private void GenerateTileFor(int tileID)
         {

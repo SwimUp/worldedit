@@ -274,10 +274,39 @@
   <HasCaves>Пещеры</HasCaves>
   <SelectTileTile>Выберите тайл</SelectTileTile>
   <WorldGenSteps>World Gen Steps</WorldGenSteps>
-  <WorldGenStepsInfo>Различные генераторы, которые помогут быстро сгенерировать или перегенерировать температуры, высоты, биомы и т.д</WorldGenStepsInfo>
   <WorldGenStepsTitle>Запуск генераторов</WorldGenStepsTitle>
   
-  <GenMode>Генератор<GenMode>
+  <GenMode>Генератор</GenMode>
   <GenType>Тип</GenType>
+  <UseGenerator>Запустить генератор</UseGenerator>
+  
+  <Temperature_title>Температур</Temperature_title>
+  <Elevation_title>Высот</Elevation_title>
+  <Rainfall_title>Осадков</Rainfall_title>
+  <Swampiness_title>Заболоченности</Swampiness_title>
+  <Hilliness_title>Гор</Hilliness_title>
+  <Biome_title>Биомов</Biome_title>
+  <Full_title>Мира</Full_title>
+  
+  <Generator_Biome_Vanilla_title>Ванильный</Generator_Biome_Vanilla_title>
+  <Generator_Biome_Vanilla>Стандартные алгоритмы генерации биома на основе температур, высот, заболоченности, гор и осадков. Сработает один раз, для дальнейшей генерации измените параметры биомов (например, сгенерируйте новые высоты)</Generator_Biome_Vanilla>
+  
+  <Generator_Elevation_Vanilla_title>Ванильный</Generator_Elevation_Vanilla_title>
+  <Generator_Elevation_Vanilla>Стандартный алгоритм генерации высот, равномерно генерируют различные высоты.</Generator_Elevation_Vanilla>
+  
+  <Generator_Full_Vanilla_title>Ванильный</Generator_Full_Vanilla_title>
+  <Generator_Full_Vanilla>Стандартный алгоритм генерации карты. Включает все этапы генерации: биомы, высоты, горы, температуры, заболоченность, осадки. Это полная регенерация карты.</Generator_Full_Vanilla>
+  
+  <Generator_Hilliness_Vanilla_title>Ванильный</Generator_Hilliness_Vanilla_title>
+  <Generator_Hilliness_Vanilla>Стандартный алгоритм генерации гор.</Generator_Hilliness_Vanilla>
+  
+  <Generator_Rainfall_Vanilla_title>Ванильный</Generator_Rainfall_Vanilla_title>
+  <Generator_Rainfall_Vanilla>Стандартный алгоритм генерации осадков.</Generator_Rainfall_Vanilla>
+  
+  <Generator_Swampiness_Vanilla_title>Ванильный</Generator_Swampiness_Vanilla_title>
+  <Generator_Swampiness_Vanilla>Стандартный алгоритм генерации заболоченности. Учитывается высота тайла и осадки.</Generator_Swampiness_Vanilla>
+  
+  <Generator_Temperature_Vanilla_title>Ванильный</Generator_Temperature_Vanilla_title>
+  <Generator_Temperature_Vanilla>Стандартный алгоритм генерации температур. Учитывается высота и биом.</Generator_Temperature_Vanilla>
   
 </LanguageData>

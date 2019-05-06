@@ -36,6 +36,8 @@ namespace WorldEdit.WorldGen.Generators
 
             for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
                 GenerateFor(i);
+
+            WorldEditor.WorldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Hills"]);
         }
 
         private void GenerateFor(int tileID)

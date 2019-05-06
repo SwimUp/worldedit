@@ -31,7 +31,10 @@ namespace WorldEdit
             foreach (var l in WorldEditor.Editor.LayersSubMeshes)
                 l.Value.Clear();
 
-            Find.World.renderer.RegenerateAllLayersNow();
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                Find.World.renderer.RegenerateAllLayersNow();
+            }, "Updating layers...", doAsynchronously: false, null);
         }
 
         /// <summary>

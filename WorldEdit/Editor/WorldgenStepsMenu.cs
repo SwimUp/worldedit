@@ -15,6 +15,8 @@ namespace WorldEdit.Editor
     {
         public override Vector2 InitialSize => new Vector2(600, 500);
 
+        public Vector2 scroll = Vector2.zero;
+
         private static Dictionary<GeneratorMode, List<Generator>> Generators = new Dictionary<GeneratorMode, List<Generator>>();
         private GeneratorMode mode;
         private Generator generator = null;
@@ -51,19 +53,26 @@ namespace WorldEdit.Editor
 
             Widgets.Label(new Rect(0, 0, 280, 20), Translator.Translate("WorldGenStepsTitle"));
 
-            Widgets.Label(new Rect(0, 30, 80, 20), Translator.Translate("GenMode"));
-            if(Widgets.ButtonText(new Rect(90, 30, 150, 20), Translator.Translate($"{mode}_title")))
+            if(Widgets.ButtonText(new Rect(0, 30, 200, 20), Translator.Translate("UseGenerator")))
+            {
+                if (generator != null)
+                    generator.RunGenerator();
+            }
+
+            Widgets.Label(new Rect(0, 60, 80, 20), Translator.Translate("GenMode"));
+            if(Widgets.ButtonText(new Rect(90, 60, 150, 20), Translator.Translate($"{mode}_title")))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
                 foreach (GeneratorMode mode in Enum.GetValues(typeof(GeneratorMode)))
                     list.Add(new FloatMenuOption(Translator.Translate($"{mode}_title"), delegate
                     {
                         this.mode = mode;
+                        generator = Generators[mode].FirstOrDefault();
                     }));
                 Find.WindowStack.Add(new FloatMenu(list));
             }
-            Widgets.Label(new Rect(250, 30, 80, 20), Translator.Translate("GenType"));
-            if (Widgets.ButtonText(new Rect(330, 30, 260, 20), generator.Title))
+            Widgets.Label(new Rect(265, 60, 80, 20), Translator.Translate("GenType"));
+            if (Widgets.ButtonText(new Rect(310, 60, 260, 20), generator.Title))
             {
                 List<FloatMenuOption> list = new List<FloatMenuOption>();
                 foreach (var generator in Generators[mode])
@@ -73,6 +82,7 @@ namespace WorldEdit.Editor
                     }));
                 Find.WindowStack.Add(new FloatMenu(list));
             }
+            Widgets.LabelScrollable(new Rect(0, 90, 300, 300), generator.Description, ref scroll);
         }
     }
 }

@@ -3,6 +3,7 @@ using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
@@ -64,9 +65,19 @@ namespace WorldEdit.Editor
                     {
                         Tile tile = Find.WorldGrid[s];
 
+                        if (updateRocks)
+                        {
+                            if (!CustomNaturalRocks.ResourceData.Keys.Contains(tileID))
+                            {
+                                customRockData.SetRocksList(rocks);
+                                customRockData.Tile = tileID;
+                                CustomNaturalRocks.ResourceData.Add(tileID, customRockData);
+                            }
+                        }
+
                         if ((tile.temperature == temperature) && (tile.rainfall == rainfall) && (tile.elevation == elevation)
                             && (tile.swampiness == swampiness))
-                            return;
+                            continue;
 
                         if (useTemperature)
                             tile.temperature = temperature;
@@ -86,19 +97,6 @@ namespace WorldEdit.Editor
                     Tile tile = Find.WorldGrid[tileID];
                     if (tile != null)
                     {
-                        if (updateRocks)
-                        {
-                            if (!CustomNaturalRocks.ResourceData.Keys.Contains(tileID))
-                            {
-                                customRockData.SetRocksList(rocks);
-                                CustomNaturalRocks.ResourceData.Add(tileID, customRockData);
-                            }
-                            else
-                            {
-                                customRockData.SetRocksList(rocks);
-                            }
-                        }
-
                         if ((tile.temperature == temperature) && (tile.rainfall == rainfall) && (tile.elevation == elevation)
                             && (tile.swampiness == swampiness))
                         {
