@@ -1,21 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
 using WorldEdit.Interfaces;
 using WorldEdit.WorldGen;
+using WorldEdit.WorldGen.Generators;
 
 namespace WorldEdit.Editor
 {
     internal class WorldGenStepsMenu : FWindow
     {
-        public override Vector2 InitialSize => new Vector2(300, 500);
+        public override Vector2 InitialSize => new Vector2(600, 500);
+
+        private static Dictionary<GeneratorMode, List<Generator>> Generators = new Dictionary<GeneratorMode, List<Generator>>();
+        private GeneratorMode mode;
+        private Generator generator = null;
+
+        static WorldGenStepsMenu()
+        {
+            Type basicType = typeof(Generator);
+            IEnumerable<Type> list = Assembly.GetAssembly(basicType).GetTypes().Where(type => type.IsSubclassOf(basicType));
+            List<Generator> gens = new List<Generator>();
+            foreach (Type itm in list)
+            {
+                Generator instance = Activator.CreateInstance(itm) as Generator;
+                gens.Add(instance);
+            }
+
+            foreach (GeneratorMode mode in Enum.GetValues(typeof(GeneratorMode)))
+            {
+                List<Generator> generatorsForType = gens.Where(gen => gen.Mode == mode).ToList();
+                Generators.Add(mode, generatorsForType);
+            }
+        }
 
         public WorldGenStepsMenu()
         {
             resizeable = false;
+
+            mode = Generators.Keys.RandomElement();
+            generator = Generators[mode].RandomElement();
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -23,37 +50,28 @@ namespace WorldEdit.Editor
             Text.Font = GameFont.Small;
 
             Widgets.Label(new Rect(0, 0, 280, 20), Translator.Translate("WorldGenStepsTitle"));
-            WidgetRow row1 = new WidgetRow(0, 25, UIDirection.RightThenDown, 290);
-            if(row1.ButtonText(Translator.Translate("RunTemperatureGenerator"), Translator.Translate("RunTemperatureGeneratorInfo")))
+
+            Widgets.Label(new Rect(0, 30, 80, 20), Translator.Translate("GenMode"));
+            if(Widgets.ButtonText(new Rect(90, 30, 150, 20), Translator.Translate($"{mode}_title")))
             {
-                WorldEditor.TerrainManager.Run(GeneratorMode.Temperature);
+                List<FloatMenuOption> list = new List<FloatMenuOption>();
+                foreach (GeneratorMode mode in Enum.GetValues(typeof(GeneratorMode)))
+                    list.Add(new FloatMenuOption(Translator.Translate($"{mode}_title"), delegate
+                    {
+                        this.mode = mode;
+                    }));
+                Find.WindowStack.Add(new FloatMenu(list));
             }
-            if (row1.ButtonText(Translator.Translate("RunSwampGenerator"), Translator.Translate("RunSwampGeneratorInfo")))
+            Widgets.Label(new Rect(250, 30, 80, 20), Translator.Translate("GenType"));
+            if (Widgets.ButtonText(new Rect(330, 30, 260, 20), generator.Title))
             {
-                WorldEditor.TerrainManager.Run(GeneratorMode.Swampiness);
-            }
-            if (row1.ButtonText(Translator.Translate("RunRainGenerator"), Translator.Translate("RunRainGeneratorInfo")))
-            {
-                WorldEditor.TerrainManager.Run(GeneratorMode.Rainfall);
-            }
-            if (row1.ButtonText(Translator.Translate("RunElevGenerator"), Translator.Translate("RunElevGeneratorInfo")))
-            {
-                WorldEditor.TerrainManager.Run(GeneratorMode.Elevation);
-            }
-            if (row1.ButtonText(Translator.Translate("RunHillGenerator"), Translator.Translate("RunHillGeneratorInfo")))
-            {
-                WorldEditor.TerrainManager.Run(GeneratorMode.Hilliness);
-                WorldEditor.WorldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Hills"]);
-            }
-            if (row1.ButtonText(Translator.Translate("RunBiomeGenerator"), Translator.Translate("RunBiomeGeneratorInfo")))
-            {
-                WorldEditor.TerrainManager.Run(GeneratorMode.Biome);
-                WorldEditor.WorldUpdater.UpdateMap();
-            }
-            if (row1.ButtonText(Translator.Translate("RunFullGenerator"), Translator.Translate("RunFullGenerator")))
-            {
-                WorldEditor.TerrainManager.Run(GeneratorMode.Full);
-                WorldEditor.WorldUpdater.UpdateMap();
+                List<FloatMenuOption> list = new List<FloatMenuOption>();
+                foreach (var generator in Generators[mode])
+                    list.Add(new FloatMenuOption(generator.Title, delegate
+                    {
+                        this.generator = generator;
+                    }));
+                Find.WindowStack.Add(new FloatMenu(list));
             }
         }
     }

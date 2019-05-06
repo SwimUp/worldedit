@@ -277,4 +277,7 @@
   <WorldGenStepsInfo>Различные генераторы, которые помогут быстро сгенерировать или перегенерировать температуры, высоты, биомы и т.д</WorldGenStepsInfo>
   <WorldGenStepsTitle>Запуск генераторов</WorldGenStepsTitle>
   
+  <GenMode>Генератор<GenMode>
+  <GenType>Тип</GenType>
+  
 </LanguageData>
