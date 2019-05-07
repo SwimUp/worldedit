@@ -1,4 +1,5 @@
-﻿using RimWorld.Planet;
+﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace WorldEdit.WorldGen.Generators
 
             for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
                 GenerateFor(i);
+
+            Messages.Message("Done", MessageTypeDefOf.NeutralEvent, false);
         }
 
         private void GenerateFor(int tileID)

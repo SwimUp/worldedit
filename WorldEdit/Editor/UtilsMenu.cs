@@ -18,6 +18,8 @@ namespace WorldEdit.Editor
         }
         public override void DoWindowContents(Rect inRect)
         {
+            Text.Font = GameFont.Small;
+
             if(Widgets.ButtonText(new Rect(0, 15, 200, 20), Translator.Translate("BackstoryUtils")))
             {
                 Find.WindowStack.Add(new BackStoryCreator(true));

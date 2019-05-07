@@ -20,7 +20,15 @@ namespace WorldEdit.WorldGen.Generators
 
         public override void RunGenerator()
         {
-            for(int i = 0; i < Find.WorldGrid.TilesCount; i++)
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                GenerateFeatures();
+            }, "Generating features...", doAsynchronously: false, null);
+        }
+
+        private void GenerateFeatures()
+        {
+            for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
             {
                 Tile tile = Find.WorldGrid[i];
                 tile.feature = null;

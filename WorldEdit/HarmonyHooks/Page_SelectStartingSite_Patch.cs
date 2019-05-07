@@ -25,7 +25,6 @@ namespace WorldEdit.HarmonyHooks
 
                 WorldEditor.WorldUpdater = new WorldUpdater();
                 WorldEditor.Editor = new InGameEditor();
-                WorldEditor.TerrainManager = new TerrainManager();
                 Find.WindowStack.Add(WorldEditor.Editor);
 
                 WorldEditor.LoadedTemplate = new WorldTemplate();

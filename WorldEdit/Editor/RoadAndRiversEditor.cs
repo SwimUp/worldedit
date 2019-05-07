@@ -12,7 +12,7 @@ namespace WorldEdit.Editor
 {
     internal sealed class RoadAndRiversEditor : FWindow
     {
-        public override Vector2 InitialSize => new Vector2(450, 450);
+        public override Vector2 InitialSize => new Vector2(450, 500);
         private Vector2 scrollPosition = Vector2.zero;
         private Vector2 riverScrollPosition = Vector2.zero;
         private Vector2 mainScrollPosition = Vector2.zero;
@@ -114,10 +114,10 @@ namespace WorldEdit.Editor
             Widgets.EndScrollView();
             yButtonPos = 295;
             Widgets.Label(new Rect(0, yButtonPos, 50, 20), Translator.Translate("StartTileLabel"));
-            roadId1 = Widgets.TextField(new Rect(65, yButtonPos, 150, 20), roadId1);
+            roadId1 = Widgets.TextField(new Rect(65, yButtonPos, 130, 20), roadId1);
             yButtonPos += 30;
             Widgets.Label(new Rect(0, yButtonPos, 50, 20), Translator.Translate("EndTileLabel"));
-            roadId2 = Widgets.TextField(new Rect(65, yButtonPos, 150, 20), roadId2);
+            roadId2 = Widgets.TextField(new Rect(65, yButtonPos, 130, 20), roadId2);
             yButtonPos += 30;
             if (Widgets.ButtonText(new Rect(0, yButtonPos, 200, 20), Translator.Translate("CreateRoadLabel")))
             {
@@ -149,16 +149,24 @@ namespace WorldEdit.Editor
             Widgets.EndScrollView();
             yButtonPos = 295;
             Widgets.Label(new Rect(210, yButtonPos, 50, 20), Translator.Translate("StartTileLabel"));
-            riverId1 = Widgets.TextField(new Rect(265, yButtonPos, 150, 20), riverId1);
+            riverId1 = Widgets.TextField(new Rect(265, yButtonPos, 130, 20), riverId1);
             yButtonPos += 30;
             Widgets.Label(new Rect(210, yButtonPos, 50, 20), Translator.Translate("EndTileLabel"));
-            riverId2 = Widgets.TextField(new Rect(265, yButtonPos, 150, 20), riverId2);
+            riverId2 = Widgets.TextField(new Rect(265, yButtonPos, 130, 20), riverId2);
             yButtonPos += 30;
             if (Widgets.ButtonText(new Rect(210, yButtonPos, 200, 20), Translator.Translate("CreateRiverLael")))
             {
                 CreateRiver();
             }
             yButtonPos += 30;
+
+            if (Widgets.ButtonText(new Rect(210, yButtonPos, 200, 20), Translator.Translate("SetSingleRiver")))
+            {
+                SetSingleRiver();
+            }
+
+            yButtonPos += 30;
+
             Widgets.Label(new Rect(0, yButtonPos, 200, 20), $"Selected tile ID: {Find.WorldSelector.selectedTile}");
             if (Widgets.RadioButtonLabeled(new Rect(210, yButtonPos, 200, 20), Translator.Translate("PaintMode"), PaintMode))
             {
@@ -166,6 +174,25 @@ namespace WorldEdit.Editor
             }
 
             Widgets.EndScrollView();
+        }
+
+        private void SetSingleRiver()
+        {
+            if (selectedRiver == null)
+            {
+                Messages.Message($"Select river type", MessageTypeDefOf.NeutralEvent, false);
+                return;
+            }
+
+            int tileID = Find.WorldSelector.selectedTile;
+
+            if(tileID < 0)
+            {
+                Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
+                return;
+            }
+
+            Find.WorldGrid.OverlayRiver(tileID, tileID, selectedRiver);
         }
 
         private void TurnPaintMode()
@@ -495,10 +522,49 @@ namespace WorldEdit.Editor
         {
             WorldGrid worldGrid = Find.WorldGrid;
             var path = Find.WorldPathFinder.FindPath(tile1ID, tile2ID, null);
+
+            Tile tile1 = Find.WorldGrid[tile1ID];
+            if(tile1.biome == BiomeDefOf.Ocean || tile1.biome == BiomeDefOf.Lake)
+            {
+                path.NodesReversed.Add(tile1ID);
+            }
+            Tile tile2 = Find.WorldGrid[tile2ID];
+            if (tile2.biome == BiomeDefOf.Ocean || tile1.biome == BiomeDefOf.Lake)
+            {
+                path.NodesReversed.Insert(0, tile2ID);
+            }
+
             for (int i = 0; i < path.NodesLeftCount - 1; i++)
             {
                 worldGrid.OverlayRiver(path.Peek(i), path.Peek(i + 1), selectedRiver);
             }
+            
+            /*
+            List<int> outList = new List<int>();
+            Find.WorldGrid.GetTileNeighbors(path.LastNode, outList);
+            foreach (var t in outList)
+            {
+                Tile tile = Find.WorldGrid[t];
+
+                if (tile.biome == BiomeDefOf.Ocean)
+                {
+                    worldGrid.OverlayRiver(path.LastNode, t, selectedRiver);
+                    break;
+                }
+            }
+
+            Find.WorldGrid.GetTileNeighbors(path.FirstNode, outList);
+            foreach (var t in outList)
+            {
+                Tile tile = Find.WorldGrid[t];
+
+                if (tile.biome == BiomeDefOf.Ocean)
+                {
+                    worldGrid.OverlayRiver(path.FirstNode, t, selectedRiver);
+                    break;
+                }
+            }
+            */
 
             worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
 

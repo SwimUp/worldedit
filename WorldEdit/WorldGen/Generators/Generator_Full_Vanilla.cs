@@ -69,7 +69,13 @@ namespace WorldEdit.WorldGen.Generators
                 SetupSwampinessNoise();
 
                 for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
+                {
                     GenerateTileFor(i);
+                }
+
+                TerrainManager.Generators[GeneratorMode.Features].Where(gen => gen.Type == GeneratorType.Vanilla).FirstOrDefault().RunGenerator();
+                TerrainManager.Generators[GeneratorMode.Rivers].Where(gen => gen.Type == GeneratorType.Vanilla).FirstOrDefault().RunGenerator();
+                TerrainManager.Generators[GeneratorMode.Roads].Where(gen => gen.Type == GeneratorType.Vanilla).FirstOrDefault().RunGenerator();
 
                 WorldEditor.WorldUpdater.UpdateMap();
             }, "Generating...", doAsynchronously: false, null);

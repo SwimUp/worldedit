@@ -20,10 +20,14 @@ namespace WorldEdit.WorldGen.Generators
 
         public override void RunGenerator()
         {
-            for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
-                GenerateFor(i);
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
+                    GenerateFor(i);
 
-            WorldEditor.WorldUpdater.UpdateMap();
+                WorldEditor.WorldUpdater.UpdateMap();
+
+            }, "Generating biomes...", doAsynchronously: false, null);
         }
 
         private void GenerateFor(int tileID)

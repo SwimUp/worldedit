@@ -32,12 +32,16 @@ namespace WorldEdit.WorldGen.Generators
 
         public override void RunGenerator()
         {
-            SetupHillinessNoise();
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                SetupHillinessNoise();
 
-            for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
-                GenerateFor(i);
+                for (int i = 0; i < Find.WorldGrid.TilesCount; i++)
+                    GenerateFor(i);
 
-            WorldEditor.WorldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Hills"]);
+                WorldEditor.WorldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Hills"]);
+
+            }, "Generating hilliness...", doAsynchronously: false, null);
         }
 
         private void GenerateFor(int tileID)

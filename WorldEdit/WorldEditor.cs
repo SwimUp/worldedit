@@ -36,8 +36,6 @@ namespace WorldEdit
         /// </summary>
         public static WorldUpdater WorldUpdater = null;
 
-        public static TerrainManager TerrainManager = null;
-
         /// <summary>
         /// Была ли загрузка из шаблона
         /// </summary>
@@ -115,7 +113,7 @@ namespace WorldEdit
                     x += 22;
                 }
                 Widgets.EndScrollView();
-                Widgets.LabelScrollable(new Rect(650, 70, 440, 400), worldInfo, ref scrollPositionInfo, false, false);
+                Widgets.LabelScrollable(new Rect(650, 70, 380, 400), worldInfo, ref scrollPositionInfo, false, false);
 
                 if (selectedTemplate != null)
                 {
@@ -137,7 +135,6 @@ namespace WorldEdit
                 {
                     WorldUpdater = new WorldUpdater();
                     Editor = new InGameEditor();
-                    TerrainManager = new TerrainManager();
                     isInit = true;
                 }
             }
