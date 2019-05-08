@@ -46,6 +46,10 @@ namespace WorldEdit.Editor
 
         private WorldUpdater worldUpdater;
 
+        private int edgeTile = -1;
+        private List<int> edgeTiles = new List<int>();
+        private bool setEdgeRiver = false;
+
         public RoadAndRiversEditor()
         {
             resizeable = false;
@@ -160,9 +164,9 @@ namespace WorldEdit.Editor
             }
             yButtonPos += 30;
 
-            if (Widgets.ButtonText(new Rect(210, yButtonPos, 200, 20), Translator.Translate("SetSingleRiver")))
+            if (Widgets.ButtonText(new Rect(210, yButtonPos, 200, 20), Translator.Translate("CreateEdgeRiver")))
             {
-                SetSingleRiver();
+                CreateEdgeRiver();
             }
 
             yButtonPos += 30;
@@ -176,7 +180,7 @@ namespace WorldEdit.Editor
             Widgets.EndScrollView();
         }
 
-        private void SetSingleRiver()
+        private void CreateEdgeRiver()
         {
             if (selectedRiver == null)
             {
@@ -186,13 +190,33 @@ namespace WorldEdit.Editor
 
             int tileID = Find.WorldSelector.selectedTile;
 
-            if(tileID < 0)
+            if (tileID < 0)
             {
                 Messages.Message($"Select tile", MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
-            Find.WorldGrid.OverlayRiver(tileID, tileID, selectedRiver);
+            if (Find.WorldGrid[tileID].biome == BiomeDefOf.Ocean || Find.WorldGrid[tileID].biome == BiomeDefOf.Lake)
+            {
+                Messages.Message($"Select non water tile", MessageTypeDefOf.NeutralEvent, false);
+                return;
+            }
+
+            List<int> outList = new List<int>();
+            Find.WorldGrid.GetTileNeighbors(tileID, outList);
+
+            List<int> oceansOrLakes = outList.Where(id => Find.WorldGrid[id].biome == BiomeDefOf.Ocean || Find.WorldGrid[id].biome == BiomeDefOf.Lake).ToList();
+            if(oceansOrLakes.Count == 0)
+            {
+                Messages.Message($"No oceans or lakes around the edges", MessageTypeDefOf.NeutralEvent, false);
+                return;
+            }
+
+            worldUpdater.RenderSingleTile(oceansOrLakes, WorldMaterials.SelectedTile, WorldEditor.Editor.LayersSubMeshes["WorldLayer_SelectedTile"]);
+
+            setEdgeRiver = true;
+            edgeTiles = oceansOrLakes;
+            edgeTile = tileID;
         }
 
         private void TurnPaintMode()
@@ -210,6 +234,29 @@ namespace WorldEdit.Editor
 
         public override void WindowUpdate()
         {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                if (setEdgeRiver)
+                {
+                    if (edgeTiles.Count == 0)
+                        return;
+
+                    if (selectedRiver == null)
+                        return;
+
+                    int tile = GenWorld.MouseTile();
+                    if (edgeTiles.Contains(tile))
+                    {
+                        Find.WorldGrid.OverlayRiver(edgeTile, tile, selectedRiver);
+                    }
+
+                    edgeTiles.Clear();
+                    setEdgeRiver = false;
+
+                    worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
+                }
+            }
+
             if (PaintMode)
             {
                 if (GenWorld.MouseTile() < 0)
@@ -523,48 +570,10 @@ namespace WorldEdit.Editor
             WorldGrid worldGrid = Find.WorldGrid;
             var path = Find.WorldPathFinder.FindPath(tile1ID, tile2ID, null);
 
-            Tile tile1 = Find.WorldGrid[tile1ID];
-            if(tile1.biome == BiomeDefOf.Ocean || tile1.biome == BiomeDefOf.Lake)
-            {
-                path.NodesReversed.Add(tile1ID);
-            }
-            Tile tile2 = Find.WorldGrid[tile2ID];
-            if (tile2.biome == BiomeDefOf.Ocean || tile1.biome == BiomeDefOf.Lake)
-            {
-                path.NodesReversed.Insert(0, tile2ID);
-            }
-
             for (int i = 0; i < path.NodesLeftCount - 1; i++)
             {
                 worldGrid.OverlayRiver(path.Peek(i), path.Peek(i + 1), selectedRiver);
             }
-            
-            /*
-            List<int> outList = new List<int>();
-            Find.WorldGrid.GetTileNeighbors(path.LastNode, outList);
-            foreach (var t in outList)
-            {
-                Tile tile = Find.WorldGrid[t];
-
-                if (tile.biome == BiomeDefOf.Ocean)
-                {
-                    worldGrid.OverlayRiver(path.LastNode, t, selectedRiver);
-                    break;
-                }
-            }
-
-            Find.WorldGrid.GetTileNeighbors(path.FirstNode, outList);
-            foreach (var t in outList)
-            {
-                Tile tile = Find.WorldGrid[t];
-
-                if (tile.biome == BiomeDefOf.Ocean)
-                {
-                    worldGrid.OverlayRiver(path.FirstNode, t, selectedRiver);
-                    break;
-                }
-            }
-            */
 
             worldUpdater.UpdateLayer(WorldEditor.Editor.Layers["WorldLayer_Rivers"]);
 

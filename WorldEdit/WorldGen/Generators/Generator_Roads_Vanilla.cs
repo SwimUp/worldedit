@@ -42,17 +42,29 @@ namespace WorldEdit.WorldGen.Generators
             }
         }
 
-        private FloatRange ExtraRoadNodesPer100kTiles = new FloatRange(30f, 50f);
+        public FloatRange ExtraRoadNodesPer100kTiles = new FloatRange(30f, 50f);
 
-        private IntRange RoadDistanceFromSettlement = new IntRange(-4, 4);
+        public IntRange RoadDistanceFromSettlement = new IntRange(-4, 4);
 
         public string Seed = "ZULUL";
 
+        public bool DestroyRoads = true;
+
+        public Generator_Roads_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("DestroyRoads"), DestroyRoads);
+            Settings.AddParam(GetType().GetField("RoadDistanceFromSettlement"), RoadDistanceFromSettlement);
+            Settings.AddParam(GetType().GetField("ExtraRoadNodesPer100kTiles"), ExtraRoadNodesPer100kTiles);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
+
             LongEventHandler.QueueLongEvent(delegate
             {
-                ClearRoads();
+                if(DestroyRoads)
+                    ClearRoads();
 
                 GenerateRoadEndpoints();
                 Rand.PushState();

@@ -19,7 +19,7 @@ namespace WorldEdit.WorldGen.Generators
 
         public override string Title => Translator.Translate($"{GetType().Name}_title");
 
-        private SimpleCurve ElevationChangeCost = new SimpleCurve
+        public SimpleCurve ElevationChangeCost = new SimpleCurve
         {
             new CurvePoint(-1000f, 50f),
             new CurvePoint(-100f, 100f),
@@ -29,11 +29,22 @@ namespace WorldEdit.WorldGen.Generators
             new CurvePoint(1000f, 50000f)
         };
 
+        public bool DestroyRivers = true;
+
+        public Generator_Rivers_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("DestroyRivers"), DestroyRivers);
+            Settings.AddParam(GetType().GetField("ElevationChangeCost"), ElevationChangeCost);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
+
             LongEventHandler.QueueLongEvent(delegate
             {
-                ClearRivers();
+                if(DestroyRivers)
+                    ClearRivers();
 
                 GenerateRivers();
 

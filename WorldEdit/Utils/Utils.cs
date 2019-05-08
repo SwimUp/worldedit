@@ -2,6 +2,7 @@
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -79,6 +80,11 @@ namespace WorldEdit
             Type[] itemTypes = { objTyp };
             Type listType = defaultListType.MakeGenericType(itemTypes);
             return listType;
+        }
+
+        public static object GetValue(object value, Type type)
+        {
+            return TypeDescriptor.GetConverter(type).ConvertFromInvariantString(value.ToString());
         }
     }
 

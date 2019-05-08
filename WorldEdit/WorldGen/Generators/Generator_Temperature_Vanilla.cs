@@ -32,8 +32,18 @@ namespace WorldEdit.WorldGen.Generators
         public override GeneratorMode Mode => GeneratorMode.Temperature;
         public override GeneratorType Type => GeneratorType.Vanilla;
 
+        public Generator_Temperature_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("FreqMultiplier"), FreqMultiplier);
+            Settings.AddParam(GetType().GetField("AvgTempByLatitudeCurve"), AvgTempByLatitudeCurve);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
+
+            Log.Message($"TEMP: {AvgTempByLatitudeCurve[0].x}");
+
             SetupTemperatureOffsetNoise();
 
             for (int i = 0; i < Find.WorldGrid.TilesCount; i++)

@@ -20,12 +20,18 @@ namespace WorldEdit.WorldGen.Generators
 
         public float maximumSiteCurve;
 
-        public float minimumChain;
-
         public float maximumSegmentCurviness;
+
+        public Generator_AncientRoads_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("maximumSiteCurve"), maximumSiteCurve);
+            Settings.AddParam(GetType().GetField("maximumSegmentCurviness"), maximumSegmentCurviness);
+        }
 
         public override void RunGenerator()
         {
+            Setup();
+
             GenerateAncientRoads();
 
             Messages.Message("Done", MessageTypeDefOf.NeutralEvent, false);

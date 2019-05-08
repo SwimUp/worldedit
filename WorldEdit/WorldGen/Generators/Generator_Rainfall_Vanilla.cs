@@ -19,13 +19,13 @@ namespace WorldEdit.WorldGen.Generators
         [Unsaved]
         private ModuleBase noiseRainfall;
 
-        public float FreqMultiplier => 1f;
+        public float FreqMultiplier = 1f;
 
         public override GeneratorMode Mode => GeneratorMode.Rainfall;
 
         public override GeneratorType Type => GeneratorType.Vanilla;
 
-        public SimpleCurve SimpleCurve = new SimpleCurve()
+        public SimpleCurve SimpleCurveRainfall = new SimpleCurve()
         {
             new CurvePoint(0f, 1.12f),
             new CurvePoint(25f, 0.94f),
@@ -35,8 +35,15 @@ namespace WorldEdit.WorldGen.Generators
             new CurvePoint(90f, 0.05f)
         };
 
+        public Generator_Rainfall_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("FreqMultiplier"), FreqMultiplier);
+            Settings.AddParam(GetType().GetField("SimpleCurveRainfall"), SimpleCurveRainfall);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
 
             SetupRainfallNoise();
 
@@ -58,7 +65,7 @@ namespace WorldEdit.WorldGen.Generators
             float freqMultiplier = FreqMultiplier;
             ModuleBase input = new Perlin(0.015f * freqMultiplier, 2.0, 0.5, 6, Rand.Range(0, int.MaxValue), QualityMode.High);
             input = new ScaleBias(0.5, 0.5, input);
-            ModuleBase moduleBase = new AbsLatitudeCurve(SimpleCurve, 100f);
+            ModuleBase moduleBase = new AbsLatitudeCurve(SimpleCurveRainfall, 100f);
             noiseRainfall = new Multiply(input, moduleBase);
             Func<double, double> processor = delegate (double val)
             {

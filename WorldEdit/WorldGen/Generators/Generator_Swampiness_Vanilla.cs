@@ -19,18 +19,21 @@ namespace WorldEdit.WorldGen.Generators
         [Unsaved]
         private ModuleBase noiseSwampiness;
 
-        public float FreqMultiplier => 1f;
+        public float FreqMultiplier = 1f;
 
         public override GeneratorMode Mode => GeneratorMode.Swampiness;
 
         public override GeneratorType Type => GeneratorType.Vanilla;
 
-        public FloatRange SwampinessMaxElevation = new FloatRange(650f, 750f);
-
-        public FloatRange SwampinessMinRainfall = new FloatRange(725f, 900f);
+        public Generator_Swampiness_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("FreqMultiplier"), FreqMultiplier);
+        }
 
         public override void RunGenerator()
         {
+            Setup();
+
             SetupSwampinessNoise();
 
             for (int i = 0; i < Find.WorldGrid.TilesCount; i++)

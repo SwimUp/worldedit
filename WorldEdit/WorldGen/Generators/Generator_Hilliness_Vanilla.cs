@@ -24,14 +24,21 @@ namespace WorldEdit.WorldGen.Generators
         [Unsaved]
         private ModuleBase noiseHillsPatchesMacro;
 
-        public float FreqMultiplier => 1f;
+        public float FreqMultiplier = 1f;
 
         public override GeneratorMode Mode => GeneratorMode.Hilliness;
 
         public override GeneratorType Type => GeneratorType.Vanilla;
 
+        public Generator_Hilliness_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("FreqMultiplier"), FreqMultiplier);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
+
             LongEventHandler.QueueLongEvent(delegate
             {
                 SetupHillinessNoise();

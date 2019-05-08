@@ -27,8 +27,16 @@ namespace WorldEdit.WorldGen.Generators
 
         public override string Title => Translator.Translate($"{GetType().Name}_title");
 
+        public Generator_Elevation_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("FreqMultiplier"), FreqMultiplier);
+            Settings.AddParam(GetType().GetField("ElevationRange"), ElevationRange);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
+
             SetupElevationNoise();
 
             for (int i = 0; i < Find.WorldGrid.TilesCount; i++)

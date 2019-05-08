@@ -287,6 +287,13 @@
   <Hilliness_title>Гор</Hilliness_title>
   <Biome_title>Биомов</Biome_title>
   <Full_title>Мира</Full_title>
+  <Features_title>Надписей</Features_title>
+  <Faction_title>Фракций и поселений</Faction_title>
+  <Lakes_title>Озёр</Lakes_title>
+  <Roads_title>Дорог</Roads_title>
+  <Rivers_title>Рек</Rivers_title>
+  <AncientRoads_title>Древних дорог</AncientRoads_title>
+  <AncientSites_title>Древних поселений</AncientSites_title>
   
   <Generator_Biome_Vanilla_title>Ванильный</Generator_Biome_Vanilla_title>
   <Generator_Biome_Vanilla>Стандартные алгоритмы генерации биома на основе температур, высот, заболоченности, гор и осадков. Сработает один раз, для дальнейшей генерации измените параметры биомов (например, сгенерируйте новые высоты)</Generator_Biome_Vanilla>
@@ -308,5 +315,72 @@
   
   <Generator_Temperature_Vanilla_title>Ванильный</Generator_Temperature_Vanilla_title>
   <Generator_Temperature_Vanilla>Стандартный алгоритм генерации температур. Учитывается высота и биом.</Generator_Temperature_Vanilla>
+  
+  <Generator_AncientRoads_Vanilla_title>Ванильный</Generator_AncientRoads_Vanilla_title>
+  <Generator_AncientRoads_Vanilla>Стандартный алгоритм генерации древних дорог.</Generator_AncientRoads_Vanilla>
+  
+  <Generator_AncientSites_Vanilla_title>Ванильный</Generator_AncientSites_Vanilla_title>
+  <Generator_AncientSites_Vanilla>Стандартный алгоритм генерации древних поселений.</Generator_AncientSites_Vanilla>
+  
+  <Generator_Factions_Vanilla_title>Ванильный</Generator_Factions_Vanilla_title>
+  <Generator_Factions_Vanilla>Стандартный алгоритм генерации фракций и поселений.</Generator_Factions_Vanilla>
+  
+  <Generator_Features_Vanilla_title>Ванильный</Generator_Features_Vanilla_title>
+  <Generator_Features_Vanilla>Стандартный алгоритм генерации надписей. Алгоритм выбирает место основываясь на местах. Поэтому повторный вызов генератора будет обновлять существующие записи. Тем неменее, если вы измените ландшафт, то повторный вызов может сгенерировать новые надписи.</Generator_Features_Vanilla>
+  
+  <Generator_Lakes_Vanilla_title>Ванильный</Generator_Lakes_Vanilla_title>
+  <Generator_Lakes_Vanilla>Стандартный алгоритм генерации озер.</Generator_Lakes_Vanilla>
+  
+  <Generator_Rivers_Vanilla_title>Ванильный</Generator_Rivers_Vanilla_title>
+  <Generator_Rivers_Vanilla>Стандартный алгоритм генерации рек. При должной настройке может как генерировать новые, так и расширять существующие.</Generator_Rivers_Vanilla>
+  
+  <Generator_Roads_Vanilla_title>Ванильный</Generator_Roads_Vanilla_title>
+  <Generator_Roads_Vanilla>Стандартный алгоритм генерации дорог. При должной настройке может как генерировать новые ветви дорог, так и расширять существующие.</Generator_Roads_Vanilla>
+  
+  <CreateEdgeRiver>Создать исток</CreateEdgeRiver>
+  
+  <maximumSiteCurve_title>Макс.поселений</maximumSiteCurve_title>
+  <maximumSiteCurve>Максимальное количество поселений</maximumSiteCurve>
+  <maximumSegmentCurviness_title>Модиф.сегмента</maximumSegmentCurviness_title>
+  <maximumSegmentCurviness>Коэф.умножения расстояния между поселениями</maximumSegmentCurviness>
+  
+  <ancientSitesPer100kTiles_title>Кол-во на 100к</ancientSitesPer100kTiles_title>
+  <ancientSitesPer100kTiles>Количество поселений на каждые 100к тайлов</ancientSitesPer100kTiles>
+  
+  <FreqMultiplier_title>Коэф.шума</FreqMultiplier_title>
+  <FreqMultiplier>Коэф. для шума перлина</FreqMultiplier>
+  <ElevationRange_title>Диапазон</ElevationRange_title>
+  <ElevationRange>Диапазон генерации высот. Минимальное и максимальное.</ElevationRange>
+  
+  <SettlementsPer100kTiles_title>Кол-во на 100к</SettlementsPer100kTiles_title>
+  <SettlementsPer100kTiles>Количество поселений на 100к тайлов</SettlementsPer100kTiles>
+  <regenerate_title>Очистить текущее</regenerate_title>
+  <regenerate>Будут ли удалены текущие поселения и фракции</regenerate>
+  <FactionToGenerate_title>Кол-во генерации</FactionToGenerate_title>
+  <FactionToGenerate>Количество фракций для генерации</FactionToGenerate>
+  
+  <SimpleCurveRainfall_title>Кривая генерации</SimpleCurveRainfall_title>
+  <SimpleCurveRainfall>Кривые генерации. Детальная настройка и равномерная генерации осадков.</SimpleCurveRainfall>
+  
+  <DestroyRivers_title>Удалить реки</DestroyRivers_title>
+  <DestroyRivers>Удалить существующие реки?</DestroyRivers>
+  <ElevationChangeCost_title>Кривая высот</ElevationChangeCost_title>
+  <ElevationChangeCost>Кривая высот для равномерной генерации рек</ElevationChangeCost>
+  
+  <DestroyRoads_title>Удалить дороги</DestroyRoads_title>
+  <DestroyRoads>Удалить существующие дороги?</DestroyRoads>
+  <RoadDistanceFromSettlement_title>Дист. между посел.</RoadDistanceFromSettlement_title>
+  <RoadDistanceFromSettlement>Диапазон дистанции между поселениями.</RoadDistanceFromSettlement>
+  <ExtraRoadNodesPer100kTiles_title>Кол-во на 100к</ExtraRoadNodesPer100kTiles_title>
+  <ExtraRoadNodesPer100kTiles>Количество дорог на 100к тайлов</ExtraRoadNodesPer100kTiles>
+  
+  <AvgTempByLatitudeCurve_title>Диапазон температур</AvgTempByLatitudeCurve_title>
+  <AvgTempByLatitudeCurve>Минимальная и максимальная генерируемая температура</AvgTempByLatitudeCurve>
+  
+  <SwampinessMaxElevation_title>Диапазон высот</SwampinessMaxElevation_title>
+  <SwampinessMaxElevation>Минимальное и максимальньное допустимое значение высоты для генерации болот.</SwampinessMaxElevation>
+  
+  <SwampinessMinRainfall_title>Диапазон осадков</SwampinessMinRainfall_title>
+  <SwampinessMinRainfall>Минимальное и максимальньное допустимое значение осадков для генерации болот.</SwampinessMinRainfall>
   
 </LanguageData>

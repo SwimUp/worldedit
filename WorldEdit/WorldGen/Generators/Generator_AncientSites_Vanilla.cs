@@ -20,8 +20,15 @@ namespace WorldEdit.WorldGen.Generators
         
         public FloatRange ancientSitesPer100kTiles;
 
+        public Generator_AncientSites_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("ancientSitesPer100kTiles"), ancientSitesPer100kTiles);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
+
             GenerateAncientSites();
 
             Messages.Message("Done", MessageTypeDefOf.NeutralEvent, false);

@@ -25,8 +25,17 @@ namespace WorldEdit.WorldGen.Generators
 
         public int FactionToGenerate = 6;
 
+        public Generator_Factions_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("SettlementsPer100kTiles"), SettlementsPer100kTiles);
+            Settings.AddParam(GetType().GetField("regenerate"), regenerate);
+            Settings.AddParam(GetType().GetField("FactionToGenerate"), FactionToGenerate);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
+
             LongEventHandler.QueueLongEvent(delegate
             {
                 GenerateFactions();

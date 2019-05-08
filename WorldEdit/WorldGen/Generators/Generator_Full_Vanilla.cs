@@ -16,7 +16,6 @@ namespace WorldEdit.WorldGen.Generators
 
         public override string Title => Translator.Translate($"{GetType().Name}_title");
 
-
         [Unsaved]
         private ModuleBase noiseElevation;
 
@@ -52,14 +51,36 @@ namespace WorldEdit.WorldGen.Generators
             new CurvePoint(1f, -37f)
         };
 
-        public float FreqMultiplier => 1f;
+        public SimpleCurve SimpleCurveRainfall = new SimpleCurve()
+        {
+            new CurvePoint(0f, 1.12f),
+            new CurvePoint(25f, 0.94f),
+            new CurvePoint(45f, 0.7f),
+            new CurvePoint(70f, 0.3f),
+            new CurvePoint(80f, 0.05f),
+            new CurvePoint(90f, 0.05f)
+        };
+
+        public float FreqMultiplier = 1f;
 
         public override GeneratorMode Mode => GeneratorMode.Full;
 
         public override GeneratorType Type => GeneratorType.Vanilla;
 
+        public Generator_Full_Vanilla()
+        {
+            Settings.AddParam(GetType().GetField("SwampinessMaxElevation"), SwampinessMaxElevation);
+            Settings.AddParam(GetType().GetField("SwampinessMinRainfall"), SwampinessMinRainfall);
+            Settings.AddParam(GetType().GetField("ElevationRange"), ElevationRange);
+            Settings.AddParam(GetType().GetField("FreqMultiplier"), FreqMultiplier);
+            Settings.AddParam(GetType().GetField("AvgTempByLatitudeCurve"), AvgTempByLatitudeCurve);
+            Settings.AddParam(GetType().GetField("SimpleCurveRainfall"), AvgTempByLatitudeCurve);
+        }
+
         public override void RunGenerator()
         {
+            Setup();
+
             LongEventHandler.QueueLongEvent(delegate
             {
                 SetupElevationNoise();
@@ -238,14 +259,7 @@ namespace WorldEdit.WorldGen.Generators
             float freqMultiplier = FreqMultiplier;
             ModuleBase input = new Perlin(0.015f * freqMultiplier, 2.0, 0.5, 6, Rand.Range(0, int.MaxValue), QualityMode.High);
             input = new ScaleBias(0.5, 0.5, input);
-            SimpleCurve simpleCurve = new SimpleCurve();
-            simpleCurve.Add(0f, 1.12f);
-            simpleCurve.Add(25f, 0.94f);
-            simpleCurve.Add(45f, 0.7f);
-            simpleCurve.Add(70f, 0.3f);
-            simpleCurve.Add(80f, 0.05f);
-            simpleCurve.Add(90f, 0.05f);
-            ModuleBase moduleBase = new AbsLatitudeCurve(simpleCurve, 100f);
+            ModuleBase moduleBase = new AbsLatitudeCurve(SimpleCurveRainfall, 100f);
             noiseRainfall = new Multiply(input, moduleBase);
             float num = 0.000222222225f;
             float num2 = -500f * num;
