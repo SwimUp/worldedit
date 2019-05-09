@@ -173,7 +173,7 @@ namespace WorldEdit
                     if (WorldEdit.EdbLoaded)
                         editor = !editor;
                 }
-                if (Widgets.ButtonText(new Rect(310, 215, 400, 20), Translator.Translate("")))
+                if (Widgets.ButtonText(new Rect(310, 215, 400, 20), Translator.Translate("SelectPawnInfoButton")))
                 {
                     if(editor)
                     {

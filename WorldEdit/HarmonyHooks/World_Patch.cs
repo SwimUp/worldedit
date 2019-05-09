@@ -79,7 +79,7 @@ namespace WorldEdit.HarmonyHooks
 
             if (Input.GetKeyDown(Settings.RiversAndRoadsHotKey))
             {
-                Find.WindowStack.Add(WorldEditor.Editor.roadEditor);
+                Find.WindowStack.Add(new RoadAndRiversEditor());
             }
 
             if (Input.GetKeyDown(Settings.WorldObjectHotKey))

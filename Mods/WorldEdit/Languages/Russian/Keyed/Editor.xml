@@ -383,4 +383,7 @@
   <SwampinessMinRainfall_title>Диапазон осадков</SwampinessMinRainfall_title>
   <SwampinessMinRainfall>Минимальное и максимальньное допустимое значение осадков для генерации болот.</SwampinessMinRainfall>
   
+  <EditStartPawns>Павн селектор</EditStartPawns>
+  <SelectPawnInfoButton>Выбрать пешек</SelectPawnInfoButton>
+  
 </LanguageData>

@@ -61,8 +61,6 @@
     <Compile Include="CustomBacktories.cs" />
     <Compile Include="CustomNaturalRocks.cs" />
     <Compile Include="CustomStartingSite.cs" />
-    <Compile Include="Editor\DefsEditorMenu.cs" />
-    <Compile Include="Editor\DefsEditor\RoadDefEditor.cs" />
     <Compile Include="Editor\Factions\FactionCreator.cs" />
     <Compile Include="Editor\Factions\FactionEditor.cs" />
     <Compile Include="Editor\Factions\FactionMenu.cs" />

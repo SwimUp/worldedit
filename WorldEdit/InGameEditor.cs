@@ -59,11 +59,6 @@ namespace WorldEdit
         internal WorldUpdater WorldUpdater;
 
         /// <summary>
-        /// Редактор дорог и рек
-        /// </summary>
-        internal RoadAndRiversEditor roadEditor;
-
-        /// <summary>
         /// Окно со списком всех слоёв для обновления конкретного
         /// </summary>
         internal LayersWindow layersWindow;
@@ -100,7 +95,6 @@ namespace WorldEdit
                 LayersSubMeshes.Add(layer.GetType().Name, meshes);
             }
 
-            roadEditor = new RoadAndRiversEditor();
             WorldUpdater = WorldEditor.WorldUpdater;
             layersWindow = new LayersWindow();
             factionEditor = new FactionMenu();
@@ -366,7 +360,7 @@ namespace WorldEdit
             yButtonPos += 35;
             if (Widgets.ButtonText(new Rect(0, yButtonPos, 250, 20), Translator.Translate("RoadAndRiverEditor")))
             {
-                roadEditor.Show();
+                Find.WindowStack.Add(new RoadAndRiversEditor());
             }
             Widgets.Label(new Rect(255, yButtonPos, 35, 20), $"{Settings.RiversAndRoadsHotKey}");
 
