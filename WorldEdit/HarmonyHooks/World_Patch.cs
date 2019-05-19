@@ -3,6 +3,7 @@ using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -41,9 +42,6 @@ namespace WorldEdit.HarmonyHooks
                 if (Find.WindowStack.IsOpen(typeof(CustomStartingSite)))
                     return;
 
-                if (!Settings.HideStartMenu)
-                    return;
-
                 Dialog_MessageBox.CreateConfirmation("Back to menu?", delegate
                 {
                     LongEventHandler.ClearQueuedEvents();
@@ -53,17 +51,6 @@ namespace WorldEdit.HarmonyHooks
                         Current.Game = null;
                     }, "Entry", "LoadingLongEvent", doAsynchronously: false, null);
                 });
-                /*
-                Find.WindowStack.Add(new ConfirmActionPage(delegate
-                {
-                    LongEventHandler.ClearQueuedEvents();
-                    LongEventHandler.QueueLongEvent(delegate
-                    {
-                        MemoryUtility.ClearAllMapsAndWorld();
-                        Current.Game = null;
-                    }, "Entry", "LoadingLongEvent", doAsynchronously: true, null);
-                }));
-                */
             }
 
             if (Input.GetKeyDown(Settings.EditorHotKey))

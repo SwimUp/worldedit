@@ -7,6 +7,7 @@ using Verse;
 
 namespace WorldEdit
 {
+    /*
     [HarmonyPatch(typeof(WindowStack))]
     [HarmonyPatch("Add")]
     [HarmonyPatch(new Type[] { typeof(Window) })]
@@ -17,4 +18,5 @@ namespace WorldEdit
             Log.Warning("Window: " + window);
         }
     }
+    */
 }

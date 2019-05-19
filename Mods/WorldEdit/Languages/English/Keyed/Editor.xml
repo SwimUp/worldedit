@@ -387,4 +387,12 @@
   <EditStartPawns>Pawn selector</EditStartPawns>
   <SelectPawnInfoButton>Select pawns</SelectPawnInfoButton>
   
+  <NoPawnChoise>No choise</NoPawnChoise>
+  <DefaultPawnChoose>Standard choice</DefaultPawnChoose>
+  
+  <SenOceanToo>Change ocean tile too</SenOceanToo>
+  <UseCustomIcon>Use custom icon</UseCustomIcon>
+  <CategoryFilter>Category filter</CategoryFilter>
+  <NoCustomIconsInfo>No custom icons. Check Worldedit page.</NoCustomIconsInfo>
+  
 </LanguageData>

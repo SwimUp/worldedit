@@ -56,12 +56,12 @@ namespace WorldEdit.Editor
             }
             Widgets.EndScrollView();
 
-            if (Widgets.ButtonText(new Rect(0, 300, 490, 20), Translator.Translate("EditMarketList")))
+            if (Widgets.ButtonText(new Rect(0, 340, 490, 20), Translator.Translate("EditMarketList")))
             {
                 settlementMarket.Show(selectedSettlement);
             }
 
-            if (Widgets.ButtonText(new Rect(0, 330, 490, 20), Translator.Translate("SaveNewSettlement")))
+            if (Widgets.ButtonText(new Rect(0, 370, 490, 20), Translator.Translate("SaveNewSettlement")))
             {
                 SaveSettlement();
             }

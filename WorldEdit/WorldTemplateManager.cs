@@ -208,11 +208,11 @@ namespace WorldEdit
             {
                 case PawnSelectMode.None:
                     {
-                        return "Без выбора";
+                        return Translator.Translate("NoPawnChoise");
                     }
                 case PawnSelectMode.Standart:
                     {
-                        return "Стандартный выбор";
+                        return Translator.Translate("DefaultPawnChoose");
                     }
                 default:
                     {

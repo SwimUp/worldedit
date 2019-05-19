@@ -76,6 +76,8 @@ namespace WorldEdit
         internal IntRange brushRadius = new IntRange();
         internal bool brushEnabled = false;
 
+        private bool setOceanToo = false;
+
         public InGameEditor()
         {
             resizeable = false;
@@ -146,7 +148,6 @@ namespace WorldEdit
                     foreach (var s in neightbors)
                     {
                         Tile tile = Find.WorldGrid[s];
-                        Log.Message($"SEL: {tile.biome}");
 
                         if ((tile.biome == selectedBiome) && (tile.hilliness == selectedHillness))
                             continue;
@@ -171,8 +172,6 @@ namespace WorldEdit
                                 tile.hilliness = selectedHillness;
                             }
                         }
-
-                        Log.Message($"-- AFTER: {tile.biome}");
                     }
 
                     if (updateImmediately)
@@ -306,8 +305,13 @@ namespace WorldEdit
             {
                 SetBiomeToAllTiles();
             }
+            yButtonPos = 315;
+            if (Widgets.RadioButtonLabeled(new Rect(0, yButtonPos, 250, 20), Translator.Translate("SenOceanToo"), setOceanToo))
+            {
+                setOceanToo = !setOceanToo;
+            }
 
-            yButtonPos = 320;
+            yButtonPos = 340;
             foreach (Hilliness hillnes in Enum.GetValues(typeof(Hilliness)))
             {
                 if (Widgets.RadioButtonLabeled(new Rect(0, yButtonPos, 250, 20), hillnes.ToString(), hillnes == selectedHillness))
@@ -399,10 +403,16 @@ namespace WorldEdit
             }
 
             WorldGrid grid = Find.WorldGrid;
-            grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => 
-            {
-                tile.biome = selectedBiome;
-            });
+            if(!setOceanToo)
+                grid.tiles.Where(tile => tile.biome != BiomeDefOf.Ocean && tile.biome != BiomeDefOf.Lake).ForEach(tile => 
+                {
+                    tile.biome = selectedBiome;
+                });
+            else
+                grid.tiles.ForEach(tile =>
+                {
+                    tile.biome = selectedBiome;
+                });
 
             LongEventHandler.QueueLongEvent(delegate
             {

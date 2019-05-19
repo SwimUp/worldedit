@@ -29,17 +29,6 @@ namespace WorldEdit.HarmonyHooks
                     return false;
                 }
             }
-
-            /*
-            Action preLoadLevelAction = delegate
-            {
-                Find.GameInitData.PrepForMapGen();
-                Find.GameInitData.startedFromEntry = true;
-                Find.Scenario.PreMapGenerate();
-            };
-            LongEventHandler.QueueLongEvent(preLoadLevelAction, "Play", "GeneratingMap", doAsynchronously: true, null);
-            */
-
             return true;
         }
     }

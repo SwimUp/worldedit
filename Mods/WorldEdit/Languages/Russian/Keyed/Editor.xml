@@ -386,4 +386,12 @@
   <EditStartPawns>Павн селектор</EditStartPawns>
   <SelectPawnInfoButton>Выбрать пешек</SelectPawnInfoButton>
   
+  <NoPawnChoise>Без выбора</NoPawnChoise>
+  <DefaultPawnChoose>Стандартный выбор</DefaultPawnChoose>
+  
+  <SenOceanToo>Заменять океан тоже</SenOceanToo>
+  <UseCustomIcon>Использовать кастомную иконку</UseCustomIcon>
+  <CategoryFilter>Фильтр по категории</CategoryFilter>
+  <NoCustomIconsInfo>Нет загруженных иконок. Проверьте страницу мода.</NoCustomIconsInfo>
+  
 </LanguageData>
