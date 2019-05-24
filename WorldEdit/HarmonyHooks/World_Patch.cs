@@ -19,9 +19,12 @@ namespace WorldEdit.HarmonyHooks
     {
         static void Postfix()
         {
-            if (WorldEditor.isWorldTemplate)
+            if (!CustomStartingSite.OneWayToShow)
             {
-                Find.WindowStack.Add(new CustomStartingSite());
+                if (WorldEditor.isWorldTemplate)
+                {
+                    Find.WindowStack.Add(new CustomStartingSite());
+                }
             }
         }
     }

@@ -224,6 +224,9 @@ namespace WorldEdit.Editor
             }
 
             Find.WorldObjects.Remove(selectedSettlement);
+
+            if (CustomFactions.CustomIcons.Keys.Contains(selectedSettlement.Name))
+                CustomFactions.CustomIcons.Remove(selectedSettlement.Name);
         }
 
         private void RemoveAllSettlements()
@@ -235,6 +238,9 @@ namespace WorldEdit.Editor
             foreach(var settlement in settlements)
             {
                 objects.Remove(settlement);
+
+                if (CustomFactions.CustomIcons.Keys.Contains(selectedSettlement.Name))
+                    CustomFactions.CustomIcons.Remove(selectedSettlement.Name);
             }
 
             settlements.Clear();

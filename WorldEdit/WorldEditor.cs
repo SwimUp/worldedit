@@ -121,6 +121,7 @@ namespace WorldEdit
                     {
                         isWorldTemplate = true;
                         LoadedTemplate = selectedTemplate;
+                        CustomStartingSite.OneWayToShow = false;
                         GameDataSaveLoader.LoadGame(selectedTemplate.FilePath);
                     }
                 }
@@ -201,6 +202,7 @@ namespace WorldEdit
                 {
                     WorldEditor.isWorldTemplate = true;
                     WorldEditor.LoadedTemplate = selectedTemplate;
+                    CustomStartingSite.OneWayToShow = false;
                     GameDataSaveLoader.LoadGame(selectedTemplate.FilePath);
                 }
             }

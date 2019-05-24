@@ -210,6 +210,12 @@ namespace WorldEdit.Editor
             if (newFaction == null)
                 return;
 
+            if(string.IsNullOrEmpty(newFaction.Name))
+            {
+                Messages.Message($"Name is empty", MessageTypeDefOf.NeutralEvent, false);
+                return;
+            }
+
             newFaction.GenerateNewLeader();
 
             newFaction.colorFromSpectrum = color.max;
