@@ -30,10 +30,13 @@ namespace WorldEdit.HarmonyHooks
     {
         static bool Prefix(Settlement __instance, ref Material __result)
         {
-            if (CustomFactions.CustomIcons.Keys.Contains(__instance.Name))
+            if (CustomFactions.CustomIcons != null && __instance != null && !string.IsNullOrEmpty(__instance.Name))
             {
-                __result = MaterialPool.MatFrom(CustomFactions.CustomIcons[__instance.Name].Texture);
-                return false;
+                if (CustomFactions.CustomIcons.Keys.Contains(__instance.Name))
+                {
+                    __result = MaterialPool.MatFrom(CustomFactions.CustomIcons[__instance.Name].Texture);
+                    return false;
+                }
             }
 
             return true;
