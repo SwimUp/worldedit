@@ -15,12 +15,37 @@ namespace WorldEdits
     {
         public TraitEntry trait;
         public TraitDegreeData degreeData;
+
+        public TraitDef traitDef;
+        public int degreeInt = 0;
         public int status = 0; //0 doesntmatter, 1 forced, 2 dissalow
+
+        public TraitData()
+        {
+
+        }
+
+        public TraitData(TraitEntry entry, int status)
+        {
+            traitDef = entry.def;
+            degreeInt = entry.degree;
+            this.status = status;
+            trait = entry;
+        }
+
+        public TraitData(TraitEntry entry, TraitDegreeData data, int status)
+        {
+            traitDef = entry.def;
+            degreeInt = entry.degree;
+            this.status = status;
+            trait = entry;
+            degreeData = data;
+        }
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref trait.def.defName, "t_def");
-            Scribe_Values.Look(ref trait.degree, "t_degree");
+            Scribe_Defs.Look(ref traitDef, "t_def");
+            Scribe_Values.Look(ref degreeInt, "t_degree");
             Scribe_Values.Look(ref status, "t_status");
         }
     }
@@ -159,12 +184,8 @@ namespace WorldEdits
             {
                 foreach (var t in story.forcedTraits)
                 {
-                    traitEntrys.Add(new TraitData()
-                    {
-                        trait = t,
-                        degreeData = t.def.degreeDatas[t.degree],
-                        status = 1
-                    });
+                    TraitDegreeData data = t.def.degreeDatas[t.degree];
+                    traitEntrys.Add(new TraitData(t, data, 1));
                 }
             }
 
@@ -172,12 +193,8 @@ namespace WorldEdits
             {
                 foreach (var t in story.disallowedTraits)
                 {
-                    traitEntrys.Add(new TraitData()
-                    {
-                        trait = t,
-                        status = 2
-                    });
-
+                    TraitDegreeData data = t.def.degreeDatas[t.degree];
+                    traitEntrys.Add(new TraitData(t, data, 2));
                 }
             }
 
@@ -323,12 +340,7 @@ namespace WorldEdits
                         TraitDegreeData deg = tr.degreeDatas[i];
                         list.Add(new FloatMenuOption(deg.label, delegate
                         {
-                            traitEntrys.Add(new TraitData()
-                            {
-                                trait = new TraitEntry(tr, deg.degree),
-                                degreeData = deg,
-                                status = 1
-                            });
+                            traitEntrys.Add(new TraitData(new TraitEntry(tr, deg.degree), deg, 1));
                         }));
                     }
                 }

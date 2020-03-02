@@ -86,6 +86,7 @@ namespace WorldEdit
         {
             return TypeDescriptor.GetConverter(type).ConvertFromInvariantString(value.ToString());
         }
+
     }
 
     public class ConfirmActionPage : Page

@@ -24,10 +24,6 @@ namespace WorldEdit.Editor
             {
                 Find.WindowStack.Add(new BackStoryCreator(true));
             }
-            if (Widgets.ButtonText(new Rect(0, 45, 200, 20), Translator.Translate("DefsEditor")))
-            {
-                Find.WindowStack.Add(new DefsEditorMenu());
-            }
 
             if (Widgets.ButtonText(new Rect(210, 15, 200, 20), Translator.Translate("WorldGenSteps")))
             {

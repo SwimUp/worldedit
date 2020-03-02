@@ -173,7 +173,7 @@ namespace WorldEdit
                     if (WorldEdit.EdbLoaded)
                         editor = !editor;
                 }
-                if (Widgets.ButtonText(new Rect(310, 215, 400, 20), Translator.Translate("")))
+                if (Widgets.ButtonText(new Rect(310, 215, 400, 20), Translator.Translate("SelectPawnInfoButton")))
                 {
                     if(editor)
                     {
@@ -208,11 +208,11 @@ namespace WorldEdit
             {
                 case PawnSelectMode.None:
                     {
-                        return "Без выбора";
+                        return Translator.Translate("NoPawnChoise");
                     }
                 case PawnSelectMode.Standart:
                     {
-                        return "Стандартный выбор";
+                        return Translator.Translate("DefaultPawnChoose");
                     }
                 default:
                     {

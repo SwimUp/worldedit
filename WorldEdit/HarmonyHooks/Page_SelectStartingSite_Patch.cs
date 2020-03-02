@@ -2,6 +2,7 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -31,23 +32,6 @@ namespace WorldEdit.HarmonyHooks
 
                 WorldEditor.isInit = true;
             }
-        }
-    }
-
-    [HarmonyPatch("ExtraOnGUI"), HarmonyPatch(typeof(Page_SelectStartingSite))]
-    class ExtraOnGUI_Patch
-    {
-        public static bool Prefix()
-        {
-            if (WorldEditor.isEdit)
-            {
-                if (Settings.HideStartMenu && WorldEditor.isInit)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }

@@ -74,7 +74,7 @@ namespace WorldEdit.WorldGen.Generators
             Settings.AddParam(GetType().GetField("ElevationRange"), ElevationRange);
             Settings.AddParam(GetType().GetField("FreqMultiplier"), FreqMultiplier);
             Settings.AddParam(GetType().GetField("AvgTempByLatitudeCurve"), AvgTempByLatitudeCurve);
-            Settings.AddParam(GetType().GetField("SimpleCurveRainfall"), AvgTempByLatitudeCurve);
+            Settings.AddParam(GetType().GetField("SimpleCurveRainfall"), SimpleCurveRainfall);
         }
 
         public override void RunGenerator()

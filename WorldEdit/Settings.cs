@@ -11,8 +11,6 @@ namespace WorldEdit
     {
         public static bool FullyActiveEditor = false;
 
-        public static bool HideStartMenu = false;
-
         public static KeyCode EditorHotKey = KeyCode.F5;
         public static KeyCode FactionHotKey = KeyCode.F6;
         public static KeyCode RiversAndRoadsHotKey = KeyCode.F7;
@@ -29,12 +27,6 @@ namespace WorldEdit
             if (listing_Standard.RadioButton(Translator.Translate("PernamentEditor"), FullyActiveEditor))
             {
                 FullyActiveEditor = !FullyActiveEditor;
-            }
-            Rect rect1 = new Rect(0, listing_Standard.CurHeight, 600, 20);
-            TooltipHandler.TipRegion(rect1, Translator.Translate("HideBottomMenuInfo"));
-            if (listing_Standard.RadioButton(Translator.Translate("HideBottomMenu"), HideStartMenu))
-            {
-                HideStartMenu = !HideStartMenu;
             }
             listing_Standard.GapLine();
             if (listing_Standard.ButtonText($"{Translator.Translate("EditHotKeyInfo")}: {EditorHotKey}"))
@@ -93,7 +85,6 @@ namespace WorldEdit
         {
             base.ExposeData();
             Scribe_Values.Look(ref FullyActiveEditor, "FullyActiveEditor", false);
-            Scribe_Values.Look(ref HideStartMenu, "HideStartMenu", false);
             Scribe_Values.Look(ref EditorHotKey, "EditorHotKey", KeyCode.F5);
             Scribe_Values.Look(ref FactionHotKey, "FactionHotKey", KeyCode.F6);
             Scribe_Values.Look(ref RiversAndRoadsHotKey, "RiversAndRoadsHotKey", KeyCode.F7);

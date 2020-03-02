@@ -274,4 +274,125 @@
   <HasCaves>Caves</HasCaves>
   <SelectTileTile>Select tile</SelectTileTile>
   
+  <WorldGenSteps>World Gen Steps</WorldGenSteps>
+  <WorldGenStepsTitle>Run generator</WorldGenStepsTitle>
+  
+  <GenMode>Generator</GenMode>
+  <GenType>Type</GenType>
+  <UseGenerator>Run generator</UseGenerator>
+  
+  <Temperature_title>Tempeature</Temperature_title>
+  <Elevation_title>Elevation</Elevation_title>
+  <Rainfall_title>Rainfall</Rainfall_title>
+  <Swampiness_title>Swampiness</Swampiness_title>
+  <Hilliness_title>Hliliness</Hilliness_title>
+  <Biome_title>Biome</Biome_title>
+  <Full_title>World</Full_title>
+  <Features_title>Features</Features_title>
+  <Faction_title>Factions and Settlements</Faction_title>
+  <Lakes_title>Lakes</Lakes_title>
+  <Roads_title>Roads</Roads_title>
+  <Rivers_title>Rivers</Rivers_title>
+  <AncientRoads_title>Ancient roads</AncientRoads_title>
+  <AncientSites_title>Ancient sites</AncientSites_title>
+  
+  <Generator_Biome_Vanilla_title>Vanilla</Generator_Biome_Vanilla_title>
+  <Generator_Biome_Vanilla>Standard biome generation algorithms based on temperature, elevation, swampiness, hillines and rainfall. It works once, for further generation, change the parameters of the biomes (for example, generate new elevation)</Generator_Biome_Vanilla>
+  
+  <Generator_Elevation_Vanilla_title>Vanilla</Generator_Elevation_Vanilla_title>
+  <Generator_Elevation_Vanilla>Standard algorithm for generating elevation, uniformly generate elevation.</Generator_Elevation_Vanilla>
+  
+  <Generator_Full_Vanilla_title>Vanilla</Generator_Full_Vanilla_title>
+  <Generator_Full_Vanilla>Standard map generation algorithm. Includes all stages of generation: biomes, elevation, hillines, temperatures, rainfall, swampiness. This is a complete map regeneration.</Generator_Full_Vanilla>
+  
+  <Generator_Hilliness_Vanilla_title>Vanilla</Generator_Hilliness_Vanilla_title>
+  <Generator_Hilliness_Vanilla>Standart hilliness generation algorithm.</Generator_Hilliness_Vanilla>
+  
+  <Generator_Rainfall_Vanilla_title>Vanilla</Generator_Rainfall_Vanilla_title>
+  <Generator_Rainfall_Vanilla>Standard rainfall generating algorithm</Generator_Rainfall_Vanilla>
+  
+  <Generator_Swampiness_Vanilla_title>Vanilla</Generator_Swampiness_Vanilla_title>
+  <Generator_Swampiness_Vanilla>Standard algorithm for generating swampiness. Tile elevation and rainfall counted.</Generator_Swampiness_Vanilla>
+  
+  <Generator_Temperature_Vanilla_title>Vanilla</Generator_Temperature_Vanilla_title>
+  <Generator_Temperature_Vanilla>Standard algorithm for generating temperatures. Elevation and biome counted.</Generator_Temperature_Vanilla>
+  
+  <Generator_AncientRoads_Vanilla_title>Vanilla</Generator_AncientRoads_Vanilla_title>
+  <Generator_AncientRoads_Vanilla>Standard algorithm for generating ancient roads</Generator_AncientRoads_Vanilla>
+  
+  <Generator_AncientSites_Vanilla_title>Vanilla</Generator_AncientSites_Vanilla_title>
+  <Generator_AncientSites_Vanilla>Standard algorithm for generating ancient sites.</Generator_AncientSites_Vanilla>
+  
+  <Generator_Factions_Vanilla_title>Vanilla</Generator_Factions_Vanilla_title>
+  <Generator_Factions_Vanilla>The standard algorithm for generating factions and settlements.</Generator_Factions_Vanilla>
+  
+  <Generator_Features_Vanilla_title>Vanilla</Generator_Features_Vanilla_title>
+  <Generator_Features_Vanilla>Standard label generation algorithm. The algorithm selects a location based on locations. Therefore, a repeated generator call will update the existing labels. However, if you change the terrain, a repeated call can generate new labels.</Generator_Features_Vanilla>
+  
+  <Generator_Lakes_Vanilla_title>Vanilla</Generator_Lakes_Vanilla_title>
+  <Generator_Lakes_Vanilla>Standard lakes generation algorithm.</Generator_Lakes_Vanilla>
+  
+  <Generator_Rivers_Vanilla_title>Vanilla</Generator_Rivers_Vanilla_title>
+  <Generator_Rivers_Vanilla>Standard algorithm for generating rivers. With proper tuning, it can both generate new and expand existing ones.</Generator_Rivers_Vanilla>
+  
+  <Generator_Roads_Vanilla_title>Vanilla</Generator_Roads_Vanilla_title>
+  <Generator_Roads_Vanilla>Standard algorithm for generating roads. With proper configuration, it can both generate new road branches and expand existing ones.</Generator_Roads_Vanilla>
+  
+  <CreateEdgeRiver>Create source</CreateEdgeRiver>
+  
+  <maximumSiteCurve_title>Max sites</maximumSiteCurve_title>
+  <maximumSiteCurve>Maximum number of settlements</maximumSiteCurve>
+  <maximumSegmentCurviness_title>Segment modifier</maximumSegmentCurviness_title>
+  <maximumSegmentCurviness>The multiplication factor of the distance between settlements</maximumSegmentCurviness>
+  
+  <ancientSitesPer100kTiles_title>Sites per 100k</ancientSitesPer100kTiles_title>
+  <ancientSitesPer100kTiles>Number of settlements for every 100k tiles</ancientSitesPer100kTiles>
+  
+  <FreqMultiplier_title>Freq multiplier</FreqMultiplier_title>
+  <FreqMultiplier>Multiplier for perlin noise</FreqMultiplier>
+  <ElevationRange_title>Elevation range</ElevationRange_title>
+  <ElevationRange>The range of generation elevation. Min and max.</ElevationRange>
+  
+  <SettlementsPer100kTiles_title>Settl. per 100k</SettlementsPer100kTiles_title>
+  <SettlementsPer100kTiles>Number of settlements per 100k tiles</SettlementsPer100kTiles>
+  <regenerate_title>Delete curren</regenerate_title>
+  <regenerate>Will current settlements and factions be deleted?</regenerate>
+  <FactionToGenerate_title>Generation count</FactionToGenerate_title>
+  <FactionToGenerate>The number of factions to generate</FactionToGenerate>
+  
+  <SimpleCurveRainfall_title>Rainfall curve</SimpleCurveRainfall_title>
+  <SimpleCurveRainfall>Generation curves. Detailed setting and uniform generation of rainfall.</SimpleCurveRainfall>
+  
+  <DestroyRivers_title>Delete rivers</DestroyRivers_title>
+  <DestroyRivers>Delete existing rivers?</DestroyRivers>
+  <ElevationChangeCost_title>Elevation curve</ElevationChangeCost_title>
+  <ElevationChangeCost>Elevation curve for even generation of rivers</ElevationChangeCost>
+  
+  <DestroyRoads_title>Delete roads</DestroyRoads_title>
+  <DestroyRoads>Delete existing roads?</DestroyRoads>
+  <RoadDistanceFromSettlement_title>Distance between settlements</RoadDistanceFromSettlement_title>
+  <RoadDistanceFromSettlement>Distance between settlements</RoadDistanceFromSettlement>
+  <ExtraRoadNodesPer100kTiles_title>Nodes per 100k</ExtraRoadNodesPer100kTiles_title>
+  <ExtraRoadNodesPer100kTiles>Roads nodes per 100k</ExtraRoadNodesPer100kTiles>
+  
+  <AvgTempByLatitudeCurve_title>Temperature range</AvgTempByLatitudeCurve_title>
+  <AvgTempByLatitudeCurve>Min and max temperature</AvgTempByLatitudeCurve>
+  
+  <SwampinessMaxElevation_title>Elevation range</SwampinessMaxElevation_title>
+  <SwampinessMaxElevation>Min and elevation for generating swampiness</SwampinessMaxElevation>
+  
+  <SwampinessMinRainfall_title>Rainfall range</SwampinessMinRainfall_title>
+  <SwampinessMinRainfall>Min and max rainfall for generating swampiness</SwampinessMinRainfall>
+  
+  <EditStartPawns>Pawn selector</EditStartPawns>
+  <SelectPawnInfoButton>Select pawns</SelectPawnInfoButton>
+  
+  <NoPawnChoise>No choise</NoPawnChoise>
+  <DefaultPawnChoose>Standard choice</DefaultPawnChoose>
+  
+  <SenOceanToo>Change ocean tile too</SenOceanToo>
+  <UseCustomIcon>Use custom icon</UseCustomIcon>
+  <CategoryFilter>Category filter</CategoryFilter>
+  <NoCustomIconsInfo>No custom icons. Check Worldedit page.</NoCustomIconsInfo>
+  
 </LanguageData>

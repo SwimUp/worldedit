@@ -113,7 +113,7 @@ namespace WorldEdit
                     x += 22;
                 }
                 Widgets.EndScrollView();
-                Widgets.LabelScrollable(new Rect(650, 70, 380, 400), worldInfo, ref scrollPositionInfo, false, false);
+                Widgets.LabelScrollable(new Rect(650, 70, 340, 400), worldInfo, ref scrollPositionInfo, false, false);
 
                 if (selectedTemplate != null)
                 {
@@ -121,6 +121,7 @@ namespace WorldEdit
                     {
                         isWorldTemplate = true;
                         LoadedTemplate = selectedTemplate;
+                        CustomStartingSite.OneWayToShow = false;
                         GameDataSaveLoader.LoadGame(selectedTemplate.FilePath);
                     }
                 }
@@ -193,7 +194,7 @@ namespace WorldEdit
                 x += 22;
             }
             Widgets.EndScrollView();
-            Widgets.LabelScrollable(new Rect(650, 70, 440, 400), worldInfo, ref scrollPositionInfo, false, false);
+            Widgets.LabelScrollable(new Rect(650, 70, 340, 400), worldInfo, ref scrollPositionInfo, false, false);
 
             if (selectedTemplate != null)
             {
@@ -201,6 +202,7 @@ namespace WorldEdit
                 {
                     WorldEditor.isWorldTemplate = true;
                     WorldEditor.LoadedTemplate = selectedTemplate;
+                    CustomStartingSite.OneWayToShow = false;
                     GameDataSaveLoader.LoadGame(selectedTemplate.FilePath);
                 }
             }

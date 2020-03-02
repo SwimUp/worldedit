@@ -51,7 +51,7 @@ namespace WorldEdit
 
         public override void LoadedGame()
         {
-            if (StartPawns != null)
+            if (StartPawns != null && WorldEditor.LoadedTemplate != null)
             {
                 WorldEditor.LoadedTemplate.StartPawns = StartPawns;
             }

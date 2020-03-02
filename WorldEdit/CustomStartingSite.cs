@@ -3,6 +3,7 @@ using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,6 +15,8 @@ namespace WorldEdit
 {
     internal sealed class CustomStartingSite : Page
     {
+        public static bool OneWayToShow = false;
+
         public override Vector2 InitialSize => Vector2.zero;
         public override string PageTitle => "SelectStartingSite".TranslateWithBackup("SelectLandingSite");
 
@@ -23,6 +26,8 @@ namespace WorldEdit
 
         public CustomStartingSite()
         {
+            OneWayToShow = true;
+
             WorldEditor.InitEditor();
 
             absorbInputAroundWindow = false;
@@ -50,8 +55,8 @@ namespace WorldEdit
 
         public override void ExtraOnGUI()
         {
-         //   if (WorldEditor.isEdit)
-         //       return;
+            //   if (WorldEditor.isEdit)
+            //       return;
 
             base.ExtraOnGUI();
             Text.Anchor = TextAnchor.UpperCenter;

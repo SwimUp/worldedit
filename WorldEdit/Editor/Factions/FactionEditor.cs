@@ -87,10 +87,9 @@ namespace WorldEdit.Editor
                 for (int i = 0; i < factionRelation.Count; i++)
                 {
                     FactionRelation rel = factionRelation[i];
-
                     Widgets.DrawBox(new Rect(2, boxY, 340, 130));
 
-                    Widgets.Label(new Rect(5, y, 315, 30), $"{Translator.Translate("FactionInfoName")} {rel.other.Name}");
+                    Widgets.Label(new Rect(5, y, 315, 30), $"{Translator.Translate("FactionInfoName")} {rel.other?.Name}");
 
                     y += 35;
                     Widgets.Label(new Rect(5, y, 140, 30), Translator.Translate("FactionGoodness"));
@@ -128,10 +127,15 @@ namespace WorldEdit.Editor
                     boxY += 140;
                     y = boxY + 10;
                 }
-                Widgets.EndScrollView();
 
-                Widgets.Label(new Rect(0, 315, 180, 30), Translator.Translate("FactionIcon"));
-                Widgets.DrawTextureFitted(new Rect(195, 315, 160, 30), selectedFaction.def.FactionIcon, 1.0f);
+                Widgets.EndScrollView();
+                
+
+                if (selectedFaction.def.ExpandingIconTexture != null)
+                {
+                    Widgets.Label(new Rect(0, 315, 180, 30), Translator.Translate("FactionIcon"));
+                    Widgets.DrawTextureFitted(new Rect(195, 315, 160, 30), selectedFaction.def.ExpandingIconTexture, 1.0f);
+                }
 
                 Widgets.Label(new Rect(0, 360, 160, 30), Translator.Translate("ColorSpectrum"));
                 Widgets.FloatRange(new Rect(195, 360, 130, 30), 42, ref color, 0, 1);
@@ -172,6 +176,11 @@ namespace WorldEdit.Editor
 
         private void SaveFaction()
         {
+            if(!string.IsNullOrEmpty(leaderName))
+            {
+                selectedFaction.leader.Name = new NameSingle(leaderName, true);
+            }
+
             Close();
         }
 

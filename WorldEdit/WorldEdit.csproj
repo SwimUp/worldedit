@@ -240,10 +240,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomBacktories.cs" />
+    <Compile Include="CustomFactions.cs" />
     <Compile Include="CustomNaturalRocks.cs" />
     <Compile Include="CustomStartingSite.cs" />
-    <Compile Include="Editor\DefsEditorMenu.cs" />
-    <Compile Include="Editor\DefsEditor\RoadDefEditor.cs" />
     <Compile Include="Editor\Factions\FactionCreator.cs" />
     <Compile Include="Editor\Factions\FactionEditor.cs" />
     <Compile Include="Editor\Factions\FactionMenu.cs" />
@@ -269,9 +268,9 @@
     <Compile Include="Editor\WorldObjectsMenu\StashMenu.cs" />
     <Compile Include="Editor\WorldObjectsMenu\PreciousLumpMenu.cs" />
     <Compile Include="HarmonyHooks\EdbPatch.cs" />
-    <Compile Include="HarmonyHooks\Game_Patch.cs" />
+    <Compile Include="HarmonyHooks\Factions.cs" />
     <Compile Include="HarmonyHooks\GenerationHooks.cs" />
-    <Compile Include="HarmonyHooks\RP_Patch.cs" />
+    <Compile Include="IconDef.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils\BackStoryCreator.cs" />
     <Compile Include="Utils\Extensions.cs" />

@@ -37,7 +37,7 @@ namespace WorldEdit
 
             public WorkTags requiredWorkTags;
 
-            public List<TraitData> traitData;
+            public List<TraitData> traitData = new List<TraitData>();
 
             public void ExposeData()
             {
@@ -51,7 +51,7 @@ namespace WorldEdit
                 Scribe_Collections.Look(ref skillGainsResolved, "skillGainsResolved", LookMode.Def, LookMode.Value);
                 Scribe_Values.Look(ref workDisables, "workDisables");
                 Scribe_Values.Look(ref requiredWorkTags, "requiredWorkTags");
-                Scribe_Collections.Look(ref traitData, "traitData");
+                Scribe_Collections.Look(ref traitData, "traitData", LookMode.Deep);
             }
         }
 
@@ -90,10 +90,9 @@ namespace WorldEdit
         public override void ExposeData()
         {
             base.ExposeData();
-
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                foreach(var back in CustomStories)
+                foreach (var back in CustomStories)
                 {
                     Story story = new Story
                     {
@@ -105,18 +104,15 @@ namespace WorldEdit
                         baseDesc = back.baseDesc,
                         skillGainsResolved = back.skillGainsResolved,
                         workDisables = back.workDisables,
-                        requiredWorkTags = back.requiredWorkTags
+                        requiredWorkTags = back.requiredWorkTags,
+                        traitData = new List<TraitData>()
                     };
 
                     if (back.forcedTraits != null)
                     {
                         foreach (var t1 in back.forcedTraits)
                         {
-                            story.traitData.Add(new TraitData()
-                            {
-                                trait = t1,
-                                status = 1
-                            });
+                            story.traitData.Add(new TraitData(t1, 1));
                         }
                     }
 
@@ -124,11 +120,7 @@ namespace WorldEdit
                     {
                         foreach (var t2 in back.disallowedTraits)
                         {
-                            story.traitData.Add(new TraitData()
-                            {
-                                trait = t2,
-                                status = 2
-                            });
+                            story.traitData.Add(new TraitData(t2, 2));
                         }
                     }
 
@@ -161,16 +153,22 @@ namespace WorldEdit
                     skillGainsResolved = story.skillGainsResolved,
                     baseDesc = story.baseDesc,
                     workDisables = story.workDisables,
-                    requiredWorkTags = story.requiredWorkTags
+                    requiredWorkTags = story.requiredWorkTags,
+                    forcedTraits = new List<TraitEntry>(),
+                    disallowedTraits = new List<TraitEntry>()
                 };
                 if (story.traitData != null)
                 {
                     foreach (var t in story.traitData)
                     {
                         if (t.status == 1)
-                            bStory.forcedTraits.Add(t.trait);
+                        {
+                            bStory.forcedTraits.Add(new TraitEntry(t.traitDef, t.degreeInt));
+                        }
                         if (t.status == 2)
-                            bStory.disallowedTraits.Add(t.trait);
+                        {
+                            bStory.disallowedTraits.Add(new TraitEntry(t.traitDef, t.degreeInt));
+                        }
                     }
                 }
 

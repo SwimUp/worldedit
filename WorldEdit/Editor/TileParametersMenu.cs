@@ -95,6 +95,17 @@ namespace WorldEdit.Editor
                 else
                 {
                     Tile tile = Find.WorldGrid[tileID];
+
+                    if (updateRocks)
+                    {
+                        if (!CustomNaturalRocks.ResourceData.Keys.Contains(tileID))
+                        {
+                            customRockData.SetRocksList(rocks);
+                            customRockData.Tile = tileID;
+                            CustomNaturalRocks.ResourceData.Add(tileID, customRockData);
+                        }
+                    }
+
                     if (tile != null)
                     {
                         if ((tile.temperature == temperature) && (tile.rainfall == rainfall) && (tile.elevation == elevation)
@@ -280,7 +291,8 @@ namespace WorldEdit.Editor
 
             if (Widgets.RadioButtonLabeled(new Rect(270, y, 240, 40), Translator.Translate("HasCaves"), customRockData.Caves == true))
             {
-                customRockData.Caves = !customRockData.Caves;
+                if(updateRocks)
+                    customRockData.Caves = !customRockData.Caves;
             }
         }
 
