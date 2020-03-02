@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -118,10 +118,10 @@ namespace WorldEdit
 
         public override void PreOpen()
         {
-            saveName = WorldEditor.LoadedTemplate.WorldName;
-            author = WorldEditor.LoadedTemplate.Author;
-            description = WorldEditor.LoadedTemplate.Description;
-            Find.GameInitData.startingAndOptionalPawns = WorldEditor.LoadedTemplate.StartPawns;
+            saveName = WorldEditor.LoadedTemplate?.WorldName;
+            author = WorldEditor.LoadedTemplate?.Author;
+            description = WorldEditor.LoadedTemplate?.Description;
+            Find.GameInitData.startingAndOptionalPawns = WorldEditor.LoadedTemplate?.StartPawns;
 
             base.PreOpen();
         }

@@ -16,7 +16,6 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         private Vector2 scroll = Vector2.zero;
         private Vector2 scroll2 = Vector2.zero;
 
-        private SiteCoreDef core = SiteCoreDefOf.PrisonerWillingToJoin;
         private List<SitePartDef> parts = new List<SitePartDef>();
 
         public string time = string.Empty;
@@ -136,7 +135,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
             {
                 editSite.parts.Clear();
                 foreach (var p in parts)
-                    editSite.parts.Add(new SitePart(p, p.Worker.GenerateDefaultParams(editSite, threatsFloat)));
+                    editSite.parts.Add(new SitePart(editSite, p, p.Worker.GenerateDefaultParams(threatsFloat, editSite.Tile, editSite.Faction)));
 
                 var pawns = editSite.GetComponent<DownedRefugeeComp>();
                 pawns.pawn.Clear();
@@ -174,7 +173,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 selectedFaction = Find.FactionManager.AllFactionsListForReading.RandomElement();
             }
 
-            Site site = SiteMaker.MakeSite(core, parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
+            Site site = SiteMaker.MakeSite(parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
             site.sitePartsKnown = true;
 
             var comp = site.GetComponent<PrisonerWillingToJoinComp>();

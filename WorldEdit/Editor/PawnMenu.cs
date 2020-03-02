@@ -623,7 +623,7 @@ namespace WorldEdit.Editor
         {
             PawnKindDef spaceRefugee = PawnKindDefOf.SpaceRefugee;
             Faction randomFactionForRefugee = GetRandomFactionForRefugee();
-            PawnGenerationRequest request = new PawnGenerationRequest(spaceRefugee, randomFactionForRefugee, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, newborn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, 20f, forceAddFreeWarmLayerIfNeeded: true, allowGay: true, allowFood: true, inhabitant: false, certainlyBeenInCryptosleep: false, forceRedressWorldPawnIfFormerColonist: false, worldPawnFactionDoesntMatter: false, null, null, 0.2f);
+            PawnGenerationRequest request = new PawnGenerationRequest(spaceRefugee, randomFactionForRefugee, PawnGenerationContext.NonPlayer, -1);
             Pawn pawn = PawnGenerator.GeneratePawn(request);
 
             return pawn;
@@ -864,7 +864,7 @@ namespace WorldEdit.Editor
                 }
             }
 
-            string label = pawn.MainDesc(writeAge: true);
+            string label = pawn.MainDesc(writeFaction: true);
             Rect rect9 = new Rect(0f, 45f, rect.width, 60f);
             Widgets.Label(rect9, label);
             TooltipHandler.TipRegion(rect9, () => pawn.ageTracker.AgeTooltipString, 6873641);
@@ -988,7 +988,7 @@ namespace WorldEdit.Editor
             num2 += 30f;
             Text.Font = GameFont.Small;
             StringBuilder stringBuilder = new StringBuilder();
-            WorkTags combinedDisabledWorkTags = pawn.story.CombinedDisabledWorkTags;
+            WorkTags combinedDisabledWorkTags = pawn.CombinedDisabledWorkTags;
             if (combinedDisabledWorkTags == WorkTags.None)
             {
                 stringBuilder.Append("(" + "NoneLower".Translate() + "), ");

@@ -21,7 +21,6 @@ namespace WorldEdit.Editor
             private Vector2 scroll2 = Vector2.zero;
             private Vector2 scroll3 = Vector2.zero;
 
-            private SiteCoreDef selectedSiteCore = null;
             private List<SitePartDef> parts = new List<SitePartDef>();
 
             private string threatPoints = string.Empty;
@@ -37,29 +36,12 @@ namespace WorldEdit.Editor
 
                 Widgets.Label(new Rect(0, 0, 240, 20), Translator.Translate("AddSite"));
 
-                Widgets.Label(new Rect(0, 25, 240, 20), $"{Translator.Translate("SiteCoreType")}{selectedSiteCore?.defName}");
-                int size = DefDatabase<SiteCoreDef>.AllDefsListForReading.Count * 25;
-                Rect scrollRectFact = new Rect(0, 45, 295, 200);
-                Rect scrollVertRectFact = new Rect(0, 0, scrollRectFact.x, size);
-                Widgets.BeginScrollView(scrollRectFact, ref scroll, scrollVertRectFact);
-                int yButtonPos = 0;
-                foreach (var siteCore in DefDatabase<SiteCoreDef>.AllDefsListForReading)
-                {
-                    if (Widgets.ButtonText(new Rect(0, yButtonPos, 290, 20), siteCore.defName))
-                    {
-                        selectedSiteCore = siteCore;
-                        Messages.Message($"Selected core: {selectedSiteCore.LabelCap}", MessageTypeDefOf.NeutralEvent, false);
-                    }
-                    yButtonPos += 22;
-                }
-                Widgets.EndScrollView();
-
                 Widgets.Label(new Rect(330, 25, 240, 20), Translator.Translate("SiteParts"));
                 int size2 = DefDatabase<SitePartDef>.AllDefsListForReading.Count * 25;
                 Rect scrollRectFact2 = new Rect(330, 45, 295, 200);
                 Rect scrollVertRectFact2 = new Rect(0, 0, scrollRectFact2.x, size2);
                 Widgets.BeginScrollView(scrollRectFact2, ref scroll2, scrollVertRectFact2);
-                yButtonPos = 0;
+                int yButtonPos = 0;
                 foreach (var sitePart in DefDatabase<SitePartDef>.AllDefsListForReading)
                 {
                     if (Widgets.RadioButtonLabeled(new Rect(0, yButtonPos, 290, 20), sitePart.defName, parts.Contains(sitePart)))
@@ -109,12 +91,6 @@ namespace WorldEdit.Editor
                     return;
                 }
 
-                if(selectedSiteCore == null)
-                {
-                    Messages.Message($"Select core", MessageTypeDefOf.NeutralEvent, false);
-                    return;
-                }
-
                 if(parts.Count == 0)
                 {
                     Messages.Message($"Select at least one part", MessageTypeDefOf.NeutralEvent, false);
@@ -129,9 +105,9 @@ namespace WorldEdit.Editor
 
                 Site site;
                 if (!string.IsNullOrEmpty(threatPoints) && int.TryParse(threatPoints, out int points))
-                    site = SiteMaker.MakeSite(selectedSiteCore, parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: points);
+                    site = SiteMaker.MakeSite(parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: points);
                 else
-                    site = SiteMaker.MakeSite(selectedSiteCore, parts, Find.WorldSelector.selectedTile, selectedFaction);
+                    site = SiteMaker.MakeSite(parts, Find.WorldSelector.selectedTile, selectedFaction);
 
                 site.sitePartsKnown = true;
                 Find.WorldObjects.Add(site);

@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace WorldEdit
     [StaticConstructorOnStartup]
     public class WorldEdit : Mod
     {
-        internal static HarmonyInstance harmonyInstance;
+        internal static Harmony harmonyInstance;
 
         public static Settings Settings;
 
@@ -22,7 +22,7 @@ namespace WorldEdit
 
         public WorldEdit(ModContentPack content) : base(content)
         {
-            harmonyInstance = HarmonyInstance.Create("net.funkyshit.worldedit");
+            harmonyInstance = new Harmony("net.funkyshit.worldedit");
             harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
 
             Settings = GetSettings<Settings>();
@@ -37,7 +37,7 @@ namespace WorldEdit
             }
         }
 
-        private static void EdbPatch(HarmonyInstance harmonyInstance)
+        private static void EdbPatch(Harmony harmonyInstance)
         {
             Type type = AccessTools.TypeByName("EdB.PrepareCarefully.Page_PrepareCarefully");
             if (type != null)
@@ -58,7 +58,7 @@ namespace WorldEdit
             }
         }
 
-        private static void RealisticPlanetsPatch(HarmonyInstance harmonyInstance)
+        private static void RealisticPlanetsPatch(Harmony harmonyInstance)
         {
             Type type = AccessTools.TypeByName("Planets_Code.Planets_CreateWorldParams");
             if (type != null)

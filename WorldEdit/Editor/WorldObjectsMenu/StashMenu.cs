@@ -18,8 +18,6 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         private Vector2 scroll2 = Vector2.zero;
         private Vector2 scroll3 = Vector2.zero;
 
-        private SiteCoreDef core = SiteCoreDefOf.ItemStash;
-
         private string threats = string.Empty;
         private float threatsFloat = 0f;
         private Faction selectedFaction = null;
@@ -162,7 +160,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
             {
                 editSite.parts.Clear();
                 foreach (var p in parts)
-                    editSite.parts.Add(new SitePart(p, p.Worker.GenerateDefaultParams(editSite, threatsFloat)));
+                    editSite.parts.Add(new SitePart(editSite, p, p.Worker.GenerateDefaultParams(threatsFloat, editSite.Tile, editSite.Faction)));
 
                 if(selectedFaction != null)
                     editSite.SetFaction(selectedFaction);
@@ -185,7 +183,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
             }
 
             Site site;
-            site = SiteMaker.MakeSite(core, parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
+            site = SiteMaker.MakeSite(parts, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
 
             site.sitePartsKnown = true;
 

@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,5 @@ using Verse;
 
 namespace WorldEdit.HarmonyHooks
 {
-    class Game_Patch
-    {
-    }
+
 }

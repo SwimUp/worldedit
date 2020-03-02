@@ -131,7 +131,7 @@ namespace WorldEdit.Editor
                 Widgets.EndScrollView();
 
                 Widgets.Label(new Rect(0, 315, 180, 30), Translator.Translate("FactionIcon"));
-                Widgets.DrawTextureFitted(new Rect(195, 315, 160, 30), selectedFaction.def.ExpandingIconTexture, 1.0f);
+                Widgets.DrawTextureFitted(new Rect(195, 315, 160, 30), selectedFaction.def.FactionIcon, 1.0f);
 
                 Widgets.Label(new Rect(0, 360, 160, 30), Translator.Translate("ColorSpectrum"));
                 Widgets.FloatRange(new Rect(195, 360, 130, 30), 42, ref color, 0, 1);

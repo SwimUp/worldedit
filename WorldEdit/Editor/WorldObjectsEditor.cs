@@ -221,24 +221,24 @@ namespace WorldEdit.Editor
                 return;
             }
 
-            SiteCore core = ((Site)selectedObject).core;
+            var core = ((Site)selectedObject).parts[0];
 
-            if (core.def == SiteCoreDefOf.Nothing)
-            {
-                Find.WindowStack.Add(new SingleObjectEditor((Site)selectedObject));
-            }
-            else if (core.def == SiteCoreDefOf.PreciousLump)
+            if (core.def == SitePartDefOf.PreciousLump)
             {
                 Find.WindowStack.Add(new PreciousLumpMenu((Site)selectedObject));
-            }else if(core.def == SiteCoreDefOf.ItemStash)
+            //}else if(core.def == SitePartDefOf.ItemStash)
+            //{
+            //    Find.WindowStack.Add(new StashMenu((Site)selectedObject));
+            //}else if(core.def == SitePartDefOf.DownedRefugee)
+            //{
+            //    Find.WindowStack.Add(new DownedRefugeeMenu((Site)selectedObject));
+            //}else if (core.def == SitePartDefOf.PrisonerWillingToJoin)
+            //{
+            //    Find.WindowStack.Add(new PrisonerWillingToJoinMenu((Site)selectedObject));
+            }
+            else
             {
-                Find.WindowStack.Add(new StashMenu((Site)selectedObject));
-            }else if(core.def == SiteCoreDefOf.DownedRefugee)
-            {
-                Find.WindowStack.Add(new DownedRefugeeMenu((Site)selectedObject));
-            }else if (core.def == SiteCoreDefOf.PrisonerWillingToJoin)
-            {
-                Find.WindowStack.Add(new PrisonerWillingToJoinMenu((Site)selectedObject));
+                Find.WindowStack.Add(new SingleObjectEditor((Site)selectedObject));
             }
         }
     }

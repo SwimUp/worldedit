@@ -185,7 +185,7 @@ namespace WorldEdit.Editor
                 Widgets.EndScrollView();
                 
                 Widgets.Label(new Rect(0, 315, 180, 30), Translator.Translate("FactionIcon"));
-                Widgets.DrawTextureFitted(new Rect(195, 315, 160, 30), selectedFaction.ExpandingIconTexture, 1.0f);
+                Widgets.DrawTextureFitted(new Rect(195, 315, 160, 30), selectedFaction.FactionIcon, 1.0f);
                 //float.TryParse(Widgets.TextField(new Rect(195, 315, 160, 30), newFaction.centralMelanin.ToString()), out newFaction.centralMelanin);
 
                 Widgets.Label(new Rect(0, 360, 160, 30), Translator.Translate("ColorSpectrum"));

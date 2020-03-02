@@ -18,7 +18,6 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
         private Vector2 scroll2 = Vector2.zero;
 
-        private SiteCoreDef core = SiteCoreDefOf.PreciousLump;
         private SitePartDef part = SitePartDefOf.AmbushHidden;
 
         public string time = string.Empty;
@@ -48,7 +47,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
             editSite = s;
 
-            resource = editSite.core.parms.preciousLumpResources;
+            resource = editSite.parts[0].parms.preciousLumpResources;
             time = (editSite.GetComponent<TimeoutComp>().TicksLeft / 60000).ToString();
 
             part = editSite.parts[0].def;
@@ -131,7 +130,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
 
             if(edit)
             {
-                editSite.core.parms.preciousLumpResources = resource;
+                editSite.parts[0].parms.preciousLumpResources = resource;
 
                 if (!string.IsNullOrEmpty(time) && int.TryParse(time, out int t))
                 {
@@ -143,7 +142,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 }
 
                 editSite.parts.Clear();
-                editSite.parts.Add(new SitePart(part, part.Worker.GenerateDefaultParams(editSite, threatsFloat)));
+                editSite.parts.Add(new SitePart(editSite, part, part.Worker.GenerateDefaultParams(threatsFloat, editSite.Tile, editSite.Faction)));
 
                 if(selectedFaction != null)
                     editSite.SetFaction(selectedFaction);
@@ -164,9 +163,9 @@ namespace WorldEdit.Editor.WorldObjectsMenu
                 selectedFaction = Find.FactionManager.AllFactionsListForReading.RandomElement();
             }
 
-            Site site = SiteMaker.MakeSite(core, Gen.YieldSingle(part), Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
+            Site site = SiteMaker.MakeSite(Gen.YieldSingle(part), Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
             site.sitePartsKnown = true;
-            site.core.parms.preciousLumpResources = resource;
+            site.parts[0].parms.preciousLumpResources = resource;
 
             if (!string.IsNullOrEmpty(time) && int.TryParse(time, out int timeInt))
             {

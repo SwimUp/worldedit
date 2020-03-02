@@ -20,7 +20,6 @@ namespace WorldEdit.Editor.WorldObjectsMenu
         private string threats = string.Empty;
         private float threatsFloat = 0f;
 
-        private SiteCoreDef core = SiteCoreDefOf.Nothing;
         private SitePartDef part = SitePartDefOf.Outpost;
 
         private bool edit = false;
@@ -105,7 +104,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
             if(edit)
             {
                 editSite.parts.Clear();
-                editSite.parts.Add(new SitePart(part, part.Worker.GenerateDefaultParams(editSite, threatsFloat)));
+                editSite.parts.Add(new SitePart(editSite, part, part.Worker.GenerateDefaultParams(threatsFloat, editSite.Tile, editSite.Faction)));
 
                 editSite.SetFaction(selectedFaction);
 
@@ -121,7 +120,7 @@ namespace WorldEdit.Editor.WorldObjectsMenu
             }
 
             Site site;
-            site = SiteMaker.MakeSite(core, part, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
+            site = SiteMaker.MakeSite(part, Find.WorldSelector.selectedTile, selectedFaction, threatPoints: threatsFloat);
 
             site.sitePartsKnown = true;
             Find.WorldObjects.Add(site);
